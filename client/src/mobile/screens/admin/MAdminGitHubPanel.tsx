@@ -1,0 +1,399 @@
+import { BookOpen, Bug, Calendar, ChevronDown, ChevronUp, ExternalLink, Lightbulb, Loader2, Tag } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
+import apiClient from '../../../api/client';
+import { getLocaleForLanguage, useTranslation } from '../../../i18n';
+import { MAdminButton, MAdminCard } from './MAdminUi';
+
+const REPO = 'bhxnms/T-T';
+const PER_PAGE = 10;
+const MAX_PAGES_PER_LOAD = 5;
+
+interface GithubRelease {
+  id: number;
+  prerelease: boolean;
+  tag_name: string;
+  name: string | null;
+  body: string | null;
+  published_at: string | null;
+  created_at: string;
+  author: { login: string } | null;
+  [key: string]: unknown;
+}
+
+// Support / community link cards (design: brand-tinted icon tile + title/sub).
+// Brand hex stays as content identity; every surface/border uses --m-* tokens.
+interface LinkCard {
+  href: string;
+  color: string;
+  icon: ReactNode;
+  title: string;
+  sub: string;
+}
+
+export default function MAdminGitHubPanel({ isPrerelease = false }: { isPrerelease?: boolean }) {
+  const { t, language } = useTranslation();
+  const [releases, setReleases] = useState<GithubRelease[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const isShown = (release: GithubRelease) => isPrerelease || !release.prerelease;
+
+  const fetchPage = async (pageNum: number) => {
+    try {
+      const res = await apiClient.get(`/admin/github-releases`, { params: { per_page: PER_PAGE, page: pageNum } });
+      return Array.isArray(res.data) ? (res.data as GithubRelease[]) : [];
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      return null;
+    }
+  };
+
+  // Keep pulling pages until at least one release survives the prerelease filter,
+  // otherwise a page of nothing but prereleases leaves an empty timeline behind a
+  // "Load more" button. MAX_PAGES_PER_LOAD bounds the walk.
+  const loadFrom = async (startPage: number, append: boolean) => {
+    const collected: GithubRelease[] = [];
+    let pageNum = startPage;
+    let more = true;
+
+    for (let i = 0; i < MAX_PAGES_PER_LOAD; i++) {
+      const data = await fetchPage(pageNum);
+      if (!data) return;
+      collected.push(...data);
+      more = data.length === PER_PAGE;
+      if (!more) break;
+      const visible = data.filter(isShown);
+      if (visible.length > 0 || isPrerelease) break;
+      pageNum += 1;
+    }
+
+    setReleases((prev) => (append ? [...prev, ...collected] : collected));
+    setHasMore(more);
+    setPage(pageNum);
+    setError(null);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    loadFrom(1, false).finally(() => setLoading(false));
+  }, []);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    await loadFrom(page + 1, true);
+    setLoadingMore(false);
+  };
+
+  const toggleExpand = (id: number) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(getLocaleForLanguage(language), { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  // Simple markdown-to-html for release notes (handles headers, bold, lists, links)
+  const renderBody = (body: string | null) => {
+    if (!body) return null;
+    const lines = body.split('\n');
+    const elements: ReactNode[] = [];
+    let listItems: string[] = [];
+
+    const flushList = () => {
+      if (listItems.length > 0) {
+        elements.push(
+          <ul key={`ul-${elements.length}`} className="my-2 space-y-1">
+            {listItems.map((item, i) => (
+              <li key={i} className="flex gap-2 text-xs text-m-muted">
+                <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full" style={{ background: 'var(--m-faint)' }} />
+                <span dangerouslySetInnerHTML={{ __html: inlineFormat(item) }} />
+              </li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+      }
+    };
+
+    const escapeHtml = (str: string) =>
+      str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    // `[label](url)` → anchor, exactly as /\[([^\]]+)\]\(([^)]+)\)/g did. Written as a
+    // scan because that pattern backtracks from both ends: `[^\]]` matches `[` and
+    // `[^)]` matches `(`, so a run of either made the engine retry the whole match from
+    // every one of them, reading to the end each time. Release bodies come off the
+    // GitHub API. Both parts are one-or-more, so `[](url)` and `[label]()` stay plain
+    // text; the label ends at the first `]`, the url at the first `)`.
+    const linkify = (text: string) => {
+      let out = '';
+      let cursor = 0;
+      let search = 0;
+      for (;;) {
+        const open = text.indexOf('[', search);
+        if (open === -1) break;
+        const close = text.indexOf(']', open + 1);
+        if (close === -1) break; // no `]` left: no later `[` can match either
+        // Every `[` up to `close` shares that first `]`, so they fail together.
+        if (close === open + 1 || text[close + 1] !== '(') {
+          search = close + 1;
+          continue;
+        }
+        const end = text.indexOf(')', close + 2);
+        if (end === -1) break; // no `)` left: no later `(` can close either
+        if (end === close + 2) {
+          search = close + 1;
+          continue;
+        }
+        const label = text.slice(open + 1, close);
+        const url = text.slice(close + 2, end);
+        const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : '#';
+        out += `${text.slice(cursor, open)}<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--m-st-info);text-decoration:underline">${label}</a>`;
+        cursor = end + 1;
+        search = end + 1;
+      }
+      return out + text.slice(cursor);
+    };
+    const inlineFormat = (text: string) => {
+      return linkify(
+        escapeHtml(text)
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(
+            /`(.+?)`/g,
+            '<code style="font-size:11px;padding:1px 4px;border-radius:4px;background:var(--m-ic)">$1</code>'
+          )
+      );
+    };
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        flushList();
+        continue;
+      }
+
+      if (trimmed.startsWith('### ')) {
+        flushList();
+        elements.push(
+          <h4 key={elements.length} className="mb-1 mt-3 text-xs font-semibold text-m-ink">
+            {trimmed.slice(4)}
+          </h4>
+        );
+      } else if (trimmed.startsWith('## ')) {
+        flushList();
+        elements.push(
+          <h3 key={elements.length} className="mb-1 mt-3 text-sm font-semibold text-m-ink">
+            {trimmed.slice(3)}
+          </h3>
+        );
+      } else if (/^[-*] /.test(trimmed)) {
+        listItems.push(trimmed.slice(2));
+      } else {
+        flushList();
+        elements.push(
+          <p
+            key={elements.length}
+            className="my-1 text-xs text-m-muted"
+            dangerouslySetInnerHTML={{ __html: inlineFormat(trimmed) }}
+          />
+        );
+      }
+    }
+    flushList();
+    return elements;
+  };
+
+  const cards: LinkCard[] = [
+    {
+      href: 'https://github.com/bhxnms/T-T/issues/new?template=bug_report.yml',
+      color: '#ef4444',
+      icon: <Bug size={18} className="text-[#ef4444]" />,
+      title: t('settings.about.reportBug'),
+      sub: t('settings.about.reportBugHint'),
+    },
+    {
+      href: 'https://github.com/bhxnms/T-T/discussions',
+      color: '#f59e0b',
+      icon: <Lightbulb size={18} className="text-[#f59e0b]" />,
+      title: t('settings.about.featureRequest'),
+      sub: t('settings.about.featureRequestHint'),
+    },
+    {
+      href: 'https://github.com/bhxnms/T-T/wiki',
+      color: '#6366f1',
+      icon: <BookOpen size={18} className="text-[#6366f1]" />,
+      title: 'Wiki',
+      sub: t('settings.about.wikiHint'),
+    },
+  ];
+
+  const shownReleases = releases.filter(isShown);
+
+  return (
+    <div className="space-y-3">
+      {/* Support / community cards */}
+      <div className="grid grid-cols-1 gap-[10px]">
+        {cards.map((card) => (
+          <a
+            key={card.href}
+            href={card.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 rounded-[18px] border border-[color:var(--m-rowbr)] bg-[color:var(--m-sheetop)] px-[14px] py-3 no-underline"
+          >
+            <span
+              className="flex h-10 w-10 flex-none items-center justify-center rounded-[11px]"
+              style={{ background: `${card.color}22` }}
+            >
+              {card.icon}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[0.8125rem] font-bold text-m-ink">{card.title}</div>
+              <div className="mt-[1px] truncate font-geist text-[0.625rem] text-m-faint">{card.sub}</div>
+            </div>
+            <ExternalLink size={14} className="ml-auto flex-none text-m-faint" />
+          </a>
+        ))}
+      </div>
+
+      {/* Loading / Error / Releases */}
+      {loading ? (
+        <MAdminCard>
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="h-6 w-6 animate-spin text-m-muted" />
+          </div>
+        </MAdminCard>
+      ) : error && releases.length === 0 ? (
+        <MAdminCard>
+          <div className="py-4 text-center">
+            <p className="text-[0.8125rem] text-m-muted">{t('admin.github.error')}</p>
+            <p className="mt-1 font-geist text-[0.625rem] text-m-faint">{error}</p>
+          </div>
+        </MAdminCard>
+      ) : (
+        <div className="overflow-hidden rounded-[18px] border border-[color:var(--m-rowbr)] bg-[color:var(--m-sheetop)]">
+          <div className="flex items-center justify-between gap-2 border-b border-[color:var(--m-rowbr)] px-[14px] py-[13px]">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-[0.875rem] font-extrabold text-m-ink">{t('admin.github.title')}</h2>
+              <p className="mt-[2px] truncate font-geist text-[0.625rem] text-m-faint">
+                {t('admin.github.subtitle').replace('{repo}', REPO)}
+              </p>
+            </div>
+            <a
+              href={`https://github.com/${REPO}/releases`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-none items-center gap-[5px] rounded-full border border-[color:var(--m-rowbr)] bg-[color:var(--m-ic)] px-3 py-[7px] text-[0.6875rem] font-bold text-m-ink no-underline"
+            >
+              <ExternalLink size={12} />
+              GitHub
+            </a>
+          </div>
+
+          {/* Timeline */}
+          <div className="px-[14px] py-3">
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute bottom-3 left-[11px] top-3 w-px" style={{ background: 'var(--m-rowbr)' }} />
+
+              <div className="space-y-0">
+                {shownReleases.map((release, idx) => {
+                  const isLatest = idx === 0;
+                  const isExpanded = expanded[release.id];
+
+                  return (
+                    <div key={release.id} className="relative pb-5 pl-8">
+                      {/* Timeline dot */}
+                      <div
+                        className="absolute left-0 top-1 flex h-[23px] w-[23px] items-center justify-center rounded-full border-2"
+                        style={{
+                          background: isLatest ? 'var(--m-ink)' : 'var(--m-sheetop)',
+                          borderColor: isLatest ? 'var(--m-ink)' : 'var(--m-rowbr)',
+                        }}
+                      >
+                        <Tag size={10} style={{ color: isLatest ? 'var(--m-sheetop)' : 'var(--m-faint)' }} />
+                      </div>
+
+                      {/* Release content */}
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[0.875rem] font-bold text-m-ink">{release.tag_name}</span>
+                          {isLatest && (
+                            <span className="rounded-full bg-[color:color-mix(in_srgb,var(--m-st-confirmed)_14%,transparent)] px-2 py-[2px] text-[0.625rem] font-bold text-[color:var(--m-st-confirmed)]">
+                              {t('admin.github.latest')}
+                            </span>
+                          )}
+                          {release.prerelease && (
+                            <span className="rounded-full bg-[color:color-mix(in_srgb,var(--m-st-pending)_14%,transparent)] px-2 py-[2px] text-[0.625rem] font-bold text-[color:var(--m-st-pending)]">
+                              {t('admin.github.prerelease')}
+                            </span>
+                          )}
+                        </div>
+
+                        {release.name && release.name !== release.tag_name && (
+                          <p className="mt-[2px] text-xs font-medium text-m-muted">{release.name}</p>
+                        )}
+
+                        <div className="mt-1 flex items-center gap-3">
+                          <span className="flex items-center gap-1 text-[0.6875rem] text-m-faint">
+                            <Calendar size={10} />
+                            {formatDate(release.published_at || release.created_at)}
+                          </span>
+                          {release.author && (
+                            <span className="text-[0.6875rem] text-m-faint">
+                              {t('admin.github.by')} {release.author.login}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Expandable body */}
+                        {release.body && (
+                          <div className="mt-2">
+                            <button
+                              type="button"
+                              onClick={() => toggleExpand(release.id)}
+                              className="flex items-center gap-1 text-[0.6875rem] font-medium text-m-muted"
+                            >
+                              {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                              {isExpanded ? t('admin.github.hideDetails') : t('admin.github.showDetails')}
+                            </button>
+
+                            {isExpanded && (
+                              <div className="mt-2 rounded-lg bg-[color:var(--m-ic)] p-3">
+                                {renderBody(release.body)}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* A failed "Load more" keeps the timeline and stays retryable */}
+            {error && (
+              <p className="pb-1 text-center font-geist text-[0.625rem] text-m-faint">
+                {t('admin.github.error')} — {error}
+              </p>
+            )}
+
+            {/* Load more */}
+            {hasMore && (
+              <div className="pt-1 text-center">
+                <MAdminButton variant="ghost" busy={loadingMore} onClick={handleLoadMore}>
+                  {!loadingMore && <ChevronDown size={12} />}
+                  {loadingMore ? t('admin.github.loading') : t('admin.github.loadMore')}
+                </MAdminButton>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

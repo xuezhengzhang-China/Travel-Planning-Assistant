@@ -1,0 +1,41 @@
+import { useEffect } from 'react';
+import { useAddonStore } from '../../../store/addonStore';
+import { useAuthStore } from '../../../store/authStore';
+import MAirTrailConnectionSection from './MAirTrailConnectionSection';
+import MDawarichConnectionSection from './MDawarichConnectionSection';
+import MLlmConnectionSection from './MLlmConnectionSection';
+import MPhotoProvidersSection from './MPhotoProvidersSection';
+import MSettingsMcp from './MSettingsMcp';
+
+/**
+ * "Integrations" section. The photo-provider / AirTrail / LLM connection forms
+ * are the existing (responsive) desktop sections rendered as-is — they carry
+ * their own cards and addon gating — while the MCP configuration named in the
+ * function audit is rebuilt natively in the mobile design language.
+ */
+export default function MSettingsIntegrations() {
+  const { isEnabled: addonEnabled, loadAddons } = useAddonStore();
+  const mcpEnabled = addonEnabled('mcp');
+  const airtrailEnabled = addonEnabled('airtrail');
+  const llmEnabled = addonEnabled('llm_parsing');
+  const dawarichEnabled = addonEnabled('dawarich');
+  const managed = useAuthStore((s) => s.managed);
+
+  useEffect(() => {
+    loadAddons();
+  }, [loadAddons]);
+
+  return (
+    <>
+      <MPhotoProvidersSection />
+      {airtrailEnabled && <MAirTrailConnectionSection />}
+      {/* Which model reads a booking, and what that costs, comes with the instance on
+       a managed install. The per-user fallback exists for people who supply their
+       own key, and there nobody does. */}
+      {llmEnabled && !managed && <MLlmConnectionSection />}
+      {/* The recorded-route service, gated on its addon like the others. */}
+      {dawarichEnabled && !managed && <MDawarichConnectionSection />}
+      {mcpEnabled && <MSettingsMcp />}
+    </>
+  );
+}

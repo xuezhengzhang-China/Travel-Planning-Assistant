@@ -1,0 +1,61 @@
+name: Lint & Prettier
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: 'Optional pull request number for failure comment'
+        required: false
+        type: number
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint & format check
+        id: checks
+        continue-on-error: true
+        run: |
+          npm run lint:check
+          npm run format:check
+
+      - name: Comment on PR if checks failed
+        if: steps.checks.outcome == 'failure' && inputs.pull_request_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number('${{ inputs.pull_request_number }}'),
+              body: [
+                '## ❌ Lint & Prettier check failed',
+                '',
+                'Please fix the issues locally from the repository root with:',
+                '',
+                '```bash',
+                'npm ci',
+                'npm run lint:check',
+                'npm run format:check',
+                '```',
+                '',
+                'Then commit and push the changes.',
+              ].join('\n'),
+            });
+
+      - name: Fail the job if checks failed
+        if: steps.checks.outcome == 'failure' && inputs.pull_request_number != ''
+        run: exit 1

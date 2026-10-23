@@ -1,0 +1,53 @@
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router'
+import { authApi } from '../../api/client'
+import { useAddonStore } from '../../store/addonStore'
+import { useAuthStore } from '../../store/authStore'
+
+/**
+ * Settings page logic — loads addons + the app version, tracks the active tab
+ * and the integrations-enabled gate, and auto-switches to the account tab when
+ * the URL signals MFA is required. SettingsPage stays a wiring container that
+ * builds the (t-dependent) tab list and renders the tab bodies.
+ * Behaviour is identical to the previous in-component logic.
+ */
+export function useSettings() {
+  const [searchParams] = useSearchParams()
+  const { isEnabled: addonEnabled, loadAddons } = useAddonStore()
+  const managed = useAuthStore(s => s.managed)
+
+  const memoriesEnabled = addonEnabled('memories')
+  const mcpEnabled = addonEnabled('mcp')
+  const airtrailEnabled = addonEnabled('airtrail')
+  const llmEnabled = addonEnabled('llm_parsing')
+  const dawarichEnabled = addonEnabled('dawarich')
+  // Dawarich belongs here: its connection card is rendered by IntegrationsTab,
+  // so leaving it out hid the whole tab — and with it the card — on an instance
+  // whose only integration is Dawarich.
+  const hasIntegrations = memoriesEnabled || mcpEnabled || airtrailEnabled || llmEnabled || dawarichEnabled
+
+  const [appVersion, setAppVersion] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState('display')
+
+  useEffect(() => {
+    loadAddons()
+    authApi.getAppConfig?.().then(c => setAppVersion(c?.version)).catch(() => {})
+  }, [])
+
+  // Auto-switch to account tab when MFA is required
+  useEffect(() => {
+    if (searchParams.get('mfa') === 'required') {
+      setActiveTab('account')
+    }
+  }, [searchParams])
+
+  // Deep link into a tab: /settings?tab=plugins. Lets one tab point at another —
+  // e.g. an unconfigured plugin notification channel sends you to where its
+  // credentials actually live, instead of just naming the place.
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    if (tab) setActiveTab(tab)
+  }, [searchParams])
+
+  return { hasIntegrations, appVersion, activeTab, setActiveTab, managed }
+}
