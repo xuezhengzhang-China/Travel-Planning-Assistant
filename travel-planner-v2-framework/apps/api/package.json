@@ -1,0 +1,32 @@
+{
+  "name": "@travel/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "npm run build && concurrently --kill-others-on-fail \"tsc -p tsconfig.build.json --watch --preserveWatchOutput\" \"node --watch dist/main.js\"",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "test": "node --test tests/*.test.cjs",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "node-pg-migrate up -m migrations --envPath ../../.env",
+    "db:migrate:status": "node scripts/migration-status.cjs",
+    "db:migration:new": "node-pg-migrate create -m migrations --envPath ../../.env"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.27",
+    "@nestjs/core": "^11.1.27",
+    "@nestjs/platform-express": "^11.1.27",
+    "@travel/shared": "*",
+    "dotenv": "^16.4.7",
+    "node-pg-migrate": "^8.0.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.21.0"
+  }
+}

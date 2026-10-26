@@ -1,0 +1,162 @@
+{
+  "description": "基于 demo-scenario.json 的异常测试设计；由各模块测试入口构造前提，不是自动执行脚本",
+  "cases": [
+    {
+      "id": "E01",
+      "owner": "C",
+      "method": "PATCH",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001",
+      "precondition": "当前用户拥有 tripDraft，revision=4",
+      "request": { "expectedRevision": 3, "title": "过期编辑" },
+      "expectedStatus": 409,
+      "expectedBody": {
+        "code": "REVISION_CONFLICT",
+        "message": "行程已发生变化，请刷新后重试",
+        "details": { "currentRevision": 4 }
+      },
+      "assertion": "标题、日程与 revision 均不变"
+    },
+    {
+      "id": "E02",
+      "owner": "C",
+      "method": "POST",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001/apply-proposal",
+      "precondition": "方案归属当前用户，tripDraft 仍为 revision=4，测试时钟为 2026-10-26T01:30:00.000Z",
+      "request": {
+        "expectedRevision": 4,
+        "proposalId": "50000000-0000-4000-8000-000000000001"
+      },
+      "expectedStatus": 410,
+      "expectedBody": { "code": "PROPOSAL_EXPIRED", "message": "推荐方案已过期，请重新生成" },
+      "assertion": "到 expiresAt 时即过期，不写任何日程"
+    },
+    {
+      "id": "E03",
+      "owner": "C",
+      "method": "POST",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001/apply-proposal",
+      "precondition": "方案有效；草稿 pace 已改为 relaxed 且 revision=5，方案快照仍为 standard",
+      "request": {
+        "expectedRevision": 5,
+        "proposalId": "50000000-0000-4000-8000-000000000001"
+      },
+      "expectedStatus": 409,
+      "expectedBody": {
+        "code": "PROPOSAL_INPUT_MISMATCH",
+        "message": "规划条件已变化，请重新生成推荐"
+      },
+      "assertion": "保持修改后的草稿，不覆盖"
+    },
+    {
+      "id": "E04",
+      "owner": "C",
+      "method": "PATCH",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001",
+      "precondition": "当前 Trip 为 tripPlanned，revision=5",
+      "request": {
+        "expectedRevision": 5,
+        "planningInput": { "startDate": "2026-11-02", "endDate": "2026-11-03" }
+      },
+      "expectedStatus": 409,
+      "expectedBody": {
+        "code": "SCHEDULE_RESET_REQUIRED",
+        "message": "修改规划条件将清空已保存安排，请确认"
+      },
+      "assertion": "未确认时保留全部日程与原日期"
+    },
+    {
+      "id": "E05",
+      "owner": "B/C/D",
+      "method": "GET",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001",
+      "precondition": "使用 actors.other 访问 actors.primary 的私人资源；同样覆盖方案、随笔和媒体",
+      "expectedStatus": 404,
+      "expectedBody": { "code": "NOT_FOUND", "message": "资源不存在" },
+      "assertion": "响应不包含他人内容，也不泄露资源存在性"
+    },
+    {
+      "id": "E06",
+      "owner": "B/C",
+      "method": "POST",
+      "path": "/api/recommendations/itinerary",
+      "precondition": "以 recommendationRequest 为基础，仅覆盖日期",
+      "requestOverrides": { "startDate": "2026-11-03", "endDate": "2026-11-01" },
+      "expectedStatus": 400,
+      "expectedBody": { "code": "INVALID_DATE_RANGE", "message": "返回日期不得早于出发日期" },
+      "assertion": "不创建方案"
+    },
+    {
+      "id": "E07",
+      "owner": "B",
+      "method": "POST",
+      "path": "/api/recommendations/itinerary",
+      "precondition": "以 recommendationRequest 为基础，选择中有重复 ID",
+      "requestOverrides": {
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000001"
+        ]
+      },
+      "expectedStatus": 400,
+      "expectedBody": { "code": "VALIDATION_ERROR", "message": "景点选择不能重复" },
+      "assertion": "不通过静默去重改变输入"
+    },
+    {
+      "id": "E08",
+      "owner": "B/C",
+      "method": "POST",
+      "path": "/api/trips/40000000-0000-4000-8000-000000000001/apply-proposal",
+      "precondition": "方案有效且匹配草稿，但第三个景点从 days 移到 unassignedPlaceIds",
+      "request": {
+        "expectedRevision": 4,
+        "proposalId": "50000000-0000-4000-8000-000000000001"
+      },
+      "expectedStatus": 422,
+      "expectedBody": {
+        "code": "UNASSIGNED_PLACES",
+        "message": "仍有景点未安排，请调整后重新生成"
+      },
+      "assertion": "预览可显示，但不作为完整正式行程保存"
+    },
+    {
+      "id": "E09",
+      "owner": "D",
+      "method": "POST",
+      "path": "/api/media",
+      "precondition": "multipart file 为真实图片，但超过 10485760 字节",
+      "expectedStatus": 413,
+      "expectedBody": { "code": "FILE_TOO_LARGE", "message": "单张图片不能超过 10 MiB" },
+      "assertion": "不产生可引用的媒体记录，临时文件清理"
+    },
+    {
+      "id": "E10",
+      "owner": "D",
+      "method": "POST",
+      "path": "/api/media",
+      "precondition": "multipart file 名称为 fake.png、MIME 为 image/png，但实际内容不是图片",
+      "expectedStatus": 415,
+      "expectedBody": { "code": "UNSUPPORTED_MEDIA_TYPE", "message": "文件不是支持的图片格式" },
+      "assertion": "不只依据扩展名或客户端 MIME 判断"
+    },
+    {
+      "id": "E11",
+      "owner": "C",
+      "method": "GET",
+      "path": "/api/trips",
+      "precondition": "不提供登录凭据或凭据已过期",
+      "expectedStatus": 401,
+      "expectedBody": { "code": "UNAUTHENTICATED", "message": "请先登录" },
+      "assertion": "前端不把认证失败显示成空行程列表"
+    },
+    {
+      "id": "E12",
+      "owner": "D",
+      "method": "DELETE",
+      "path": "/api/media/80000000-0000-4000-8000-000000000001",
+      "precondition": "当前用户拥有媒体，但该图片仍被 journal 引用",
+      "expectedStatus": 409,
+      "expectedBody": { "code": "MEDIA_IN_USE", "message": "图片仍被随笔引用，请先移除关联" },
+      "assertion": "文件和随笔引用保持可用"
+    }
+  ]
+}

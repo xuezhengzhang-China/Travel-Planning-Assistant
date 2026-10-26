@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+}
+:root {
+  font-family: Inter, 'Microsoft YaHei', sans-serif;
+  color: #24332b;
+  background: #f5f7f2;
+  font-synthesis: none;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+.shell {
+  width: min(720px, calc(100% - 40px));
+  margin: 12vh auto 0;
+}
+.eyebrow {
+  color: #63806e;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+h1 {
+  margin: 16px 0 8px;
+  font-size: clamp(32px, 7vw, 52px);
+  letter-spacing: -0.04em;
+}
+.intro {
+  max-width: 560px;
+  color: #627068;
+  line-height: 1.8;
+}
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+  padding: 20px;
+  border: 1px solid #dce5db;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 12px 34px #1e3b2510;
+}
+.status-card p {
+  margin: 5px 0 0;
+  color: #718078;
+  font-size: 14px;
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b3b9b4;
+}
+.status-dot.online {
+  background: #2e9d67;
+}
+.status-dot.offline {
+  background: #dc684e;
+}
+.hint {
+  margin-top: 18px;
+  color: #7a8980;
+  font-size: 13px;
+  line-height: 1.7;
+}
