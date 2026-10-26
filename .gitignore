@@ -99,3 +99,12 @@ packaging/windows/out/
 # Local preservation copy of the replaced MVP
 /_legacy-mvp/
 
+
+# Local build and runtime files moved with the archived source
+/original-source/client/dist/
+/original-source/client/public/icons/*.png
+/original-source/server/data/*
+/original-source/server/dist/
+/original-source/server/uploads/
+/original-source/shared/dist/
+/original-source/release/
