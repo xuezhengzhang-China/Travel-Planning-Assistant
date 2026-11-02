@@ -1,4 +1,4 @@
-name: Travel Planner v2 CI
+name: Travel Planner V1 CI
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
 jobs:
   quality-and-migrations:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Travel-Planning-Assistant-V1
     services:
       postgres:
         image: postgres:17
@@ -30,7 +33,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: Travel-Planning-Assistant-V1/package-lock.json
       - run: npm ci
       - run: npm run db:migrate --workspace=@travel/api
       - run: npm run lint
