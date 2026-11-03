@@ -1,0 +1,17 @@
+{
+  "name": "@travel/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./beijing-catalog.json": "./data/beijing.json",
+    "./recommendation-engine": {
+      "types": "./recommendation-engine.d.cts",
+      "default": "./recommendation-engine.cjs"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}
