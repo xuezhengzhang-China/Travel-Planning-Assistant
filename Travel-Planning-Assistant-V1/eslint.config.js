@@ -26,5 +26,14 @@ export default tseslint.config(
     },
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
+  {
+    files: ['apps/web/tests/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        URL: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+  },
   prettier,
 );

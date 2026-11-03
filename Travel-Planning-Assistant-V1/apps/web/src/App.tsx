@@ -969,7 +969,7 @@ function App() {
             <div className="profile-card">
               <div className="avatar">✿</div>
               <div><h2>旅行者</h2><p>给生活一点探索的勇气</p></div>
-              <span className="profile-edit">编辑资料　›</span>
+              <span className="profile-edit">编辑资料 ›</span>
             </div>
             <div className="profile-stats">
               <div><strong>0</strong><span>旅行</span></div>
