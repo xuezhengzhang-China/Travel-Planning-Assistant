@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-travel_planner}
+      POSTGRES_USER: ${POSTGRES_USER:-travel_planner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    init: true
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-travel_planner}:${POSTGRES_PASSWORD:-change-me-local-only}@postgres:5432/${POSTGRES_DB:-travel_planner}
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:5173
+      VITE_API_BASE_URL: /api
+      VITE_AMAP_WEB_KEY: ${VITE_AMAP_WEB_KEY:-}
+      AMAP_WEB_SERVICE_KEY: ${AMAP_WEB_SERVICE_KEY:-}
+      LLM_API_BASE_URL: ${LLM_API_BASE_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - '3000:3000'
+      - '5173:5173'
+    volumes:
+      - .:/workspace
+      - workspace_node_modules:/workspace/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  workspace_node_modules:
