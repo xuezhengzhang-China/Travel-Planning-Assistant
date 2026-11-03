@@ -25,6 +25,29 @@ export class SomeController {
 
 `AuthGuard` 和 `CurrentUser` 只从已验签 token 设置并读取身份。单元测试应替换 service/repository；HTTP 测试在测试模块里覆盖 guard/provider。不要从 body、query 或任意自定义 header 读取 `userId`，正式 `AppModule` 不注册假身份。
 
+### B/D 的 HTTP 测试身份示例
+
+复用 [行程 HTTP 测试](../apps/api/tests/trips.test.cjs) 的做法。在测试自己创建的 app 上替换 `AuthService.verifyAccessToken`，让真实 `AuthGuard` 继续处理请求并构造 `{ userId }`。
+
+```js
+// 放在 HTTP 测试中，createApp 之后、app.listen 之前。
+const { AuthService } = require('../dist/auth/auth.service');
+const testUsers = new Map([
+  ['owner-token', 'owner'],
+  ['other-token', 'other'],
+]);
+app.get(AuthService).verifyAccessToken = async (token) => testUsers.get(token) ?? null;
+```
+
+请求带 `Authorization: Bearer owner-token` 时，控制器会收到 `{ userId: 'owner' }`。用 `other-token` 验证资源归属，用未知令牌验证 401。替换只作用于当前测试创建的 app，测试结束后调用 `app.close()`。接数据库仓库的测试应使用测试账户的实际 ID。
+
+在项目根目录运行现有示例。
+
+```powershell
+npm run build --workspace=@travel/api
+node --test --test-name-pattern="HTTP 接入鉴权" apps/api/tests/trips.test.cjs
+```
+
 ## 2. 文件放在哪里
 
 ```text

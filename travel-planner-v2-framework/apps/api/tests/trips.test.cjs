@@ -247,6 +247,7 @@ test('HTTP 接入鉴权、校验、创建、保存、读取、分页和错误格
       };
     }
     assert.equal((await request('/trips', 'GET', undefined, '')).status, 401);
+    assert.equal((await request('/trips', 'GET', undefined, 'unknown-token')).status, 401);
     const created = await request('/trips', 'POST', { title: '北京草稿', cityId: BEIJING_CITY_ID });
     assert.equal(created.status, 201);
     assert.equal(created.body.revision, 1);
