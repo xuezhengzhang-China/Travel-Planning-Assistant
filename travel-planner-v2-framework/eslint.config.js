@@ -22,6 +22,8 @@ export default tseslint.config(
         console: 'readonly',
         __dirname: 'readonly',
         fetch: 'readonly',
+        structuredClone: 'readonly',
+        URL: 'readonly',
       },
     },
     rules: { '@typescript-eslint/no-require-imports': 'off' },

@@ -1,0 +1,551 @@
+{
+  "startedAt": "2026-11-02T08:28:35.784Z",
+  "finishedAt": "2026-11-02T08:29:02.655Z",
+  "timeZone": "Asia/Shanghai",
+  "isolatedSchemaDropped": true,
+  "passed": 75,
+  "failed": 1,
+  "blocked": 0,
+  "cases": [
+    {
+      "id": "AUTH-1-anonymous",
+      "name": "/destinations: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 32
+    },
+    {
+      "id": "AUTH-1-forged",
+      "name": "/destinations: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 3
+    },
+    {
+      "id": "AUTH-2-anonymous",
+      "name": "/places?cityId=20000000-0000-4000-8000-000000000002: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 3
+    },
+    {
+      "id": "AUTH-2-forged",
+      "name": "/places?cityId=20000000-0000-4000-8000-000000000002: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-3-anonymous",
+      "name": "/places/30000000-0000-4000-8000-000000000001: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-3-forged",
+      "name": "/places/30000000-0000-4000-8000-000000000001: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-4-anonymous",
+      "name": "/routes/preview: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 16
+    },
+    {
+      "id": "AUTH-4-forged",
+      "name": "/routes/preview: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-5-anonymous",
+      "name": "/locations/reverse: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-5-forged",
+      "name": "/locations/reverse: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-6-anonymous",
+      "name": "/recommendations/itinerary: anonymous rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "AUTH-6-forged",
+      "name": "/recommendations/itinerary: forged rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "CAT-01",
+      "name": "province/city/parent/keyword filters and empty page total",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 148
+    },
+    {
+      "id": "CAT-02",
+      "name": "SQL filtering/ranking before pagination, stable tie and literal search",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 131
+    },
+    {
+      "id": "CAT-03",
+      "name": "complete detail and 404 for unknown place",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 33
+    },
+    {
+      "id": "VALID-Q-1",
+      "name": "invalid query: /destinations?level=district",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "VALID-Q-2",
+      "name": "invalid query: /destinations?parentId=x",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-3",
+      "name": "invalid query: /destinations?keyword=",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-4",
+      "name": "invalid query: /destinations?page=0",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-5",
+      "name": "invalid query: /destinations?page=-1",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-6",
+      "name": "invalid query: /destinations?page=1.5",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-7",
+      "name": "invalid query: /destinations?page=100001",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-8",
+      "name": "invalid query: /destinations?pageSize=101",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-9",
+      "name": "invalid query: /destinations?page=1&page=2",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-10",
+      "name": "invalid query: /destinations?ownerId=spoof",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 0
+    },
+    {
+      "id": "VALID-Q-11",
+      "name": "invalid query: /places",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-12",
+      "name": "invalid query: /places?cityId=bad",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-Q-13",
+      "name": "invalid query: /places?cityId=20000000-0000-4000-8000-000000000001",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 8
+    },
+    {
+      "id": "VALID-Q-14",
+      "name": "invalid query: /places?cityId=bdf85537-6121-4846-aa77-0608fa0a719b",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 23
+    },
+    {
+      "id": "VALID-Q-15",
+      "name": "invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&category=unknown",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 31
+    },
+    {
+      "id": "VALID-Q-16",
+      "name": "invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&themes=unknown",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 32
+    },
+    {
+      "id": "VALID-Q-17",
+      "name": "invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&themes=nature,,art",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 30
+    },
+    {
+      "id": "VALID-Q-18",
+      "name": "invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&pageSize=0",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 32
+    },
+    {
+      "id": "VALID-Q-19",
+      "name": "invalid query: /places/not-a-uuid",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "MAP-walking",
+      "name": "walking: real adapter HTTP seconds rounded upward",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 5
+    },
+    {
+      "id": "MAP-driving",
+      "name": "driving: real adapter HTTP seconds rounded upward",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "MAP-transit",
+      "name": "transit: real adapter HTTP seconds rounded upward",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 5
+    },
+    {
+      "id": "MAP-REVERSE",
+      "name": "district maps exactly to platform city; city-name array accepted",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 12
+    },
+    {
+      "id": "MAP-UNKNOWN-CITY",
+      "name": "unmapped district never guessed from prefix",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 8
+    },
+    {
+      "id": "MAP-GPS",
+      "name": "internal GPS conversion consumes provider response",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "MAP-FAIL-http",
+      "name": "http: walking estimate, driving/transit 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 5
+    },
+    {
+      "id": "MAP-FAIL-business",
+      "name": "business: walking estimate, driving/transit 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 4
+    },
+    {
+      "id": "MAP-FAIL-json",
+      "name": "json: walking estimate, driving/transit 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 5
+    },
+    {
+      "id": "MAP-FAIL-duration",
+      "name": "duration: walking estimate, driving/transit 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 6
+    },
+    {
+      "id": "MAP-FAIL-slow",
+      "name": "slow: walking estimate, driving/transit 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 94
+    },
+    {
+      "id": "VALID-XY-1",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 3
+    },
+    {
+      "id": "VALID-XY-2",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-XY-3",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-XY-4",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "VALID-XY-5",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-XY-6",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-XY-7",
+      "name": "invalid coordinate rejected before provider call",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 1
+    },
+    {
+      "id": "VALID-MAP",
+      "name": "unknown transport and client-supplied city code rejected",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 2
+    },
+    {
+      "id": "VALID-PLAN-1",
+      "name": "invalid planning input startDate never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 38
+    },
+    {
+      "id": "VALID-PLAN-2",
+      "name": "invalid planning input endDate never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 63
+    },
+    {
+      "id": "VALID-PLAN-3",
+      "name": "invalid planning input endDate never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 60
+    },
+    {
+      "id": "VALID-PLAN-4",
+      "name": "invalid planning input themes never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 77
+    },
+    {
+      "id": "VALID-PLAN-5",
+      "name": "invalid planning input themes never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 80
+    },
+    {
+      "id": "VALID-PLAN-6",
+      "name": "invalid planning input themes never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 60
+    },
+    {
+      "id": "VALID-PLAN-7",
+      "name": "invalid planning input pace never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 65
+    },
+    {
+      "id": "VALID-PLAN-8",
+      "name": "invalid planning input transportMode never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 61
+    },
+    {
+      "id": "VALID-PLAN-9",
+      "name": "invalid planning input selectedPlaceIds never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 63
+    },
+    {
+      "id": "VALID-PLAN-10",
+      "name": "invalid planning input selectedPlaceIds never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 60
+    },
+    {
+      "id": "VALID-PLAN-11",
+      "name": "invalid planning input selectedPlaceIds never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 124
+    },
+    {
+      "id": "VALID-PLAN-12",
+      "name": "invalid planning input selectedPlaceIds never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 62
+    },
+    {
+      "id": "VALID-PLAN-13",
+      "name": "invalid planning input cityId never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 93
+    },
+    {
+      "id": "VALID-PLAN-14",
+      "name": "invalid planning input ownerId never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 62
+    },
+    {
+      "id": "VALID-PLAN-15",
+      "name": "invalid planning input prompt never calls map or inserts",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 75
+    },
+    {
+      "id": "VALID-CROSS-CITY",
+      "name": "real SQL cross-city selection rejected without inserting",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 171
+    },
+    {
+      "id": "PLAN-OWNERSHIP",
+      "name": "two identities, normalized snapshot, expiry and no formal trip writes",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 185
+    },
+    {
+      "id": "PLAN-RESTART",
+      "name": "restart API/pool and read identical owned persisted proposal",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 220
+    },
+    {
+      "id": "PLAN-OVERFLOW",
+      "name": "one-day relaxed pace returns explicit unassigned IDs",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 71
+    },
+    {
+      "id": "PLAN-NO-KEY",
+      "name": "no map key: short estimate, distant separate day, required unknown route 503",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 144
+    },
+    {
+      "id": "PLAN-DB-FAIL",
+      "name": "database insertion failure returns sanitized 500 and no partial proposal",
+      "kind": "controlled-http-real-db",
+      "status": "passed",
+      "elapsedMs": 232
+    },
+    {
+      "id": "LLM-REAL-PROMPT",
+      "name": "open-source model returns a real Chinese travel answer",
+      "kind": "real-open-source-model",
+      "status": "passed",
+      "elapsedMs": 7570
+    },
+    {
+      "id": "LLM-REAL-B",
+      "name": "real B model prompt/completion validated and proposal persisted",
+      "kind": "real-open-source-model-with-controlled-map-real-db",
+      "status": "failed",
+      "elapsedMs": 15299,
+      "error": "Expected an actual model HTTP request"
+    }
+  ],
+  "scope": {
+    "database": "real PostgreSQL in remote Docker",
+    "identities": "injected for acceptance only; not C login",
+    "amap": "controlled local HTTP responses through real AMap adapter",
+    "model": "real configured inference",
+    "formalTrips": "never written"
+  }
+}

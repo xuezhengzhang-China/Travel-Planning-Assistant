@@ -1,10 +1,15 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { resolve } = require('node:path');
+const { readdirSync } = require('node:fs');
 const { getMigrationStatus } = require('../scripts/migration-status.cjs');
 
 const directory = resolve(__dirname, '../migrations');
 const name = '202610240001_initial_schema';
+const names = readdirSync(directory)
+  .filter((file) => file.endsWith('.js'))
+  .map((file) => file.slice(0, -3))
+  .sort();
 
 test('uninitialized database shows pending migrations using only a read query', async () => {
   const queries = [];
@@ -18,7 +23,10 @@ test('uninitialized database shows pending migrations using only a read query', 
     },
     directory,
   );
-  assert.deepEqual(rows, [{ name, status: 'pending' }]);
+  assert.deepEqual(
+    rows,
+    names.map((name) => ({ name, status: 'pending' })),
+  );
   assert.equal(queries.length, 1);
   assert.ok(queries.every((text) => text.startsWith('SELECT ')));
 });
@@ -37,7 +45,10 @@ test('status identifies applied migrations and missing local files without modif
     directory,
   );
   assert.deepEqual(rows, [
-    { name, status: 'applied' },
+    ...names.map((migration) => ({
+      name: migration,
+      status: migration === name ? 'applied' : 'pending',
+    })),
     { name: 'removed_migration', status: 'missing-file' },
   ]);
   assert.ok(queries.every((text) => text.startsWith('SELECT ')));

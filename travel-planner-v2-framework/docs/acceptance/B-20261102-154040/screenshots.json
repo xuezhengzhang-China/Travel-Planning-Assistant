@@ -1,0 +1,37 @@
+[
+  {
+    "file": "screenshots/01-summary.jpg",
+    "page": "http://127.0.0.1:8766/index.html",
+    "capturedAt": "2026-11-02T07:48:45.902Z",
+    "bytes": 117917,
+    "sha256": "9ce3921282ab427aacf007c18bd450fe74dce3e6eb23be22aea68969c1b08e2d"
+  },
+  {
+    "file": "screenshots/02-fast-tests.jpg",
+    "page": "http://127.0.0.1:8766/fast-tests.html",
+    "capturedAt": "2026-11-02T07:49:11.299Z",
+    "bytes": 121664,
+    "sha256": "81573a98db18401600e259561621cdd6cd4d2f7d3a082624b45deaa9a3ba3fc0"
+  },
+  {
+    "file": "screenshots/03-integration-tests.jpg",
+    "page": "http://127.0.0.1:8766/integration.html",
+    "capturedAt": "2026-11-02T07:49:27.961Z",
+    "bytes": 97967,
+    "sha256": "c8b0053b25b499d732b66fc278a6cbb00cfa61eb780dea170bd8902dbc8d2d46"
+  },
+  {
+    "file": "screenshots/04-server-docker.jpg",
+    "page": "http://127.0.0.1:8766/server.html",
+    "capturedAt": "2026-11-02T07:49:38.886Z",
+    "bytes": 91492,
+    "sha256": "2ba9b2124fa32c2a7aa788a4ad83bfba7693a53351b89cc4efa872558f198e06"
+  },
+  {
+    "file": "screenshots/05-http-checks.jpg",
+    "page": "http://127.0.0.1:8766/http.html",
+    "capturedAt": "2026-11-02T07:49:52.155Z",
+    "bytes": 118131,
+    "sha256": "b2101c4e49147b8769d43fcf771b6b4954737c0eb86f71a49a53216c8b4b3a0f"
+  }
+]

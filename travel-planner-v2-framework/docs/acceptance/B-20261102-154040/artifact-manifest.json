@@ -1,0 +1,217 @@
+[
+  {
+    "file": "01-node.txt",
+    "bytes": 189,
+    "sha256": "a7f8a07ab2dd1e4a123db232e9a6e8ab84e47340364c9459efb4617a85fbb830"
+  },
+  {
+    "file": "02-npm.txt",
+    "bytes": 186,
+    "sha256": "9dbad03ecca26559d6582674c9e6fe29bd2b64c13e04bc19a53738e6c8604c40"
+  },
+  {
+    "file": "03-lint.txt",
+    "bytes": 221,
+    "sha256": "42d9192a83fd6e4c7291feb32138936c59b54efe6686c1b6d6edaf9786884ca4"
+  },
+  {
+    "file": "04-typecheck.txt",
+    "bytes": 410,
+    "sha256": "df9c7a2cd81edd379377470d33a08df61d21b31b7dba676762bef549fa9e75e8"
+  },
+  {
+    "file": "05-build.txt",
+    "bytes": 716,
+    "sha256": "723a870539600ac788d192fa689d97969ff350801b6168fb9ed7daaed9a8a2db"
+  },
+  {
+    "file": "06-fast-tests.txt",
+    "bytes": 4126,
+    "sha256": "2264a7291a0bddd5290fbb9da0502d3505bc22b740833a7bf48876c453371c0b"
+  },
+  {
+    "file": "07-migrations.txt",
+    "bytes": 1248,
+    "sha256": "fe6240d9240c2948954cba768642c007e2e03e7eeaf67f4d8095928692138711"
+  },
+  {
+    "file": "08-integration.txt",
+    "bytes": 1423,
+    "sha256": "3181109ff73180c3efc66f0bc1e75b4b85907841161763e1e9ba091d41522fbd"
+  },
+  {
+    "file": "09-format.txt",
+    "bytes": 313,
+    "sha256": "7fff1c30c746f4f64c3f39d7651dbcac012cc68ccf0aeefd9a650dc1ae31d763"
+  },
+  {
+    "file": "10-diff-check.txt",
+    "bytes": 204,
+    "sha256": "a96fe307651707e5da946fd3cded077f966fe1d6bc737087ba78564c95f533cb"
+  },
+  {
+    "file": "11-http-smoke.txt",
+    "bytes": 1923,
+    "sha256": "4a505a9dee22851cd66a0114c12c06ba9b96161af4feee8c923222e04737ec90"
+  },
+  {
+    "file": "12-server-docker.txt",
+    "bytes": 902,
+    "sha256": "1b80e1b0cd77b1e350e7617a20dc4117a7cb0ad40d7eda6adeaf62ec1dc4b314"
+  },
+  {
+    "file": "B-完整测试流程与用例.md",
+    "bytes": 23868,
+    "sha256": "9c0f79a8f7b035067f541c04ac06a3e6f205f476318c508f20a4ffc67a172af9"
+  },
+  {
+    "file": "README.md",
+    "bytes": 3718,
+    "sha256": "f15daed440e3774ac63391b670606446d5ad3f0a00ab87f841f6c6a1c29a4e38"
+  },
+  {
+    "file": "acceptance-summary.json",
+    "bytes": 4165,
+    "sha256": "75ea878d2518a52fe912fb84964c1640e1df68418ee107771f5ebe9f9d3c843b"
+  },
+  {
+    "file": "api-stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "api-stdout.txt",
+    "bytes": 1718,
+    "sha256": "7125ec38d1541a5e119220ec7a3a8527df036805558cfc0d5367c90880d446fc"
+  },
+  {
+    "file": "commands.ps1",
+    "bytes": 741,
+    "sha256": "f39642321e38918fb4ae3608e31600eada819eb5a8c966d11147fc2f4dab0211"
+  },
+  {
+    "file": "commands.txt",
+    "bytes": 718,
+    "sha256": "f8eb267a93912bf04a33b7f01d4ed1a4971a6cea7c5d0ebcf79ebb690aa19d37"
+  },
+  {
+    "file": "examples/B-接口测试.postman_collection.json",
+    "bytes": 46073,
+    "sha256": "4f1c1828b225e0f9620be2bd87717c5ef74e8306d916b2db5577f926a0edcd90"
+  },
+  {
+    "file": "examples/README.md",
+    "bytes": 2867,
+    "sha256": "adaea7a7144f8890032bb4724e6fc075c10ed31b422669b329ae57fe46791b08"
+  },
+  {
+    "file": "examples/demo-scenario.json",
+    "bytes": 12636,
+    "sha256": "7ae94db2a1bfeac83968d1aebed601efe58343d41ec5bf2e7bb03d02ac10c1fa"
+  },
+  {
+    "file": "examples/error-cases.json",
+    "bytes": 6200,
+    "sha256": "d595d069522f65542774662657cf316b3fa4e8b40cba0df71ccc2ce2762a0d7c"
+  },
+  {
+    "file": "fast-tests.html",
+    "bytes": 5360,
+    "sha256": "3d54820347f5df7263f38f36d85704328aa772289be6f1662567208009ca3741"
+  },
+  {
+    "file": "http-results.json",
+    "bytes": 7608,
+    "sha256": "117ddca8f2ad744451c96e759093a681432c100eba389d61a07f7d8fcaa38adf"
+  },
+  {
+    "file": "http.html",
+    "bytes": 8098,
+    "sha256": "00eb0830e5c67a54955e620bbd6c88808b01ae803481bcea884e35ca29fbb308"
+  },
+  {
+    "file": "index.html",
+    "bytes": 7614,
+    "sha256": "e27e1c460f72669535f9f6600a0b107ff583d4c95109bff69612211b1f233d25"
+  },
+  {
+    "file": "integration.html",
+    "bytes": 4951,
+    "sha256": "9def1d54320cc5fd6f5cf54fbbc8e89f4d9ab2687d2c3bd985902e6d22398d12"
+  },
+  {
+    "file": "integrity-check.json",
+    "bytes": 196,
+    "sha256": "066dad157528b7e15880188a0c2475bc348c73bc48783361094c09924514145e"
+  },
+  {
+    "file": "remote-audit.sh",
+    "bytes": 1189,
+    "sha256": "ffc88e85e24adc0611f1be419725e84add03d14682d73ae2648759eb5854a34b"
+  },
+  {
+    "file": "run.json",
+    "bytes": 3697,
+    "sha256": "d045ab9660733302d84f11d7787300ba744edb722434997a0620a7317c77a651"
+  },
+  {
+    "file": "screenshots.json",
+    "bytes": 1270,
+    "sha256": "3101ae11e6256511675dd829d80ad1b5ecb6f9754f2d17a4718b7a0ad7efaa78"
+  },
+  {
+    "file": "screenshots/01-summary.jpg",
+    "bytes": 117917,
+    "sha256": "9ce3921282ab427aacf007c18bd450fe74dce3e6eb23be22aea68969c1b08e2d"
+  },
+  {
+    "file": "screenshots/02-fast-tests.jpg",
+    "bytes": 121664,
+    "sha256": "81573a98db18401600e259561621cdd6cd4d2f7d3a082624b45deaa9a3ba3fc0"
+  },
+  {
+    "file": "screenshots/03-integration-tests.jpg",
+    "bytes": 97967,
+    "sha256": "c8b0053b25b499d732b66fc278a6cbb00cfa61eb780dea170bd8902dbc8d2d46"
+  },
+  {
+    "file": "screenshots/04-server-docker.jpg",
+    "bytes": 91492,
+    "sha256": "2ba9b2124fa32c2a7aa788a4ad83bfba7693a53351b89cc4efa872558f198e06"
+  },
+  {
+    "file": "screenshots/05-http-checks.jpg",
+    "bytes": 118131,
+    "sha256": "b2101c4e49147b8769d43fcf771b6b4954737c0eb86f71a49a53216c8b4b3a0f"
+  },
+  {
+    "file": "server.html",
+    "bytes": 4809,
+    "sha256": "19fafb59a50a63d415bbb8b518cc2704753b39651c417c868e64eba8414bc340"
+  },
+  {
+    "file": "source-manifest.json",
+    "bytes": 13220,
+    "sha256": "3c34294af4a38d5d725b79687886dc01fdda8a91f466e49e1719767dbcbdd0c9"
+  },
+  {
+    "file": "命令结果.csv",
+    "bytes": 935,
+    "sha256": "6cec12e758d991f79d1d37b0778e69549e492666279b4fd50d65aab65caa770a"
+  },
+  {
+    "file": "接口与数据约定.md",
+    "bytes": 33626,
+    "sha256": "624f4d8e4a0c8d61b86bb4ac5a112dc77da69c76c43bb887ac945753b015b305"
+  },
+  {
+    "file": "服务器开发与测试.md",
+    "bytes": 5289,
+    "sha256": "267b7b32789a6b2d26575837bc3bedd143a1e7d89010642b3c2ceb156138bf44"
+  },
+  {
+    "file": "验证记录-B.md",
+    "bytes": 10678,
+    "sha256": "d83ab2de9b2932851086c268b893b53f842ba88f99e6dcd5e06aa6aa0608b6cd"
+  }
+]

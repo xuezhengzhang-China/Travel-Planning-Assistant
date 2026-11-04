@@ -1,0 +1,106 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>命令行原始输出与退出码</title><style>body{margin:0;background:#edf2f7;color:#182b42;font-family:'Microsoft YaHei','Segoe UI',sans-serif;font-size:15px;line-height:1.6}main{max-width:1100px;margin:24px auto;padding:24px 32px;background:white;border-radius:14px}h1{font-size:30px;margin:6px 0 12px}h2{font-size:20px;margin-top:22px}h3{font-size:16px}p{margin:10px 0}.muted{color:#556c82;font-size:13px}nav{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0}a{color:#1467a8;text-decoration:none}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#f1f8f6;border:1px solid #cfe6de;border-radius:10px;padding:16px}.number{font-size:30px;font-weight:700;color:#137c58}.note{padding:13px 17px;background:#fff7e8;border-left:4px solid #c78418;border-radius:4px}.pass{color:#08724c;font-weight:650}table{border-collapse:collapse;width:100%;font-size:13px;margin:12px 0}td,th{text-align:left;border-bottom:1px solid #dce5ee;padding:8px 10px;vertical-align:top}th{background:#eef4fa}pre{background:#f6f8fb;border:1px solid #dbe4ee;padding:15px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 Consolas,'Microsoft YaHei',monospace;border-radius:6px}details{margin:12px 0}summary{cursor:pointer;color:#1467a8}.reply{border-left:4px solid #168b66;background:#eef9f4;padding:16px 20px;font-size:17px}.pill{display:inline-block;padding:3px 10px;border-radius:20px;background:#e8f6ef;color:#08724c;font-size:13px}footer{border-top:1px solid #dce5ee;padding-top:15px;margin-top:26px;color:#556c82;font-size:12px}code{background:#eef2f7;padding:1px 4px}ul{padding-left:24px}@media(max-width:800px){main{margin:0;padding:20px}.cards{grid-template-columns:repeat(2,1fr)}}</style><main><div class="muted">Travel Planning Assistant · B · 2026-11-02 · 实际执行证据</div><h1>命令行原始输出与退出码</h1><nav><a href="index.html">验收总览</a><a href="model.html">真实 prompt / 回复</a><a href="pipeline.html">B 模型落库链路</a><a href="coverage.html">79 场景</a><a href="cli.html">命令输出</a><a href="server.html">服务器 Docker</a></nav><table><thead><tr><th>执行命令</th><th>退出码</th><th>耗时 ms</th></tr></thead><tbody><tr><td>node --version</td><td>0</td><td>53</td></tr><tr><td>npm --version</td><td>0</td><td>237</td></tr><tr><td>npm run lint</td><td>0</td><td>6176</td></tr><tr><td>npm run typecheck</td><td>0</td><td>4334</td></tr><tr><td>npm run build</td><td>0</td><td>4567</td></tr><tr><td>npm run test</td><td>0</td><td>4842</td></tr><tr><td>npm run db:migrate:status</td><td>0</td><td>1295</td></tr><tr><td>npm run test:integration:b</td><td>0</td><td>6974</td></tr><tr><td>$env:B_ACCEPTANCE_OUTPUT=&#x27;F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full&#x27;; $env:B_ACCEPT_REAL_LLM=&#x27;true&#x27;; node apps/api/scripts/acceptance/full-b.cjs</td><td>0</td><td>37183</td></tr><tr><td>npm run format:check</td><td>0</td><td>1832</td></tr><tr><td>git -c core.autocrlf=false diff --check</td><td>0</td><td>104</td></tr><tr><td>node apps/api/scripts/acceptance/http-smoke.cjs http://127.0.0.1:3031/api &quot;F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full\http-results.json&quot;</td><td>0</td><td>1187</td></tr></tbody></table><h2>快速测试原始输出</h2><p><a href="06-fast-tests.txt">06-fast-tests.txt</a>（42/42；以下是实际命令日志）</p><pre>COMMAND: npm run test
+START UTC: 2026-11-02T08:35:51.534Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+&gt; travel-planner-v2@0.1.0 test
+&gt; npm run build --workspace=@travel/api &amp;&amp; npm run test --workspace=@travel/api
+
+
+&gt; @travel/api@0.1.0 build
+&gt; tsc -p tsconfig.build.json
+
+
+&gt; @travel/api@0.1.0 test
+&gt; node --test tests/*.test.cjs
+
+✔ 120 selections across 30 days obey every pace, conserve selections and leave input unchanged (173.396ms)
+✔ all paces fit an exact end-of-day visit and reject a one-minute overflow (0.4834ms)
+✔ total generation deadline prevents saving a calculation completed too late (41.2114ms)
+✔ candidate planning reuses directed route lookups without treating reverse routes as identical (1.0949ms)
+✔ default production identity provider rejects all six endpoints including self-declared headers (286.0872ms)
+✔ HTTP B endpoints honor contracts with test-only verified identity and repository/external doubles (57.5043ms)
+✔ configuration has explicit defaults and trims CORS origins (1.4784ms)
+✔ missing or invalid database URL is rejected without echoing credentials (0.6265ms)
+✔ invalid numeric configuration and CORS origins are rejected (0.632ms)
+✔ query forwards SQL parameters separately from SQL text (2.0078ms)
+✔ transaction uses one connection, commits and releases it (0.4863ms)
+✔ transaction rolls back and preserves the original failure (0.6971ms)
+✔ failed rollback discards the connection and preserves the business error (0.3324ms)
+✔ readiness failure returns false; module shutdown ends the pool (0.2963ms)
+✔ HTTP health endpoints use injected database service and report unavailable as 503 (287.95ms)
+✔ walking/driving/transit select v5 endpoints and explicitly request duration cost (3.9011ms)
+✔ public transit preview derives both cities and avoids silently guessing city codes (1.306ms)
+✔ business errors, missing/invalid duration, empty paths and malformed JSON never become zero-minute routes (2.3778ms)
+✔ no-key short walking estimates are explicit; driving, transit and far walking fail closed (1.7429ms)
+✔ reverse lookup maps district to platform city, unknown city stays null, empty city arrays are tolerated (0.9778ms)
+✔ GPS conversion calls actual conversion semantics and validates output coordinates (1.5559ms)
+✔ B config validates timeouts, caps and TTL without requiring optional API keys (0.3345ms)
+✔ disabled model makes no network request and invalid model settings fail early (1.8274ms)
+✔ model orders must be exact permutations; fabricated/duplicate/unknown content is rejected (0.7603ms)
+✔ model failures, refusals, truncation, malformed JSON and invented places return safe rule fallback (2.0222ms)
+✔ local HTTP model adapter sends strict schema, validates completion and enforces real fetch timeout (77.1061ms)
+✔ model suggestion is re-planned and adopted only when it improves a valid schedule (2.6616ms)
+✔ bad model candidate route cannot destroy the already computed baseline proposal (0.7531ms)
+✔ uninitialized database shows pending migrations using only a read query (5.7674ms)
+✔ status identifies applied migrations and missing local files without modifying the database (1.5049ms)
+✔ place service validates filters, pagination, city and detail IDs (3.327ms)
+✔ integration runner rejects development and malformed database targets (0.3224ms)
+✔ calendar dates include both ends, leap days, year boundaries and enforce 1-30 days (2.0485ms)
+✔ planning rejects duplicate/empty/too many selections, enums and unknown fields (1.0605ms)
+✔ rule planner is deterministic and every selection is assigned or reported exactly once (1.2546ms)
+✔ long unplaceable item does not block later places, empty days remain present (0.3476ms)
+✔ daily count, exact budget, rest and transport are enforced for each pace (0.7154ms)
+✔ schedule validator rejects overlap, fabricated IDs, duplicate and incomplete schedules (0.5118ms)
+✔ service saves normalized immutable owned proposals with fixed time and expiry boundary (1.8344ms)
+✔ unknown/cross-city places are rejected before saving or routing (0.5314ms)
+✔ route budget exhaustion cannot fake driving estimates or persist an incomplete calculation (0.5202ms)
+✔ no-key demo can separate distant stops into different days without inventing travel time (1.5442ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1566.7776
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:35:56.375Z
+</pre><h2>真实数据库集成原始输出</h2><p>Node tests=8 包含 1 个父测试与 7 个业务子场景。</p><pre>COMMAND: npm run test:integration:b
+START UTC: 2026-11-02T08:35:57.671Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+&gt; travel-planner-v2@0.1.0 test:integration:b
+&gt; npm run build --workspace=@travel/api &amp;&amp; npm run test:integration:b --workspace=@travel/api
+
+
+&gt; @travel/api@0.1.0 build
+&gt; tsc -p tsconfig.build.json
+
+
+&gt; @travel/api@0.1.0 test:integration:b
+&gt; node scripts/test-integration-b.cjs
+
+▶ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership
+  ✔ upgrade an original-schema database via forward migrations (1160.3888ms)
+  ✔ seed twice without duplicates and keep user creation separate (339.5418ms)
+  ✔ real directory filtering and stable ranking happen before pagination (285.9812ms)
+  ✔ authenticated HTTP proposal generation persists without touching formal trips (118.0832ms)
+  ✔ new app/pool reads saved proposals; cross-user reads return 404 (332.8276ms)
+  ✔ no-key HTTP generation uses real B geo fallback and persists a two-day demo (220.589ms)
+  ✔ database constraints enforce real foreign keys and owner deletion cascades (41.1194ms)
+✔ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership (2944.738ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3756.4036
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:36:04.645Z
+</pre><footer>本页由实际日志与 JSON 生成。截图为该报告在浏览器中的真实截图；命令行原文另存 .txt。身份为测试专用注入；高德正式服务与 A/C/D 联合流程未计为通过。</footer></main></html>

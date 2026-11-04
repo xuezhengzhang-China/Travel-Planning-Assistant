@@ -1,0 +1,34 @@
+[
+  {
+    "caseId": "LLM-REAL-PROMPT",
+    "kind": "real open-source inference, standalone model connectivity",
+    "request": {
+      "prompt": "请用中文写三句话，介绍杭州西湖一日游的建议，不要编造票价或开放时间。",
+      "model": "qwen2.5:0.5b"
+    },
+    "httpStatus": 200,
+    "elapsedMs": 7569,
+    "response": {
+      "id": "chatcmpl-401",
+      "object": "chat.completion",
+      "created": 1793608127,
+      "model": "qwen2.5:0.5b",
+      "system_fingerprint": "fp_ollama",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "1. 杭州西湖是著名的旅游胜地，位于浙江省杭州市，以其美丽的自然风光和丰富的历史文化而闻名。如果你喜欢自然美景，那么西湖是一个不错的选择。\n2. 从杭州出发，乘坐地铁或者公交前往西湖区，大约需要30分钟即可到达。如果选择自驾，可以提前规划路线并避开高峰时段，以确保行程的顺畅。\n3. 杭州西湖四季如春，夏季气温适宜，适合进行户外活动；秋季景色宜人，是观赏红叶的好时节；冬季则有雪景可赏。如果你喜欢静谧的环境，那么西湖是一个理想的去处。\n\n以上就是杭州西湖一日游的建议，希望对你有所帮助。"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 52,
+        "completion_tokens": 146,
+        "total_tokens": 198
+      }
+    }
+  }
+]

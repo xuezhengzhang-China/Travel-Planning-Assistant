@@ -1,0 +1,69 @@
+COMMAND: npm run test
+START UTC: 2026-11-02T08:35:51.534Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+> travel-planner-v2@0.1.0 test
+> npm run build --workspace=@travel/api && npm run test --workspace=@travel/api
+
+
+> @travel/api@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @travel/api@0.1.0 test
+> node --test tests/*.test.cjs
+
+✔ 120 selections across 30 days obey every pace, conserve selections and leave input unchanged (173.396ms)
+✔ all paces fit an exact end-of-day visit and reject a one-minute overflow (0.4834ms)
+✔ total generation deadline prevents saving a calculation completed too late (41.2114ms)
+✔ candidate planning reuses directed route lookups without treating reverse routes as identical (1.0949ms)
+✔ default production identity provider rejects all six endpoints including self-declared headers (286.0872ms)
+✔ HTTP B endpoints honor contracts with test-only verified identity and repository/external doubles (57.5043ms)
+✔ configuration has explicit defaults and trims CORS origins (1.4784ms)
+✔ missing or invalid database URL is rejected without echoing credentials (0.6265ms)
+✔ invalid numeric configuration and CORS origins are rejected (0.632ms)
+✔ query forwards SQL parameters separately from SQL text (2.0078ms)
+✔ transaction uses one connection, commits and releases it (0.4863ms)
+✔ transaction rolls back and preserves the original failure (0.6971ms)
+✔ failed rollback discards the connection and preserves the business error (0.3324ms)
+✔ readiness failure returns false; module shutdown ends the pool (0.2963ms)
+✔ HTTP health endpoints use injected database service and report unavailable as 503 (287.95ms)
+✔ walking/driving/transit select v5 endpoints and explicitly request duration cost (3.9011ms)
+✔ public transit preview derives both cities and avoids silently guessing city codes (1.306ms)
+✔ business errors, missing/invalid duration, empty paths and malformed JSON never become zero-minute routes (2.3778ms)
+✔ no-key short walking estimates are explicit; driving, transit and far walking fail closed (1.7429ms)
+✔ reverse lookup maps district to platform city, unknown city stays null, empty city arrays are tolerated (0.9778ms)
+✔ GPS conversion calls actual conversion semantics and validates output coordinates (1.5559ms)
+✔ B config validates timeouts, caps and TTL without requiring optional API keys (0.3345ms)
+✔ disabled model makes no network request and invalid model settings fail early (1.8274ms)
+✔ model orders must be exact permutations; fabricated/duplicate/unknown content is rejected (0.7603ms)
+✔ model failures, refusals, truncation, malformed JSON and invented places return safe rule fallback (2.0222ms)
+✔ local HTTP model adapter sends strict schema, validates completion and enforces real fetch timeout (77.1061ms)
+✔ model suggestion is re-planned and adopted only when it improves a valid schedule (2.6616ms)
+✔ bad model candidate route cannot destroy the already computed baseline proposal (0.7531ms)
+✔ uninitialized database shows pending migrations using only a read query (5.7674ms)
+✔ status identifies applied migrations and missing local files without modifying the database (1.5049ms)
+✔ place service validates filters, pagination, city and detail IDs (3.327ms)
+✔ integration runner rejects development and malformed database targets (0.3224ms)
+✔ calendar dates include both ends, leap days, year boundaries and enforce 1-30 days (2.0485ms)
+✔ planning rejects duplicate/empty/too many selections, enums and unknown fields (1.0605ms)
+✔ rule planner is deterministic and every selection is assigned or reported exactly once (1.2546ms)
+✔ long unplaceable item does not block later places, empty days remain present (0.3476ms)
+✔ daily count, exact budget, rest and transport are enforced for each pace (0.7154ms)
+✔ schedule validator rejects overlap, fabricated IDs, duplicate and incomplete schedules (0.5118ms)
+✔ service saves normalized immutable owned proposals with fixed time and expiry boundary (1.8344ms)
+✔ unknown/cross-city places are rejected before saving or routing (0.5314ms)
+✔ route budget exhaustion cannot fake driving estimates or persist an incomplete calculation (0.5202ms)
+✔ no-key demo can separate distant stops into different days without inventing travel time (1.5442ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1566.7776
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:35:56.375Z

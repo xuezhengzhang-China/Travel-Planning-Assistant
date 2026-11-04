@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>运行中 API · 14 项 HTTP 检查 · B 验收证据</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f3f6f9;
+        color: #172b3a;
+        font-family: 'Microsoft YaHei', system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 1180px;
+        margin: 24px auto;
+        padding: 0 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+      h1 {
+        font-size: 27px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 22px 0 10px;
+      }
+      .muted {
+        color: #5b7080;
+        font-size: 12px;
+      }
+      .badge {
+        background: #d7f2e4;
+        color: #106b40;
+        border: 1px solid #b4e0c9;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 20px 0;
+      }
+      .card,
+      section {
+        background: white;
+        border: 1px solid #dfe7ec;
+        border-radius: 10px;
+        padding: 17px;
+      }
+      .metric {
+        font-size: 29px;
+        color: #117347;
+        font-weight: 750;
+      }
+      nav {
+        margin: 14px 0;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      a {
+        color: #155eb0;
+        text-decoration: none;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+      td,
+      th {
+        text-align: left;
+        border-bottom: 1px solid #e5ebef;
+        padding: 7px 10px;
+        font-size: 12px;
+        vertical-align: top;
+      }
+      th {
+        background: #edf3f7;
+      }
+      code {
+        font-size: 12px;
+      }
+      pre {
+        background: #132631;
+        color: #e4eef3;
+        padding: 18px;
+        border-radius: 8px;
+        font:
+          12px/1.48 Consolas,
+          'Microsoft YaHei',
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .note {
+        border-left: 4px solid #bd8423;
+        background: #fff8e8;
+        padding: 12px 16px;
+        margin: 18px 0;
+      }
+      .ok {
+        color: #117347;
+        font-weight: 700;
+      }
+      .small {
+        font-size: 12px;
+      }
+      footer {
+        margin-top: 18px;
+        color: #617383;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>运行中 API · 14 项 HTTP 检查</h1>
+          <div class="muted">
+            执行时间 2026年11月2日 15:44:11 — 2026年11月2日 15:44:37 · Asia/Shanghai
+          </div>
+        </div>
+        <span class="badge">B 当前交付范围通过</span>
+      </header>
+      <nav>
+        <a href="index.html">验收总览</a><a href="fast-tests.html">快速测试</a
+        ><a href="integration.html">远程数据库</a><a href="server.html">服务器 Docker</a
+        ><a href="http.html">实际 HTTP 检查</a>
+      </nav>
+      <section>
+        <p>
+          真实运行地址：<code>http://127.0.0.1:3031/api</code>。由独立验收进程启动，完成后自动停止；未使用真实登录
+          token。
+        </p>
+        <table>
+          <tr>
+            <th>#</th>
+            <th>检查</th>
+            <th>请求</th>
+            <th>预期</th>
+            <th>实际</th>
+            <th>结果</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>E01 API health</td>
+            <td><code>GET /api/health</code></td>
+            <td>200</td>
+            <td>200</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>E02 remote database ready</td>
+            <td><code>GET /api/ready</code></td>
+            <td>200</td>
+            <td>200</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>A01 reject anonymous</td>
+            <td><code>GET /api/destinations</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>A01 reject anonymous</td>
+            <td><code>GET /api/places</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>A01 reject anonymous</td>
+            <td><code>GET /api/places/30000000-0000-4000-8000-000000000001</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>A01 reject anonymous</td>
+            <td><code>POST /api/routes/preview</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>A01 reject anonymous</td>
+            <td><code>POST /api/locations/reverse</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>A01 reject anonymous</td>
+            <td><code>POST /api/recommendations/itinerary</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>A02 reject forged token</td>
+            <td><code>GET /api/destinations</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>A02 reject forged token</td>
+            <td><code>GET /api/places</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td>A02 reject forged token</td>
+            <td><code>GET /api/places/30000000-0000-4000-8000-000000000001</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td>A02 reject forged token</td>
+            <td><code>POST /api/routes/preview</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td>A02 reject forged token</td>
+            <td><code>POST /api/locations/reverse</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td>A02 reject forged token</td>
+            <td><code>POST /api/recommendations/itinerary</code></td>
+            <td>401</td>
+            <td>401</td>
+            <td class="ok">PASS</td>
+          </tr>
+        </table>
+        <p>
+          <a href="http-results.json">请求与完整响应 JSON</a> ·
+          <a href="11-http-smoke.txt">命令输出</a>
+        </p>
+        <pre>
+[
+  {
+    &quot;url&quot;: &quot;http://127.0.0.1:3031/api/health&quot;,
+    &quot;status&quot;: 200,
+    &quot;body&quot;: {
+      &quot;status&quot;: &quot;ok&quot;,
+      &quot;service&quot;: &quot;travel-planner-api&quot;
+    }
+  },
+  {
+    &quot;url&quot;: &quot;http://127.0.0.1:3031/api/ready&quot;,
+    &quot;status&quot;: 200,
+    &quot;body&quot;: {
+      &quot;status&quot;: &quot;ready&quot;,
+      &quot;database&quot;: &quot;ok&quot;
+    }
+  }
+]</pre>
+      </section>
+      <footer>
+        证据来自实际执行输出。基线 2df4883 + 工作区改动；source-manifest.json
+        记录源码哈希。截图为报告/日志查看界面。
+      </footer>
+    </main>
+  </body>
+</html>

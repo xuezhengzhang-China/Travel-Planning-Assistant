@@ -1,0 +1,87 @@
+COMMAND: $env:B_ACCEPTANCE_OUTPUT='F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full'; $env:B_ACCEPT_REAL_LLM='true'; node apps/api/scripts/acceptance/full-b.cjs
+START UTC: 2026-11-02T08:36:04.645Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+PASS SEED-ATOMIC: seed preserves curated places and rolls back all changes on an insert/update error
+PASS AUTH-1-anonymous: /destinations: anonymous rejected
+PASS AUTH-1-forged: /destinations: forged rejected
+PASS AUTH-2-anonymous: /places?cityId=20000000-0000-4000-8000-000000000002: anonymous rejected
+PASS AUTH-2-forged: /places?cityId=20000000-0000-4000-8000-000000000002: forged rejected
+PASS AUTH-3-anonymous: /places/30000000-0000-4000-8000-000000000001: anonymous rejected
+PASS AUTH-3-forged: /places/30000000-0000-4000-8000-000000000001: forged rejected
+PASS AUTH-4-anonymous: /routes/preview: anonymous rejected
+PASS AUTH-4-forged: /routes/preview: forged rejected
+PASS AUTH-5-anonymous: /locations/reverse: anonymous rejected
+PASS AUTH-5-forged: /locations/reverse: forged rejected
+PASS AUTH-6-anonymous: /recommendations/itinerary: anonymous rejected
+PASS AUTH-6-forged: /recommendations/itinerary: forged rejected
+PASS CAT-01: province/city/parent/keyword filters and empty page total
+PASS CAT-02: SQL filtering/ranking before pagination, stable tie and literal search
+PASS CAT-03: complete detail and 404 for unknown place
+PASS VALID-Q-1: invalid query: /destinations?level=district
+PASS VALID-Q-2: invalid query: /destinations?parentId=x
+PASS VALID-Q-3: invalid query: /destinations?keyword=
+PASS VALID-Q-4: invalid query: /destinations?page=0
+PASS VALID-Q-5: invalid query: /destinations?page=-1
+PASS VALID-Q-6: invalid query: /destinations?page=1.5
+PASS VALID-Q-7: invalid query: /destinations?page=100001
+PASS VALID-Q-8: invalid query: /destinations?pageSize=101
+PASS VALID-Q-9: invalid query: /destinations?page=1&page=2
+PASS VALID-Q-10: invalid query: /destinations?ownerId=spoof
+PASS VALID-Q-11: invalid query: /places
+PASS VALID-Q-12: invalid query: /places?cityId=bad
+PASS VALID-Q-13: invalid query: /places?cityId=20000000-0000-4000-8000-000000000001
+PASS VALID-Q-14: invalid query: /places?cityId=efcaf365-3dd4-4c81-8458-05c550d4f18e
+PASS VALID-Q-15: invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&category=unknown
+PASS VALID-Q-16: invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&themes=unknown
+PASS VALID-Q-17: invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&themes=nature,,art
+PASS VALID-Q-18: invalid query: /places?cityId=20000000-0000-4000-8000-000000000002&pageSize=0
+PASS VALID-Q-19: invalid query: /places/not-a-uuid
+PASS MAP-walking: walking: real adapter HTTP seconds rounded upward
+PASS MAP-driving: driving: real adapter HTTP seconds rounded upward
+PASS MAP-transit: transit: real adapter HTTP seconds rounded upward
+PASS MAP-REVERSE: district maps exactly to platform city; city-name array accepted
+PASS MAP-UNKNOWN-CITY: unmapped district never guessed from prefix
+PASS MAP-GPS: internal GPS conversion consumes provider response
+PASS MAP-FAIL-http: http: walking estimate, driving/transit 503
+PASS MAP-FAIL-business: business: walking estimate, driving/transit 503
+PASS MAP-FAIL-json: json: walking estimate, driving/transit 503
+PASS MAP-FAIL-duration: duration: walking estimate, driving/transit 503
+PASS MAP-FAIL-slow: slow: walking estimate, driving/transit 503
+PASS VALID-XY-1: invalid coordinate rejected before provider call
+PASS VALID-XY-2: invalid coordinate rejected before provider call
+PASS VALID-XY-3: invalid coordinate rejected before provider call
+PASS VALID-XY-4: invalid coordinate rejected before provider call
+PASS VALID-XY-5: invalid coordinate rejected before provider call
+PASS VALID-XY-6: invalid coordinate rejected before provider call
+PASS VALID-XY-7: invalid coordinate rejected before provider call
+PASS VALID-MAP: unknown transport and client-supplied city code rejected
+PASS VALID-PLAN-1: invalid planning input startDate never calls map or inserts
+PASS VALID-PLAN-2: invalid planning input endDate never calls map or inserts
+PASS VALID-PLAN-3: invalid planning input endDate never calls map or inserts
+PASS VALID-PLAN-4: invalid planning input themes never calls map or inserts
+PASS VALID-PLAN-5: invalid planning input themes never calls map or inserts
+PASS VALID-PLAN-6: invalid planning input themes never calls map or inserts
+PASS VALID-PLAN-7: invalid planning input pace never calls map or inserts
+PASS VALID-PLAN-8: invalid planning input transportMode never calls map or inserts
+PASS VALID-PLAN-9: invalid planning input selectedPlaceIds never calls map or inserts
+PASS VALID-PLAN-10: invalid planning input selectedPlaceIds never calls map or inserts
+PASS VALID-PLAN-11: invalid planning input selectedPlaceIds never calls map or inserts
+PASS VALID-PLAN-12: invalid planning input selectedPlaceIds never calls map or inserts
+PASS VALID-PLAN-13: invalid planning input cityId never calls map or inserts
+PASS VALID-PLAN-14: invalid planning input ownerId never calls map or inserts
+PASS VALID-PLAN-15: invalid planning input prompt never calls map or inserts
+PASS VALID-CROSS-CITY: real SQL cross-city selection rejected without inserting
+PASS PLAN-OWNERSHIP: two identities, normalized snapshot, expiry and no formal trip writes
+PASS PLAN-RESTART: restart API/pool and read identical owned persisted proposal
+PASS PLAN-OVERFLOW: one-day relaxed pace returns explicit unassigned IDs
+PASS PLAN-NO-KEY: no map key: short estimate, distant separate day, required unknown route 503
+PASS PLAN-DB-FAIL: database insertion failure returns sanitized 500 and no partial proposal
+PASS PLAN-120: real SQL/HTTP accepts 120 selections across 30 days with bounded route calls
+PASS LLM-REAL-PROMPT: open-source model returns a real Chinese travel answer
+PASS LLM-REAL-B: real B model prompt/completion validated and proposal persisted
+PASS LLM-REAL-NO-KEY: real model plus real no-key B fallback generates and persists the demo without map fixtures
+{"passed":79,"failed":0,"blocked":0}
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:36:41.828Z

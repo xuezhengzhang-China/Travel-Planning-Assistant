@@ -1,0 +1,8 @@
+COMMAND: node --version
+START UTC: 2026-11-02T07:44:11.368Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+v24.21.0
+
+EXIT CODE: 0
+END UTC: 2026-11-02T07:44:11.418Z

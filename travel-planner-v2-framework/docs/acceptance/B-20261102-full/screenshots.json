@@ -1,0 +1,62 @@
+[
+  {
+    "file": "screenshots/01-summary.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/index.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 1059,
+    "sha256": "305b465537a275ec2b3d7abe2f0cb43513b582eae9331beb552b99030e78fb0c",
+    "savedAtUtc": "2026-11-02T08:40:46.658079+00:00"
+  },
+  {
+    "file": "screenshots/02-real-prompt.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/model.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 917,
+    "sha256": "0e91601e69ebe526a54081fa02355f028cebca1cef3b08792000f11afbb6bf27",
+    "savedAtUtc": "2026-11-02T08:40:47.957334+00:00"
+  },
+  {
+    "file": "screenshots/03-model-pipeline.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/pipeline.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 1495,
+    "sha256": "e18f08a0eb00eec7d0b49393d3fb1405f46a385fea8b35d2bc427cfaff006cf5",
+    "savedAtUtc": "2026-11-02T08:41:01.915352+00:00"
+  },
+  {
+    "file": "screenshots/04-full-coverage.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/coverage.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 3468,
+    "sha256": "114f3e84a1eaaa6f8cfdc22645a02e25769a8f9320f3485ca4c28847674d5e3c",
+    "savedAtUtc": "2026-11-02T08:41:03.421590+00:00"
+  },
+  {
+    "file": "screenshots/05-command-outputs.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/cli.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 3304,
+    "sha256": "10e6927703bc056430b77fea4d0fce6334ab2ea8f9ca2965f688eb3ed198c4d3",
+    "savedAtUtc": "2026-11-02T08:41:15.776833+00:00"
+  },
+  {
+    "file": "screenshots/06-server-docker.jpg",
+    "sourceUrl": "http://127.0.0.1:8766/server.html",
+    "capture": "real IAB browser screenshot of report generated from captured logs; not a native terminal or business UI",
+    "mimeType": "image/jpeg",
+    "width": 1265,
+    "height": 1597,
+    "sha256": "9c337fef6c03121808dd4677b074248ba65224e1910ddf344be5885abce89e4a",
+    "savedAtUtc": "2026-11-02T08:41:16.057034+00:00"
+  }
+]
