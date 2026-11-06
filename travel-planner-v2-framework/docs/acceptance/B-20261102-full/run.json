@@ -1,0 +1,139 @@
+{
+  "startedAt": "2026-11-02T08:35:36.166Z",
+  "finishedAt": "2026-11-02T08:36:45.160Z",
+  "timeZone": "Asia/Shanghai",
+  "projectRoot": "F:\\TPA\\Travel-Planning-Assistant\\travel-planner-v2-framework",
+  "baseRevision": "2df4883df9d2641fb73f7481b7066c38130592c5",
+  "workingTreeChangesIncluded": true,
+  "commandGroups": 12,
+  "passed": 12,
+  "failed": 0,
+  "results": [
+    {
+      "id": "01-node",
+      "title": "Node version",
+      "command": "node --version",
+      "log": "01-node.txt",
+      "startedAt": "2026-11-02T08:35:36.167Z",
+      "elapsedMs": 53,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "02-npm",
+      "title": "npm version",
+      "command": "npm --version",
+      "log": "02-npm.txt",
+      "startedAt": "2026-11-02T08:35:36.220Z",
+      "elapsedMs": 237,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "03-lint",
+      "title": "lint",
+      "command": "npm run lint",
+      "log": "03-lint.txt",
+      "startedAt": "2026-11-02T08:35:36.457Z",
+      "elapsedMs": 6176,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "04-typecheck",
+      "title": "typecheck",
+      "command": "npm run typecheck",
+      "log": "04-typecheck.txt",
+      "startedAt": "2026-11-02T08:35:42.633Z",
+      "elapsedMs": 4334,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "05-build",
+      "title": "build",
+      "command": "npm run build",
+      "log": "05-build.txt",
+      "startedAt": "2026-11-02T08:35:46.967Z",
+      "elapsedMs": 4567,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "06-fast-tests",
+      "title": "test",
+      "command": "npm run test",
+      "log": "06-fast-tests.txt",
+      "startedAt": "2026-11-02T08:35:51.534Z",
+      "elapsedMs": 4842,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "07-migrations",
+      "title": "db:migrate:status",
+      "command": "npm run db:migrate:status",
+      "log": "07-migrations.txt",
+      "startedAt": "2026-11-02T08:35:56.376Z",
+      "elapsedMs": 1295,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "08-integration",
+      "title": "test:integration:b",
+      "command": "npm run test:integration:b",
+      "log": "08-integration.txt",
+      "startedAt": "2026-11-02T08:35:57.671Z",
+      "elapsedMs": 6974,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "08b-full-b",
+      "title": "Complete B HTTP/database acceptance and optional real model",
+      "command": "$env:B_ACCEPTANCE_OUTPUT='F:\\TPA\\Travel-Planning-Assistant\\travel-planner-v2-framework\\docs\\acceptance\\B-20261102-full'; $env:B_ACCEPT_REAL_LLM='true'; node apps/api/scripts/acceptance/full-b.cjs",
+      "log": "08b-full-b.txt",
+      "startedAt": "2026-11-02T08:36:04.645Z",
+      "elapsedMs": 37183,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "09-format",
+      "title": "format:check",
+      "command": "npm run format:check",
+      "log": "09-format.txt",
+      "startedAt": "2026-11-02T08:36:41.828Z",
+      "elapsedMs": 1832,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "10-diff-check",
+      "title": "Git whitespace check",
+      "command": "git -c core.autocrlf=false diff --check",
+      "log": "10-diff-check.txt",
+      "startedAt": "2026-11-02T08:36:43.660Z",
+      "elapsedMs": 104,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "11-http-smoke",
+      "title": "Live HTTP health/readiness/authentication",
+      "command": "node apps/api/scripts/acceptance/http-smoke.cjs http://127.0.0.1:3031/api \"F:\\TPA\\Travel-Planning-Assistant\\travel-planner-v2-framework\\docs\\acceptance\\B-20261102-full\\http-results.json\"",
+      "log": "11-http-smoke.txt",
+      "startedAt": "2026-11-02T08:36:43.770Z",
+      "elapsedMs": 1187,
+      "exitCode": 0,
+      "signal": null
+    }
+  ],
+  "pending": [
+    "C real registration/login and B authenticator integration",
+    "A/C formal trip confirmation and pages",
+    "D map/journal integration",
+    "Real AMap provider verification; controlled HTTP adapter tests do not certify AMap permissions/data"
+  ]
+}

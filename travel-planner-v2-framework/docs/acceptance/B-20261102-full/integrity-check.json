@@ -1,0 +1,18 @@
+{
+  "checkedAtUtc": "2026-11-02T08:42:26.577906+00:00",
+  "sourceFilesChecked": 101,
+  "sourceMismatches": [],
+  "screenshotsVerified": 6,
+  "environmentFilesOrDependenciesInBundle": [],
+  "actualDatabasePasswordMatchesInTextArtifacts": [],
+  "credentialCheck": "actual database password values read only in memory from ignored .env; values are not included in this report",
+  "results": "12 command groups / 42 quick tests / 7 PostgreSQL business subcases / 79 extended cases / 14 production HTTP checks passed",
+  "realModelCalls": 3,
+  "unverified": [
+    "Real AMap service/account permissions/actual route and address data",
+    "C production login and authenticator",
+    "A/C formal trip confirmation",
+    "D pages and visits"
+  ],
+  "manifestRule": "artifact-manifest.json lists all other bundle files; its own integrity is covered by the external zip SHA-256"
+}

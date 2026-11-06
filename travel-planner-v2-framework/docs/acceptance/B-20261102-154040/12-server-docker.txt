@@ -1,0 +1,42 @@
+COMMAND: date -Iseconds
+2026-11-02T15:44:35+08:00
+
+COMMAND: docker server version
+29.1.3
+
+COMMAND: docker compose version
+2.40.3+ds1-0ubuntu1
+
+COMMAND: docker ps --filter label=com.docker.compose.project=tpa-b-db
+NAMES                 IMAGE                                                  STATUS                    PORTS
+tpa-b-db-postgres-1   mirror.ccs.tencentyun.com/library/postgres:17-alpine   Up 49 minutes (healthy)   127.0.0.1:55432->5432/tcp
+
+COMMAND: docker inspect --format Health.Status tpa-b-db-postgres-1
+healthy
+
+COMMAND: PostgreSQL version and development directory counts
+ server_version 
+----------------
+ 17.11
+(1 row)
+
+ destinations 
+--------------
+            2
+(1 row)
+
+ places 
+--------
+      3
+(1 row)
+
+
+COMMAND: list development and dedicated test databases
+        datname        
+-----------------------
+ travel_planner
+ travel_planner_b_test
+(2 rows)
+
+
+REMOTE AUDIT EXIT: 0

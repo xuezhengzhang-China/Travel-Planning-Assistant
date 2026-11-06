@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "node-pg-migrate up -m migrations --envPath ../../.env",
     "db:migrate:status": "node scripts/migration-status.cjs",
-    "db:migration:new": "node-pg-migrate create -m migrations --envPath ../../.env"
+    "db:migration:new": "node-pg-migrate create -m migrations --envPath ../../.env",
+    "db:seed:b": "node scripts/seed-b.cjs --development",
+    "test:integration:b": "node scripts/test-integration-b.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.27",

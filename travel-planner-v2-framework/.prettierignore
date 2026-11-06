@@ -2,3 +2,5 @@ node_modules
 **/dist
 coverage
 package-lock.json
+# Immutable command outputs, raw provider replies and checksummed acceptance evidence.
+docs/acceptance/

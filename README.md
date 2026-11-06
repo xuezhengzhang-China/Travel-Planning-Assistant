@@ -1,4 +1,1 @@
 # Travel-Planning-Assistant
-
-
-

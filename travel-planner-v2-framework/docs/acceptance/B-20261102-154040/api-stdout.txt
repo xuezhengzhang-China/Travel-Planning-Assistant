@@ -1,0 +1,17 @@
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [NestFactory] Starting Nest application...
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [InstanceLoader] AppModule dependencies initialized +14ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [InstanceLoader] DatabaseModule dependencies initialized +1ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [InstanceLoader] HealthModule dependencies initialized +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [InstanceLoader] BModule dependencies initialized +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RoutesResolver] HealthController {/api}: +4ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/health, GET} route +3ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/ready, GET} route +1ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RoutesResolver] BController {/api}: +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/destinations, GET} route +1ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/places, GET} route +1ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/places/:id, GET} route +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/routes/preview, POST} route +1ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/locations/reverse, POST} route +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [RouterExplorer] Mapped {/api/recommendations/itinerary, POST} route +0ms
+[Nest] 38860  - 2026/11/02 15:44:37     LOG [NestApplication] Nest application successfully started +3ms

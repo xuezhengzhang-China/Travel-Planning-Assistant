@@ -1,0 +1,13 @@
+﻿编号,命令,退出码,耗时毫秒,原始日志
+01-node,node --version,0,53,01-node.txt
+02-npm,npm --version,0,237,02-npm.txt
+03-lint,npm run lint,0,6176,03-lint.txt
+04-typecheck,npm run typecheck,0,4334,04-typecheck.txt
+05-build,npm run build,0,4567,05-build.txt
+06-fast-tests,npm run test,0,4842,06-fast-tests.txt
+07-migrations,npm run db:migrate:status,0,1295,07-migrations.txt
+08-integration,npm run test:integration:b,0,6974,08-integration.txt
+08b-full-b,$env:B_ACCEPTANCE_OUTPUT='F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full'; $env:B_ACCEPT_REAL_LLM='true'; node apps/api/scripts/acceptance/full-b.cjs,0,37183,08b-full-b.txt
+09-format,npm run format:check,0,1832,09-format.txt
+10-diff-check,git -c core.autocrlf=false diff --check,0,104,10-diff-check.txt
+11-http-smoke,"node apps/api/scripts/acceptance/http-smoke.cjs http://127.0.0.1:3031/api ""F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full\http-results.json""",0,1187,11-http-smoke.txt

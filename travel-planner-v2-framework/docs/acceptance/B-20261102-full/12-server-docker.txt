@@ -1,0 +1,56 @@
+COMMAND: date -Iseconds
+2026-11-02T16:37:26+08:00
+
+COMMAND: docker server version
+29.1.3
+
+COMMAND: docker compose version
+2.40.3+ds1-0ubuntu1
+
+COMMAND: docker ps --filter label=com.docker.compose.project=tpa-b-db
+NAMES                 IMAGE                                                  STATUS                 PORTS
+tpa-b-db-postgres-1   mirror.ccs.tencentyun.com/library/postgres:17-alpine   Up 2 hours (healthy)   127.0.0.1:55432->5432/tcp
+
+COMMAND: docker inspect --format Health.Status tpa-b-db-postgres-1
+healthy
+
+COMMAND: PostgreSQL version and development directory counts
+ server_version 
+----------------
+ 17.11
+(1 row)
+
+ destinations 
+--------------
+            2
+(1 row)
+
+ places 
+--------
+      3
+(1 row)
+
+
+COMMAND: list development and dedicated test databases
+        datname        
+-----------------------
+ travel_planner
+ travel_planner_b_test
+(2 rows)
+
+
+COMMAND: remote model container and resource limits
+NAMES          IMAGE                                            STATUS          PORTS
+tpa-b-ollama   mirror.ccs.tencentyun.com/ollama/ollama:0.13.5   Up 12 minutes   127.0.0.1:11434->11434/tcp
+Status=running MemoryBytes=1782579200 NanoCpus=1500000000 Restart=unless-stopped
+
+COMMAND: model versions and immutable digests
+ollama version is 0.13.5
+{"models":[{"name":"qwen2.5:0.5b","model":"qwen2.5:0.5b","modified_at":"2026-11-02T08:26:35.190821355Z","size":397821319,"digest":"a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67","details":{"parent_model":"","format":"gguf","family":"qwen2","families":["qwen2"],"parameter_size":"494.03M","quantization_level":"Q4_K_M"}}]}
+COMMAND: test schema cleanup audit
+ nspname 
+---------
+(0 rows)
+
+
+REMOTE AUDIT EXIT: 0

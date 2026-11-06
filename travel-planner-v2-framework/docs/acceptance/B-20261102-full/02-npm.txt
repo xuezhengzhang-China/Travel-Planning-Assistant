@@ -1,0 +1,8 @@
+COMMAND: npm --version
+START UTC: 2026-11-02T08:35:36.220Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+11.19.0
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:35:36.456Z

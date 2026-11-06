@@ -1,0 +1,1 @@
+CREATE DATABASE travel_planner_b_test OWNER travel_planner;
