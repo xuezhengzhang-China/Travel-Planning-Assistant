@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => {
     root: appDir,
     envDir,
     plugins: [react()],
+    // 工作区CJS引擎更新后，旧预编译缓存曾导致页面白屏；开发启动时重新生成。
+    optimizeDeps: {
+      include: ['@travel/shared/recommendation-engine'],
+      force: mode === 'development',
+    },
     server: {
       host: '0.0.0.0',
       port: 5173,

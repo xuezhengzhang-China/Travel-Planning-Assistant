@@ -1,35 +1,42 @@
-import type { Theme, TransportMode, TravelWarning } from './places.js';
-export type Pace = 'relaxed' | 'standard' | 'intensive';
-export interface PlanningInput {
-  cityId: string;
+import type { DraftPlanningInput, ScheduleDay, Theme, TripPace } from './trips.js';
+export type PlanningInput = Omit<DraftPlanningInput, 'startDate' | 'endDate'> & {
   startDate: string;
   endDate: string;
-  themes: Theme[];
-  pace: Pace;
-  transportMode: TransportMode;
-  selectedPlaceIds: string[];
+};
+export interface RecommendationWarning {
+  code: string;
+  message: string;
+  placeIds?: string[];
 }
-export interface ScheduleItem {
+export interface RecommendationPlace {
+  id: string;
+  cityId: string;
+  name: string;
+  district: string;
+  categories: Theme[];
+  suggestedDurationMinutes: number;
+  excursion: boolean;
+}
+export interface RankedPlace {
   placeId: string;
-  position: number;
-  startTime: string;
-  durationMinutes: number;
-  travelMinutesFromPrevious: number;
-  travelTimeSource: 'none' | 'provider' | 'estimate';
-  reason: string;
+  score: number;
+  matchedThemes: Theme[];
+  reasons: string[];
 }
-export interface ScheduleDay {
-  date: string;
-  items: ScheduleItem[];
+export interface PlaceRecommendationInput {
+  cityId: string;
+  themes: Theme[];
+  pace: TripPace;
 }
-export type RecommendationWarning = TravelWarning;
-export interface Proposal {
-  proposalId: string;
-  inputSnapshot: PlanningInput;
-  generatedAt: string;
-  expiresAt: string;
+export interface RecommendationPlan {
   days: ScheduleDay[];
   unassignedPlaceIds: string[];
   warnings: RecommendationWarning[];
   source: 'rule' | 'llm-assisted';
+}
+export interface Proposal extends RecommendationPlan {
+  proposalId: string;
+  inputSnapshot: PlanningInput;
+  generatedAt: string;
+  expiresAt: string;
 }

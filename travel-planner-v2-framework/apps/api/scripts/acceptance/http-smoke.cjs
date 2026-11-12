@@ -59,7 +59,7 @@ async function main() {
       await check(
         forged ? 'A02 reject forged token' : 'A01 reject anonymous',
         method,
-        path,
+        '/b' + path,
         401,
         { code: 'UNAUTHENTICATED' },
         forged,

@@ -7,8 +7,8 @@ const { getMigrationStatus } = require('../scripts/migration-status.cjs');
 const directory = resolve(__dirname, '../migrations');
 const name = '202610240001_initial_schema';
 const names = readdirSync(directory)
-  .filter((file) => file.endsWith('.js'))
-  .map((file) => file.slice(0, -3))
+  .filter((file) => /\.(js|cjs|ts|sql)$/.test(file))
+  .map((file) => file.replace(/\.[^.]+$/, ''))
   .sort();
 
 test('uninitialized database shows pending migrations using only a read query', async () => {
@@ -45,10 +45,7 @@ test('status identifies applied migrations and missing local files without modif
     directory,
   );
   assert.deepEqual(rows, [
-    ...names.map((migration) => ({
-      name: migration,
-      status: migration === name ? 'applied' : 'pending',
-    })),
+    ...names.map((file) => ({ name: file, status: file === name ? 'applied' : 'pending' })),
     { name: 'removed_migration', status: 'missing-file' },
   ]);
   assert.ok(queries.every((text) => text.startsWith('SELECT ')));

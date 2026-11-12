@@ -1,5 +1,4 @@
-export type Theme = 'history' | 'nature' | 'landmark' | 'art' | 'family' | 'local';
-export type TransportMode = 'walking' | 'driving' | 'transit';
+import type { RecommendationPlace } from './recommendations.js';
 export interface Coordinates {
   longitude: number;
   latitude: number;
@@ -8,48 +7,22 @@ export interface Coordinates {
 export interface Destination {
   id: string;
   name: string;
+  adcode: string;
   level: 'province' | 'city';
   parentId: string | null;
-  adcode: string;
-  timeZone: string;
 }
-export interface Place {
-  id: string;
-  cityId: string;
-  name: string;
-  categories: Theme[];
+export interface Place extends RecommendationPlace {
   address: string;
-  coordinates: Coordinates;
-  suggestedDurationMinutes: number;
-  description: string;
-  openingHoursText: string | null;
-  source: 'fixture' | 'curated' | 'provider';
-  updatedAt: string;
+  category: string;
+  sourceUrl: string;
+  verifiedAt: string;
+  source: 'curated';
+  coordinates: Coordinates | null;
+  openingHours: string | null;
 }
-export interface Page<T> {
+export interface PageResult<T> {
   items: T[];
   page: number;
   pageSize: number;
   total: number;
-}
-export interface ApiError {
-  code: string;
-  message: string;
-  details?: Record<string, unknown>;
-}
-export interface TravelWarning {
-  code: string;
-  message: string;
-  placeIds?: string[];
-}
-export interface RoutePreview {
-  durationMinutes: number;
-  source: 'provider' | 'estimate';
-  warnings: TravelWarning[];
-}
-export interface ReverseLocation {
-  placeName: string;
-  cityId: string | null;
-  cityAdcode: string | null;
-  warnings: TravelWarning[];
 }
