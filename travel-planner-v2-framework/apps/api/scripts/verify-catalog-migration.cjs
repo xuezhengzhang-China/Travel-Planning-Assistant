@@ -32,13 +32,13 @@ async function verify() {
       "INSERT INTO destinations(id, name, level, adcode) VALUES ($1, 'B upgrade fixture', 'province', '990000')",
       [bDestinationId],
     );
-    await runner(options);
+    await runner({ ...options, count: 4 });
     assert.equal(
       (await testDb.query('SELECT id FROM destinations WHERE adcode = $1', ['990000'])).rows[0].id,
       bDestinationId,
     );
     assert.equal((await testDb.query('SELECT count(*) FROM c_places')).rows[0].count, '18');
-    console.log('PASS: 空临时库完整执行全部迁移，导入18个景点');
+    console.log('PASS: 空临时库执行到 C 目录迁移，导入 18 个景点');
     await runner({ ...options, direction: 'down', count: 1 });
     const owner = randomUUID(),
       id = randomUUID();
@@ -73,7 +73,7 @@ async function verify() {
         JSON.stringify(plan.days),
       ],
     );
-    await runner(options);
+    await runner({ ...options, count: 1 });
     let read = await testDb.query(
       'SELECT title,revision,selected_place_ids,days FROM trip_resources WHERE id=$1',
       [id],
@@ -86,12 +86,23 @@ async function verify() {
     await runner({ ...options, direction: 'down', count: 1 });
     read = await testDb.query('SELECT selected_place_ids,days FROM trips WHERE id=$1', [id]);
     assert.deepEqual(read.rows[0].days, plan.days);
-    await runner(options);
+    await runner({ ...options, count: 1 });
     assert.deepEqual(
       (await testDb.query('SELECT days FROM trip_resources WHERE id=$1', [id])).rows[0].days,
       plan.days,
     );
     console.log('PASS: 新迁移回滚与再次升级均保持安排一致');
+    // places 统一到 B：最后一步迁移删除 C 的旧目录表与相关外键。
+    await runner({ ...options, count: 1 });
+    for (const table of ['c_places', 'c_destinations']) {
+      assert.equal(
+        (await testDb.query('SELECT to_regclass($1) AS relation', [`public.${table}`])).rows[0]
+          .relation,
+        null,
+        `${table} 应已删除`,
+      );
+    }
+    console.log('PASS: places 统一到 B 后，C 的旧目录表已删除');
   } finally {
     await testDb.end();
     if (created) await admin.query(`DROP DATABASE "${name}"`);
