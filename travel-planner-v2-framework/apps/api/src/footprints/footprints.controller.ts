@@ -18,7 +18,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { FootprintEntry } from '@travel/shared' with { 'resolution-mode': 'import' };
-import { FootprintsAuthGuard, type AuthenticatedRequest } from './footprints-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import { FootprintsService } from './footprints.service';
 import {
   MAX_UPLOAD_BYTES,
@@ -27,50 +29,47 @@ import {
   validateUpload,
   type UploadedMedia,
 } from './footprints.dto';
-import { CurrentUser } from './request-user.decorator';
 
 @Controller('footprints')
 export class FootprintsController {
   constructor(private readonly footprints: FootprintsService) {}
 
   @Get()
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   async list(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Query('year') yearQuery?: string,
     @Query('page') pageQuery?: string,
     @Query('pageSize') pageSizeQuery?: string,
   ) {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     const year = parseOptionalInteger(yearQuery, 'year', 1000, 9999);
     const page = parseOptionalInteger(pageQuery, 'page', 1, Number.MAX_SAFE_INTEGER) ?? 1;
     const pageSize = parseOptionalInteger(pageSizeQuery, 'pageSize', 1, 100) ?? 20;
     if (!Number.isSafeInteger((page - 1) * pageSize)) {
       throw new BadRequestException('page and pageSize exceed the supported range');
     }
-    return this.footprints.list(user.id, year, page, pageSize);
+    return this.footprints.list(user.userId, year, page, pageSize);
   }
 
   @Post()
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
     }),
   )
   async create(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Body() body: Record<string, unknown>,
     @UploadedFile() file: UploadedMedia | undefined,
   ): Promise<FootprintEntry> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     const input = validateFootprintInput(body, Boolean(file));
     const upload = file ? validateUpload(file) : undefined;
-    return this.footprints.create(user.id, input, file, upload);
+    return this.footprints.create(user.userId, input, file, upload);
   }
 
   @Get('places/search')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   async searchPlaces(@Query('keywords') keyword: string) {
     const trimmed = keyword?.trim();
     if (!trimmed || trimmed.length > 80) {
@@ -80,29 +79,27 @@ export class FootprintsController {
   }
 
   @Get('map')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   async getMapData(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Query('provinceAdcode') provinceAdcode?: string,
     @Query('year') yearQuery?: string,
   ) {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     if (provinceAdcode && !/^\d{6}$/.test(provinceAdcode)) {
       throw new BadRequestException('provinceAdcode must be a six-digit administrative code');
     }
     const year = parseOptionalInteger(yearQuery, 'year', 1000, 9999);
-    return this.footprints.getMapData(user.id, provinceAdcode ?? null, year);
+    return this.footprints.getMapData(user.userId, provinceAdcode ?? null, year);
   }
 
   @Get('media/:id')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   @Header('X-Content-Type-Options', 'nosniff')
   async readMedia(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) mediaId: string,
   ): Promise<StreamableFile> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    const media = await this.footprints.readMedia(user.id, mediaId);
+    const media = await this.footprints.readMedia(user.userId, mediaId);
     return new StreamableFile(media.bytes, {
       type: media.mimeType,
       disposition: 'inline',
@@ -110,44 +107,41 @@ export class FootprintsController {
   }
 
   @Get(':id')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   async getById(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) entryId: string,
   ) {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    return this.footprints.getById(user.id, entryId);
+    return this.footprints.getById(user.userId, entryId);
   }
 
   @Patch(':id')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
     }),
   )
   async update(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) entryId: string,
     @Body() body: Record<string, unknown>,
     @UploadedFile() file: UploadedMedia | undefined,
   ) {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    const existing = await this.footprints.getById(user.id, entryId);
+    const existing = await this.footprints.getById(user.userId, entryId);
     const update = validateFootprintUpdate(body, Boolean(file), existing);
     const upload = file ? validateUpload(file) : undefined;
-    return this.footprints.update(user.id, entryId, update, file, upload);
+    return this.footprints.update(user.userId, entryId, update, file, upload);
   }
 
   @Delete(':id')
-  @UseGuards(FootprintsAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   async delete(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) entryId: string,
   ): Promise<void> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    await this.footprints.delete(user.id, entryId);
+    await this.footprints.delete(user.userId, entryId);
   }
 }
 

@@ -15,11 +15,9 @@ import {
 import type { Journal } from '@travel/shared' with {
   'resolution-mode': 'import',
 };
-import {
-  FootprintsAuthGuard,
-  type AuthenticatedRequest,
-} from '../footprints/footprints-auth.guard';
-import { CurrentUser } from '../footprints/request-user.decorator';
+import { AuthGuard } from '../auth/auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import {
   isUuid,
   validateJournalCreate,
@@ -29,19 +27,18 @@ import {
 import { JournalsService } from './journals.service';
 
 @Controller('journals')
-@UseGuards(FootprintsAuthGuard)
+@UseGuards(AuthGuard)
 export class JournalsController {
   constructor(private readonly journals: JournalsService) {}
 
   @Get()
   async list(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Query('footprintId') footprintId?: string,
     @Query('year') yearQuery?: string,
     @Query('page') pageQuery?: string,
     @Query('pageSize') pageSizeQuery?: string,
   ) {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     if (footprintId !== undefined && !isUuid(footprintId)) {
       throw new BadRequestException('footprintId must be a valid UUID');
     }
@@ -51,47 +48,43 @@ export class JournalsController {
     if (!Number.isSafeInteger((page - 1) * pageSize)) {
       throw new BadRequestException('page and pageSize exceed the supported range');
     }
-    return this.journals.list(user.id, footprintId ?? null, year, page, pageSize);
+    return this.journals.list(user.userId, footprintId ?? null, year, page, pageSize);
   }
 
   @Post()
   async create(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Body() body: Record<string, unknown>,
   ): Promise<Journal> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     const input: ValidatedJournalCreate = validateJournalCreate(body);
-    return this.journals.create(user.id, input);
+    return this.journals.create(user.userId, input);
   }
 
   @Get(':id')
   async getById(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) journalId: string,
   ): Promise<Journal> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    return this.journals.getById(user.id, journalId);
+    return this.journals.getById(user.userId, journalId);
   }
 
   @Patch(':id')
   async update(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) journalId: string,
     @Body() body: Record<string, unknown>,
   ): Promise<Journal> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
     const update = validateJournalUpdate(body);
-    return this.journals.update(user.id, journalId, update);
+    return this.journals.update(user.userId, journalId, update);
   }
 
   @Delete(':id')
   @HttpCode(204)
   async delete(
-    @CurrentUser() user: AuthenticatedRequest['user'],
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) journalId: string,
   ): Promise<void> {
-    if (!user) throw new BadRequestException('Authenticated user context is missing');
-    await this.journals.delete(user.id, journalId);
+    await this.journals.delete(user.userId, journalId);
   }
 }
 

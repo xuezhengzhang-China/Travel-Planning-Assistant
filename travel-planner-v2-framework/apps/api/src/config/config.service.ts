@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { randomBytes } from 'node:crypto';
 import { config as loadEnv } from 'dotenv';
 import { resolve } from 'node:path';
 
@@ -9,7 +10,8 @@ export interface AppConfig {
   databaseConnectionTimeoutMs: number;
   databaseQueryTimeoutMs: number;
   mediaStorageDir: string;
-  amapWebServiceKey: string | null;
+  authTokenSecret: string;
+  amapWebServiceKey: string;
 }
 
 function positiveInteger(value: string, name: string, maximum: number): number {
@@ -48,6 +50,10 @@ export function readConfig(env: NodeJS.ProcessEnv): AppConfig {
     }
     if (!valid) throw new Error('CORS_ORIGIN must contain HTTP or HTTPS origins');
   }
+  const authTokenSecret = env.AUTH_TOKEN_SECRET?.trim() || randomBytes(32).toString('base64url');
+  if (Buffer.byteLength(authTokenSecret, 'utf8') < 32) {
+    throw new Error('AUTH_TOKEN_SECRET must be at least 32 bytes');
+  }
   return {
     port: positiveInteger(env.PORT ?? '3000', 'PORT', 65535),
     databaseUrl,
@@ -65,7 +71,8 @@ export function readConfig(env: NodeJS.ProcessEnv): AppConfig {
     mediaStorageDir: resolve(
       env.MEDIA_STORAGE_DIR?.trim() || resolve(__dirname, '../../../../apps/api/.data/media'),
     ),
-    amapWebServiceKey: env.AMAP_WEB_SERVICE_KEY?.trim() || null,
+    authTokenSecret,
+    amapWebServiceKey: env.AMAP_WEB_SERVICE_KEY?.trim() ?? '',
   };
 }
 

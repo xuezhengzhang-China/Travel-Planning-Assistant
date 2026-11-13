@@ -2,9 +2,51 @@
 
 ## 1. 你的交付
 
-负责四步表单背后的保存、校验和正式行程，以及大家共用的身份认证、运行时参数校验、错误格式和迁移协调。A 做截图界面；你不必另做一套前端，也不重复编写 B 的推荐算法。
+2026-11-02 调整：C 负责创建行程前端全流程、景点与行程规则推荐、保存读取删除，以及身份认证、校验和迁移协调。A 接入正式页面，B 协作景点数据与地图服务，D 仍负责足迹手账。以下技术设计保留作为验收参考，当前交付状态以 [当前分工与联调交付](当前分工与联调交付.md) 为准。
 
 先读 [接口与数据约定](接口与数据约定.md)。已有 ConfigModule、DatabaseModule、createApp 和基础测试可复用；现有 users 表还没有密码字段，trips 表也没有完整业务字段。
+
+### 当前 C 公共基础实现
+
+已落地：`AuthModule` 的注册/登录、`AuthGuard`、`@CurrentUser()`、`UsersModule`、严格 JSON 请求体字段校验、契约错误过滤器，以及给 `users` 增加 `password_hash` 的增量迁移。登录使用 scrypt 密码哈希和 HS256 Bearer token；默认有效期 7 天。配置稳定的 `AUTH_TOKEN_SECRET` 才能跨进程/重启保持 token 有效。
+
+其他模块的 Controller 接入示例：
+
+```ts
+@Controller('some-resource')
+@UseGuards(AuthGuard)
+export class SomeController {
+  @Get()
+  list(@CurrentUser() user: AuthenticatedUser) {
+    return this.service.listForUser(user.userId);
+  }
+}
+```
+
+`AuthGuard` 和 `CurrentUser` 只从已验签 token 设置并读取身份。单元测试应替换 service/repository；HTTP 测试在测试模块里覆盖 guard/provider。不要从 body、query 或任意自定义 header 读取 `userId`，正式 `AppModule` 不注册假身份。
+
+### B/D 的 HTTP 测试身份示例
+
+复用 [行程 HTTP 测试](../apps/api/tests/trips.test.cjs) 的做法。在测试自己创建的 app 上替换 `AuthService.verifyAccessToken`，让真实 `AuthGuard` 继续处理请求并构造 `{ userId }`。
+
+```js
+// 放在 HTTP 测试中，createApp 之后、app.listen 之前。
+const { AuthService } = require('../dist/auth/auth.service');
+const testUsers = new Map([
+  ['owner-token', 'owner'],
+  ['other-token', 'other'],
+]);
+app.get(AuthService).verifyAccessToken = async (token) => testUsers.get(token) ?? null;
+```
+
+请求带 `Authorization: Bearer owner-token` 时，控制器会收到 `{ userId: 'owner' }`。用 `other-token` 验证资源归属，用未知令牌验证 401。替换只作用于当前测试创建的 app，测试结束后调用 `app.close()`。接数据库仓库的测试应使用测试账户的实际 ID。
+
+在项目根目录运行现有示例。
+
+```powershell
+npm run build --workspace=@travel/api
+node --test --test-name-pattern="HTTP 接入鉴权" apps/api/tests/trips.test.cjs
+```
 
 ## 2. 文件放在哪里
 

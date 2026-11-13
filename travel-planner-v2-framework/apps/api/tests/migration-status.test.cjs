@@ -12,8 +12,8 @@ const footprintMigrations = [
   '202611030003_footprint_media_cleanup',
 ];
 const names = readdirSync(directory)
-  .filter((file) => file.endsWith('.js'))
-  .map((file) => file.slice(0, -3))
+  .filter((file) => /\.(js|cjs|ts|sql)$/.test(file))
+  .map((file) => file.replace(/\.[^.]+$/, ''))
   .sort();
 
 // 足迹相关迁移必须在迁移目录中存在，否则地图与足迹接口会在真实库上失效。
@@ -55,10 +55,7 @@ test('status identifies applied migrations and missing local files without modif
     directory,
   );
   assert.deepEqual(rows, [
-    ...names.map((migration) => ({
-      name: migration,
-      status: migration === name ? 'applied' : 'pending',
-    })),
+    ...names.map((file) => ({ name: file, status: file === name ? 'applied' : 'pending' })),
     { name: 'removed_migration', status: 'missing-file' },
   ]);
   assert.ok(queries.every((text) => text.startsWith('SELECT ')));

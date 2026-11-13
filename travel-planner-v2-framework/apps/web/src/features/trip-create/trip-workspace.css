@@ -1,0 +1,297 @@
+.suixin-trips,
+.trip-login {
+  --sx-paper: #f8f9f3;
+  --sx-accent: #62846c;
+  --sx-ink: #283b30;
+  --sx-border: #e6eadf;
+  --sx-soft: #edf2e6;
+}
+.suixin-trips {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  container: suixin / inline-size;
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+.suixin-trips *,
+.suixin-trips *::before,
+.suixin-trips *::after {
+  box-sizing: border-box;
+}
+.trip-workspace {
+  min-height: 100vh;
+  background: #f8f9f3;
+  padding: 36px 24px;
+  max-width: 808px;
+  margin: 0 auto;
+  color: #283b30;
+  font-family: Inter, 'Microsoft YaHei', sans-serif;
+}
+.trip-workspace header,
+.suixin-trips .workspace-toolbar,
+.suixin-trips .workspace-actions,
+.suixin-trips .workspace-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.trip-workspace header p {
+  color: #637675;
+  margin: 0;
+  font-size: 13px;
+}
+.trip-workspace h1 {
+  font-size: 28px;
+  margin: 8px 0;
+  letter-spacing: 0;
+}
+.trip-workspace button,
+.trip-login button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #e6eadf;
+  border-radius: 12px;
+  background: white;
+  padding: 10px 16px;
+  color: inherit;
+}
+.trip-workspace button:disabled,
+.trip-login button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.trip-workspace button:focus-visible,
+.trip-login button:focus-visible {
+  outline: 3px solid #b2c7ab;
+  outline-offset: 3px;
+}
+.suixin-trips .workspace-actions {
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+.suixin-trips .workspace-toolbar {
+  margin: 28px 0 20px;
+}
+.suixin-trips .workspace-toolbar p {
+  font-size: 14px;
+  color: #637675;
+}
+.trip-workspace .workspace-primary,
+.trip-login .workspace-primary {
+  background: var(--sx-accent, #62846c);
+  border-color: var(--sx-accent, #62846c);
+  color: white;
+}
+.suixin-trips .workspace-list {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.trip-workspace .workspace-trip {
+  display: block;
+  min-width: 0;
+  text-align: left;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid var(--sx-border, #e6eadf);
+}
+.suixin-trips .workspace-trip h2 {
+  font-size: 22px;
+  margin: 16px 0;
+  overflow-wrap: anywhere;
+}
+.suixin-trips .workspace-trip p {
+  color: #607370;
+  font-size: 14px;
+}
+.suixin-trips .workspace-trip span {
+  font-size: 13px;
+}
+.suixin-trips .workspace-trip .workspace-status {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background: #edf2e6;
+  color: #62846c;
+}
+.suixin-trips .workspace-trip.draft .workspace-status {
+  background: #eef0f2;
+  color: #65716f;
+}
+.suixin-trips .workspace-edit {
+  float: right;
+  color: #62846c;
+}
+.suixin-trips .workspace-card-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  gap: 12px;
+}
+.suixin-trips .workspace-delete {
+  padding: 24px;
+  background: white;
+  border: 1px solid #e6eadf;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+.suixin-trips .workspace-delete h2 {
+  font-size: 20px;
+}
+.suixin-trips .workspace-delete p {
+  line-height: 1.7;
+  color: #607370;
+}
+.suixin-trips .workspace-delete button {
+  margin-right: 12px;
+}
+.trip-workspace .workspace-danger {
+  background: #9c433b;
+  color: white;
+  border-color: #9c433b;
+}
+.suixin-trips .workspace-empty {
+  background: white;
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: 18px;
+  color: #607370;
+}
+.suixin-trips .workspace-error {
+  background: #fff1ed;
+  padding: 14px;
+  border-radius: 12px;
+  color: #933b28;
+  line-height: 1.7;
+}
+.suixin-trips .workspace-pagination {
+  justify-content: center;
+  margin-top: 28px;
+  font-size: 14px;
+}
+.trip-login {
+  width: min(420px, calc(100% - 40px));
+  margin: 10vh auto;
+  padding: 30px;
+  background: white;
+  border: 1px solid #e6eadf;
+  border-radius: 20px;
+  color: #283b30;
+  box-shadow: 0 18px 60px #34472e08;
+}
+.trip-workspace header .workspace-brand {
+  color: var(--sx-ink);
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 28px;
+}
+.trip-workspace header .workspace-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #8a9589;
+  margin-bottom: 12px;
+}
+.suixin-trips.is-embedded .trip-workspace {
+  min-height: 0;
+  max-width: none;
+  padding: 24px 20px;
+  background: transparent;
+}
+.suixin-trips.is-embedded .workspace-brand,
+.suixin-trips.is-embedded .workspace-actions {
+  display: none;
+}
+.suixin-trips.is-embedded .wizard-brand,
+.suixin-trips.is-embedded .page-context {
+  display: none;
+}
+.suixin-trips.is-embedded .trip-create-page {
+  min-height: 0;
+  background: transparent;
+  padding: 24px 20px;
+}
+.suixin-trips.is-embedded .page-footer {
+  display: none;
+}
+.suixin-trips.is-embedded {
+  padding-bottom: var(--sx-host-bottom-space, 88px);
+}
+@container suixin (max-width:560px) {
+  .suixin-trips .workspace-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .suixin-trips .workspace-actions {
+    justify-content: flex-end;
+    max-width: 130px;
+  }
+  .suixin-trips .workspace-toolbar {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .suixin-trips .workspace-toolbar p {
+    max-width: 155px;
+  }
+  .trip-workspace .workspace-trip {
+    padding: 20px;
+  }
+}
+.trip-login h1 {
+  font-size: 26px;
+  letter-spacing: 0;
+  margin: 0 0 12px;
+}
+.trip-login p {
+  font-size: 14px;
+  color: #607370;
+  line-height: 1.7;
+}
+.trip-login label {
+  display: block;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.trip-login input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #e6eadf;
+  border-radius: 10px;
+  font: inherit;
+}
+.trip-login button {
+  margin: 8px 8px 0 0;
+}
+.trip-login .workspace-error {
+  color: #933b28;
+}
+.trip-create-page .reset-control {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.trip-create-page .reset-control input {
+  width: auto;
+  margin-top: 4px;
+}
+@media (max-width: 600px) {
+  .trip-workspace {
+    padding: 24px 18px;
+  }
+  .suixin-trips .workspace-list {
+    grid-template-columns: 1fr;
+  }
+  .suixin-trips .workspace-actions {
+    justify-content: flex-end;
+    max-width: 160px;
+  }
+  .suixin-trips .workspace-toolbar {
+    align-items: flex-start;
+  }
+  .suixin-trips .workspace-toolbar p {
+    max-width: 150px;
+  }
+}

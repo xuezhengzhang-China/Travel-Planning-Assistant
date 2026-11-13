@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
-import { FootprintsAuthGuard } from '../footprints/footprints-auth.guard';
 import { JournalsController } from './journals.controller';
 import { JournalsService } from './journals.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [AuthModule, DatabaseModule],
   controllers: [JournalsController],
-  providers: [FootprintsAuthGuard, JournalsService],
+  providers: [JournalsService],
 })
 export class JournalsModule {}

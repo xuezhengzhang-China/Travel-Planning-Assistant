@@ -15,7 +15,8 @@ test('configuration has explicit defaults and trims CORS origins', () => {
   assert.equal(config.databaseConnectionTimeoutMs, 2000);
   assert.equal(config.databaseQueryTimeoutMs, 10000);
   assert.equal(config.mediaStorageDir, resolve(__dirname, '../.data/media'));
-  assert.equal(config.amapWebServiceKey, null);
+  assert.equal(config.amapWebServiceKey, '');
+  assert.ok(Buffer.byteLength(config.authTokenSecret, 'utf8') >= 32);
 });
 
 test('media storage directory can be configured and blank values use the private default', () => {
