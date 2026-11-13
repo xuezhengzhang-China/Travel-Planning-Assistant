@@ -1,0 +1,22 @@
+COMMAND: node apps/api/scripts/acceptance/http-smoke.cjs http://127.0.0.1:3031/api "F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework\docs\acceptance\B-20261102-full\http-results.json"
+START UTC: 2026-11-02T08:36:43.770Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+PASS E01 API health: GET /health -> 200 {"status":"ok","service":"travel-planner-api"}
+PASS E02 remote database ready: GET /ready -> 200 {"status":"ready","database":"ok"}
+PASS A01 reject anonymous: GET /destinations -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A01 reject anonymous: GET /places -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A01 reject anonymous: GET /places/30000000-0000-4000-8000-000000000001 -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A01 reject anonymous: POST /routes/preview -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A01 reject anonymous: POST /locations/reverse -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A01 reject anonymous: POST /recommendations/itinerary -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: GET /destinations -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: GET /places -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: GET /places/30000000-0000-4000-8000-000000000001 -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: POST /routes/preview -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: POST /locations/reverse -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+PASS A02 reject forged token: POST /recommendations/itinerary -> 401 {"code":"UNAUTHENTICATED","message":"请先登录"}
+HTTP CHECKS: 14/14 passed; 0 failed
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:36:44.957Z

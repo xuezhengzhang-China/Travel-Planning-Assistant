@@ -1,0 +1,2398 @@
+[
+  {
+    "caseId": "AUTH-1-anonymous",
+    "method": "GET",
+    "endpoint": "/destinations",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-1-forged",
+    "method": "GET",
+    "endpoint": "/destinations",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-2-anonymous",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-2-forged",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-3-anonymous",
+    "method": "GET",
+    "endpoint": "/places/30000000-0000-4000-8000-000000000001",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-3-forged",
+    "method": "GET",
+    "endpoint": "/places/30000000-0000-4000-8000-000000000001",
+    "identity": "anonymous-or-forged",
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-4-anonymous",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-4-forged",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-5-anonymous",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-5-forged",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-6-anonymous",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "AUTH-6-forged",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "anonymous-or-forged",
+    "request": {},
+    "status": 401,
+    "response": {
+      "code": "UNAUTHENTICATED",
+      "message": "请先登录"
+    }
+  },
+  {
+    "caseId": "CAT-01",
+    "method": "GET",
+    "endpoint": "/destinations?level=province",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "20000000-0000-4000-8000-000000000001",
+          "name": "浙江省",
+          "level": "province",
+          "parentId": null,
+          "adcode": "330000",
+          "timeZone": "Asia/Shanghai"
+        }
+      ],
+      "page": 1,
+      "pageSize": 20,
+      "total": 1
+    }
+  },
+  {
+    "caseId": "CAT-01",
+    "method": "GET",
+    "endpoint": "/destinations?level=city&parentId=20000000-0000-4000-8000-000000000001&keyword=%E6%9D%AD%E5%B7%9E",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "20000000-0000-4000-8000-000000000002",
+          "name": "杭州市",
+          "level": "city",
+          "parentId": "20000000-0000-4000-8000-000000000001",
+          "adcode": "330100",
+          "timeZone": "Asia/Shanghai"
+        }
+      ],
+      "page": 1,
+      "pageSize": 20,
+      "total": 1
+    }
+  },
+  {
+    "caseId": "CAT-01",
+    "method": "GET",
+    "endpoint": "/destinations?page=999",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [],
+      "page": 999,
+      "pageSize": 20,
+      "total": 2
+    }
+  },
+  {
+    "caseId": "CAT-02",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&category=history&themes=art&pageSize=1",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "30000000-0000-4000-8000-000000000003",
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "name": "良渚博物院（演示）",
+          "categories": [
+            "history",
+            "art"
+          ],
+          "address": "杭州市，具体入口待核实",
+          "coordinates": {
+            "longitude": 120.028,
+            "latitude": 30.381,
+            "coordinateSystem": "GCJ-02"
+          },
+          "suggestedDurationMinutes": 120,
+          "description": "用于测试第二天安排和开放信息未核实提示的演示地点。",
+          "openingHoursText": null,
+          "source": "fixture",
+          "updatedAt": "2026-10-26T00:00:00.000Z"
+        }
+      ],
+      "page": 1,
+      "pageSize": 1,
+      "total": 2
+    }
+  },
+  {
+    "caseId": "CAT-02",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&category=history&themes=art&pageSize=1&page=2",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "30000000-0000-4000-8000-000000000002",
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "name": "灵隐景区（演示）",
+          "categories": [
+            "history",
+            "nature"
+          ],
+          "address": "杭州市，具体入口待核实",
+          "coordinates": {
+            "longitude": 120.102,
+            "latitude": 30.242,
+            "coordinateSystem": "GCJ-02"
+          },
+          "suggestedDurationMinutes": 120,
+          "description": "用于测试历史文化偏好和交通估算的演示地点。",
+          "openingHoursText": null,
+          "source": "fixture",
+          "updatedAt": "2026-10-26T00:00:00.000Z"
+        }
+      ],
+      "page": 2,
+      "pageSize": 1,
+      "total": 2
+    }
+  },
+  {
+    "caseId": "CAT-02",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&keyword=%25'%20OR%201%3D1%20--",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [],
+      "page": 1,
+      "pageSize": 20,
+      "total": 0
+    }
+  },
+  {
+    "caseId": "CAT-02",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&page=999",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [],
+      "page": 999,
+      "pageSize": 20,
+      "total": 3
+    }
+  },
+  {
+    "caseId": "CAT-02",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&keyword=%E8%A5%BF%E6%B9%96",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "items": [
+        {
+          "id": "30000000-0000-4000-8000-000000000001",
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "name": "西湖（演示）",
+          "categories": [
+            "nature",
+            "landmark"
+          ],
+          "address": "杭州市，具体入口待核实",
+          "coordinates": {
+            "longitude": 120.148,
+            "latitude": 30.245,
+            "coordinateSystem": "GCJ-02"
+          },
+          "suggestedDurationMinutes": 90,
+          "description": "用于测试自然主题与地图标记的演示地点。",
+          "openingHoursText": null,
+          "source": "fixture",
+          "updatedAt": "2026-10-26T00:00:00.000Z"
+        }
+      ],
+      "page": 1,
+      "pageSize": 20,
+      "total": 1
+    }
+  },
+  {
+    "caseId": "CAT-03",
+    "method": "GET",
+    "endpoint": "/places/30000000-0000-4000-8000-000000000001",
+    "identity": "injected-primary",
+    "status": 200,
+    "response": {
+      "id": "30000000-0000-4000-8000-000000000001",
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "name": "西湖（演示）",
+      "categories": [
+        "nature",
+        "landmark"
+      ],
+      "address": "杭州市，具体入口待核实",
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "suggestedDurationMinutes": 90,
+      "description": "用于测试自然主题与地图标记的演示地点。",
+      "openingHoursText": null,
+      "source": "fixture",
+      "updatedAt": "2026-10-26T00:00:00.000Z"
+    }
+  },
+  {
+    "caseId": "CAT-03",
+    "method": "GET",
+    "endpoint": "/places/80ea09c9-035a-4c92-9ce4-1324e0ece80d",
+    "identity": "injected-primary",
+    "status": 404,
+    "response": {
+      "code": "NOT_FOUND",
+      "message": "资源不存在"
+    }
+  },
+  {
+    "caseId": "VALID-Q-1",
+    "method": "GET",
+    "endpoint": "/destinations?level=district",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-2",
+    "method": "GET",
+    "endpoint": "/destinations?parentId=x",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "UUID 格式不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-3",
+    "method": "GET",
+    "endpoint": "/destinations?keyword=",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "字符串格式不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-4",
+    "method": "GET",
+    "endpoint": "/destinations?page=0",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数必须是正整数"
+    }
+  },
+  {
+    "caseId": "VALID-Q-5",
+    "method": "GET",
+    "endpoint": "/destinations?page=-1",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数必须是正整数"
+    }
+  },
+  {
+    "caseId": "VALID-Q-6",
+    "method": "GET",
+    "endpoint": "/destinations?page=1.5",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数必须是正整数"
+    }
+  },
+  {
+    "caseId": "VALID-Q-7",
+    "method": "GET",
+    "endpoint": "/destinations?page=100001",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数超出范围"
+    }
+  },
+  {
+    "caseId": "VALID-Q-8",
+    "method": "GET",
+    "endpoint": "/destinations?pageSize=101",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数超出范围"
+    }
+  },
+  {
+    "caseId": "VALID-Q-9",
+    "method": "GET",
+    "endpoint": "/destinations?page=1&page=2",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数必须是正整数"
+    }
+  },
+  {
+    "caseId": "VALID-Q-10",
+    "method": "GET",
+    "endpoint": "/destinations?ownerId=spoof",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "包含未知字段"
+    }
+  },
+  {
+    "caseId": "VALID-Q-11",
+    "method": "GET",
+    "endpoint": "/places",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "字符串格式不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-12",
+    "method": "GET",
+    "endpoint": "/places?cityId=bad",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "UUID 格式不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-13",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000001",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "城市不存在或暂不支持"
+    }
+  },
+  {
+    "caseId": "VALID-Q-14",
+    "method": "GET",
+    "endpoint": "/places?cityId=00417770-2707-4995-82f9-a914baa72571",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "城市不存在或暂不支持"
+    }
+  },
+  {
+    "caseId": "VALID-Q-15",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&category=unknown",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-16",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&themes=unknown",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-17",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&themes=nature,,art",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-Q-18",
+    "method": "GET",
+    "endpoint": "/places?cityId=20000000-0000-4000-8000-000000000002&pageSize=0",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "分页参数必须是正整数"
+    }
+  },
+  {
+    "caseId": "VALID-Q-19",
+    "method": "GET",
+    "endpoint": "/places/not-a-uuid",
+    "identity": "injected-primary",
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "UUID 格式不合法"
+    }
+  },
+  {
+    "caseId": "MAP-walking",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 46,
+      "source": "provider",
+      "warnings": []
+    }
+  },
+  {
+    "caseId": "MAP-driving",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 46,
+      "source": "provider",
+      "warnings": []
+    }
+  },
+  {
+    "caseId": "MAP-transit",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 46,
+      "source": "provider",
+      "warnings": []
+    }
+  },
+  {
+    "caseId": "MAP-REVERSE",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 200,
+    "response": {
+      "placeName": "合同测试地址",
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "cityAdcode": "330100",
+      "warnings": []
+    }
+  },
+  {
+    "caseId": "MAP-UNKNOWN-CITY",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 200,
+    "response": {
+      "placeName": "合同测试地址",
+      "cityId": null,
+      "cityAdcode": null,
+      "warnings": [
+        {
+          "code": "CITY_UNCONFIRMED",
+          "message": "暂不能确认所属支持城市，仅保留地点信息。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 83,
+      "source": "estimate",
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 83,
+      "source": "estimate",
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 83,
+      "source": "estimate",
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 83,
+      "source": "estimate",
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 200,
+    "response": {
+      "durationMinutes": 83,
+      "source": "estimate",
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "driving"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "transit"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "VALID-XY-1",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "WGS-84"
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "坐标系必须为 GCJ-02"
+    }
+  },
+  {
+    "caseId": "VALID-XY-2",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 181,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "经纬度不合法"
+    }
+  },
+  {
+    "caseId": "VALID-XY-3",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": -91,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "经纬度不合法"
+    }
+  },
+  {
+    "caseId": "VALID-XY-4",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": "120",
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "经纬度不合法"
+    }
+  },
+  {
+    "caseId": "VALID-XY-5",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": null,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "经纬度不合法"
+    }
+  },
+  {
+    "caseId": "VALID-XY-6",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02",
+        "extra": true
+      }
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "包含未知字段"
+    }
+  },
+  {
+    "caseId": "VALID-XY-7",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": null
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "需要 JSON 对象"
+    }
+  },
+  {
+    "caseId": "VALID-MAP",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "flying"
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-MAP",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking",
+      "cityCode": "0571"
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "包含未知字段"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-1",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2027-02-29",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "INVALID_DATE_RANGE",
+      "message": "日期不存在"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-2",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-10-31",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "INVALID_DATE_RANGE",
+      "message": "日期范围应为 1 至 30 天"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-3",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-12-01",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "INVALID_DATE_RANGE",
+      "message": "日期范围应为 1 至 30 天"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-4",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "bad"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-5",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "主题必须为数组"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-6",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": "nature",
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "主题必须为数组"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-7",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "fast",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-8",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "flying",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "枚举值不合法"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-9",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": []
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "已选景点应为 1 至 120 个"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-10",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000001"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "景点不能重复"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-11",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "956d71a5-66ab-4c58-8788-390107b80289"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "已选景点不存在或不属于所选城市"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-12",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "e108d015-b2a9-49a4-a16d-b817200c3d6c",
+        "f511b237-95fa-4d2c-9077-3fc485905eb9",
+        "ee9a7d25-19e4-465e-8cf9-fd03a9896147",
+        "a3452f9e-9ef9-4366-81f9-380a5f0e96b2",
+        "341278e1-03ad-4f26-9664-96ae7f2a96fb",
+        "a3f82cda-fc3f-46ba-a3c0-8fb484be2fcc",
+        "82badcc5-7f85-4a3e-adc4-1bee56ca7c5a",
+        "3952e24f-45f5-4f19-88d8-0265549dceb6",
+        "890fe9cb-5ea8-4305-bbfd-e73ad0626611",
+        "090ffcb4-a95e-4502-816d-58d65e50ab9c",
+        "570f9cc9-28ea-43ea-9176-f3aed5c79a69",
+        "ce9dede6-2181-4344-821f-aac54cdc5faa",
+        "db1b3ea0-0207-490d-b293-381cfee5a21d",
+        "75447d3a-6a9f-4213-80cc-f592154578f6",
+        "5edc43b7-9d32-4f64-a5cc-b0bd924102e9",
+        "731f28e3-c3b5-4176-8a4c-5aeab7203a38",
+        "00bf08d5-ae3a-46d3-9d28-1a560207e500",
+        "f1d4000b-1fbf-4247-af6d-2e7b20578af8",
+        "d2855116-ce55-433a-997c-3e2dd16d5913",
+        "806050e2-3673-47b1-a003-839f3e32deca",
+        "782c56df-898a-41ec-890b-8f9084e8d722",
+        "019b0843-f516-4982-a999-656c638f7c7a",
+        "d897a29f-7c9e-46ed-8a4c-09df61d41b53",
+        "27a911b4-e18a-4e04-9c55-16656bebb3a1",
+        "3ae8772d-2f47-4491-8faa-f9293428bd53",
+        "8a9930a3-f770-4d3f-a0ee-059b47a0cefd",
+        "5ae64819-f74e-4cc2-b027-79b0e2912989",
+        "f50dc968-f529-4421-babd-1fdd2c720040",
+        "a8f916b4-d838-48b8-bd0d-4186fd0abcd0",
+        "c379068b-559b-4d55-8542-759687150b2b",
+        "00d80950-e3d8-49b6-a55f-ed337fd9212c",
+        "4842491f-bbf6-4760-94f7-35c98f5d9b92",
+        "7897722f-ea83-4b14-82d1-b44cf352a1b2",
+        "6c064496-37a7-4470-b323-1ba4a45a68b7",
+        "165220b0-b481-424b-998b-48e0e4396943",
+        "d122591d-a327-4e70-95b4-49c0dddbaaab",
+        "8751e3c4-1cf2-431f-8fb5-a958583d911e",
+        "bab69bbd-63ea-4e8e-9186-33c1b36f2f72",
+        "bbeb1e5a-c2ee-461a-a04f-ae425216545a",
+        "77821920-f87e-4d19-a49e-b78ac5532b38",
+        "95a2661e-671b-4cc0-b3ab-619708dff692",
+        "5a591caa-62d9-4732-8592-73d48881d710",
+        "7e7fc20b-4ae7-4789-9386-09d51a34eb5c",
+        "42b9bf46-b7db-428b-81bf-7aae80fdb27c",
+        "c18fadac-701c-4895-bb9f-b75aca9fb329",
+        "56e44ba2-55d0-47b3-91d7-a729ec012351",
+        "26d59d1c-a046-4daa-ae8f-dd4b675af774",
+        "7d9a614b-1834-4b5b-a2a8-230024628267",
+        "700a8a19-c258-49a1-be11-1c7e1d078878",
+        "5b700492-0b03-423a-b29f-ca768d764721",
+        "0caf551c-ee01-4b74-b7af-d07c2c4921ba",
+        "dee0f8c0-a1f5-46df-a13b-b8990f66383b",
+        "55745274-cecd-4fbe-b3c7-75c5a73dccec",
+        "cd769475-f7a0-4050-8979-eea71f6ea990",
+        "1819b1f8-071c-412e-baa1-7fcd4cfc43aa",
+        "bb073c2f-b77d-4a7c-9881-5db0d47eb78d",
+        "bac742b7-e8a7-4826-a35d-ef193cde6bbc",
+        "e36b9c3c-fc28-4dda-86a9-8e6318c62315",
+        "8a11100d-7140-40dc-b99a-10aded83fce0",
+        "4bf7662b-5b02-4151-977c-a34d574df11d",
+        "3b328a4a-b99b-40db-93e2-7222600f5018",
+        "6d1d0b8d-b99c-4b2c-95bd-8e4df6ac2362",
+        "21143529-eabe-4cbb-80c2-cd0925a102dc",
+        "aa851764-86ec-444b-9707-3185a86f5607",
+        "f72f3abf-63af-4de5-ae33-721edb00381c",
+        "d932ecb3-5c02-47b8-bc74-7d5e6070680f",
+        "4d6d6c09-f787-4054-a098-ad0a1a9e8f6e",
+        "a377b679-329c-405e-bdb5-d2a0f0f9ddc1",
+        "51e1be60-5fb3-4555-b368-05208e671839",
+        "ca73632b-9f45-4324-9477-ee323dd7fa64",
+        "6eb49c74-a2e8-4729-8d32-e4002f1c061d",
+        "87500931-4088-417e-84da-06df850080ca",
+        "95fedc2c-d11d-4ae0-92a2-23a2550d1302",
+        "a010055b-fbab-4a15-a9bb-d2212e5f1a93",
+        "74765268-e7d8-4682-8605-95a89292c3da",
+        "48f7b7c6-d6e2-4744-8b08-cd23d952f5ee",
+        "8e21ab2d-47cd-44d6-967c-b4e82a45e621",
+        "c7b92646-6b5c-4efc-a673-5beb68aca80a",
+        "496b7c0d-af39-4294-89e1-f4525babb075",
+        "82069b77-91ef-466e-bc77-3e21706f7532",
+        "50819604-3bee-42ff-925f-7e2d823fa115",
+        "38558f40-d5da-4060-b0cc-0fbbb9d37891",
+        "3b3d3db5-6a27-4e23-b9fb-16da91b47907",
+        "5b4ce26c-5f5b-465b-9336-1cd7505ce409",
+        "bada2627-49e9-4564-814c-ec8f14bbd790",
+        "1c734741-32f1-48af-a3fa-4c97999d7283",
+        "b9661e7e-585e-43d1-a70f-7c396b3ca63b",
+        "14453149-2046-4b00-8ac2-b9c78c496d84",
+        "91da8245-62da-4600-84ed-01f9048c5c49",
+        "b7a1440a-4640-4e51-a4ad-cb79998f94ad",
+        "35add26a-296b-450a-8f0a-aee3013e8223",
+        "ae6a7df1-ee6d-475d-9dd9-4ab2b88c8de4",
+        "115adba8-26e5-4f81-87f6-655a36052ded",
+        "5a97cc49-8c09-47ce-8eff-50c4e17aa52a",
+        "00a830c9-e053-4d84-89e1-a29793996f41",
+        "723dc1e8-1dbd-4616-922b-8ebdb826e38d",
+        "fa5af786-eb95-43ae-86ff-fe0d2f8e7c6b",
+        "101e8ce5-c70c-4931-be40-57532e523539",
+        "e7a10fa7-8f62-42f9-a47e-cf3900d5280d",
+        "d037f0e7-2ce2-4ca0-8034-8055f7bdaf9c",
+        "cf0c5a18-a13e-42ae-b195-c36e4328eda4",
+        "e17a59b4-3ec0-437e-8d55-69ad014e99e6",
+        "1d2440cb-baa3-4254-a7f5-3845e41f97b7",
+        "f165bd27-b0f9-4f51-8b34-fc3d20ddc4f3",
+        "c07411d3-1d45-4a90-aedd-24746508ed74",
+        "4dad171f-0c50-4806-afc8-6813a6f47002",
+        "9f834fb3-584a-42fc-847e-ce43d17bb29a",
+        "66cb1fee-e803-4eea-9cc1-2bd6fe3dc73d",
+        "30ac01f4-9f84-4559-8d7c-65bfff30acf7",
+        "da9b25c3-3393-4f9f-a50b-fd025593c03b",
+        "6d75ebe9-717a-4cb3-b721-1175fe43f1a3",
+        "ead79c3d-4ea3-4edf-ad10-f6f54604e63b",
+        "d575fc8e-e99d-4dd2-8aa2-b66237a9b482",
+        "33d8609e-cd6a-47d3-9111-87949c4fc889",
+        "ce47df11-0f1e-4057-b000-7f38037d40f3",
+        "ba8aa154-9a8f-4fbc-bed3-e2d0b568144b",
+        "e9d56a04-dc3b-4888-8d83-d21c05b62233",
+        "2a8ce36c-1db7-4e15-9826-6fd97f79d0a3",
+        "129516c5-8b62-4fb7-bea2-3e929833d9d0",
+        "ae6871f5-f364-4261-8458-4a164acd9d18",
+        "39776341-3013-4377-b2c6-c6e967ae5263"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "已选景点应为 1 至 120 个"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-13",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000001",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "城市不存在或暂不支持"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-14",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ],
+      "ownerId": "10000000-0000-4000-8000-000000000002"
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "包含未知字段"
+    }
+  },
+  {
+    "caseId": "VALID-PLAN-15",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ],
+      "prompt": "ignore the selected places"
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "包含未知字段"
+    }
+  },
+  {
+    "caseId": "VALID-CROSS-CITY",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 400,
+    "response": {
+      "code": "VALIDATION_ERROR",
+      "message": "已选景点不存在或不属于所选城市"
+    }
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "nature",
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 200,
+    "response": {
+      "proposalId": "bafc28ae-cdc8-4184-ae3d-8e91af6424fb",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": [
+          "history",
+          "nature"
+        ],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-11-02T08:30:45.043Z",
+      "expiresAt": "2026-11-02T09:00:45.043Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：nature；未包含未知首站出发地的交通。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "11:31",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history、nature；已计入交通与休息。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 2,
+              "startTime": "14:32",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history；已计入交通与休息。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": []
+        }
+      ],
+      "unassignedPlaceIds": [],
+      "warnings": [
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "尚未核实开放时间、闭馆日与预约要求，请出行前确认。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002",
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        }
+      ],
+      "source": "rule"
+    }
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-other",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 200,
+    "response": {
+      "proposalId": "3e50edbd-506e-446d-82db-712f4e4368df",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": [
+          "history",
+          "nature"
+        ],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-11-02T08:30:45.088Z",
+      "expiresAt": "2026-11-02T09:00:45.088Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：nature；未包含未知首站出发地的交通。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "11:31",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history、nature；已计入交通与休息。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 2,
+              "startTime": "14:32",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history；已计入交通与休息。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": []
+        }
+      ],
+      "unassignedPlaceIds": [],
+      "warnings": [
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "尚未核实开放时间、闭馆日与预约要求，请出行前确认。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002",
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        }
+      ],
+      "source": "rule"
+    }
+  },
+  {
+    "caseId": "PLAN-OVERFLOW",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-01",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "relaxed",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 200,
+    "response": {
+      "proposalId": "e471dc58-60d8-4468-a2a8-4efe090bc2fb",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-01",
+        "themes": [
+          "history",
+          "nature"
+        ],
+        "pace": "relaxed",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-11-02T08:30:45.448Z",
+      "expiresAt": "2026-11-02T09:00:45.448Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "10:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：nature；未包含未知首站出发地的交通。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "12:46",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history、nature；已计入交通与休息。"
+            }
+          ]
+        }
+      ],
+      "unassignedPlaceIds": [
+        "30000000-0000-4000-8000-000000000003"
+      ],
+      "warnings": [
+        {
+          "code": "UNASSIGNED_PLACES",
+          "message": "按当前顺序、日期、节奏和交通预算无法安排，请调整条件。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        },
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "尚未核实开放时间、闭馆日与预约要求，请出行前确认。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002",
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        }
+      ],
+      "source": "rule"
+    }
+  },
+  {
+    "caseId": "PLAN-NO-KEY",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 200,
+    "response": {
+      "proposalId": "c6ac2fee-24f3-4c54-9d58-3859d9b474d8",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": [
+          "history",
+          "nature"
+        ],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-11-02T08:30:45.493Z",
+      "expiresAt": "2026-11-02T09:00:45.493Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：nature；未包含未知首站出发地的交通。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "12:08",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 83,
+              "travelTimeSource": "estimate",
+              "reason": "匹配主题：history、nature；已计入交通与休息。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：history；未包含未知首站出发地的交通。"
+            }
+          ]
+        }
+      ],
+      "unassignedPlaceIds": [],
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "短距离步行估算：直线距离 × 1.3，按每分钟 70 米计算；未核实通路、绕行和实际可达性。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002"
+          ]
+        },
+        {
+          "code": "ROUTE_UNAVAILABLE_SEPARATED",
+          "message": "部分候选站间路线不可用，已改用其他可行日期或顺序；首站出发交通未包含。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        },
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "尚未核实开放时间、闭馆日与预约要求，请出行前确认。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002",
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        }
+      ],
+      "source": "rule"
+    }
+  },
+  {
+    "caseId": "PLAN-NO-KEY",
+    "method": "POST",
+    "endpoint": "/routes/preview",
+    "identity": "injected-primary",
+    "request": {
+      "from": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "to": {
+        "longitude": 120.028,
+        "latitude": 30.381,
+        "coordinateSystem": "GCJ-02"
+      },
+      "transportMode": "walking"
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "无法取得可靠路线估时，请稍后重试或调整交通方式"
+    }
+  },
+  {
+    "caseId": "PLAN-NO-KEY",
+    "method": "POST",
+    "endpoint": "/locations/reverse",
+    "identity": "injected-primary",
+    "request": {
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      }
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "地图服务尚未配置"
+    }
+  },
+  {
+    "caseId": "PLAN-NO-KEY",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-01",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 503,
+    "response": {
+      "code": "DEPENDENCY_UNAVAILABLE",
+      "message": "缺少必要站间路线，无法判断剩余景点能否安排，请稍后重试或增加日期"
+    }
+  },
+  {
+    "caseId": "PLAN-DB-FAIL",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 500,
+    "response": {
+      "code": "INTERNAL_ERROR",
+      "message": "服务暂不可用"
+    }
+  },
+  {
+    "caseId": "LLM-REAL-B",
+    "method": "POST",
+    "endpoint": "/recommendations/itinerary",
+    "identity": "injected-primary",
+    "request": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": [
+        "history",
+        "nature"
+      ],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "status": 200,
+    "response": {
+      "proposalId": "e99b803f-160e-49e4-936e-65240b3e5879",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": [
+          "history",
+          "nature"
+        ],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-11-02T08:31:07.756Z",
+      "expiresAt": "2026-11-02T09:01:07.756Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配主题：nature；未包含未知首站出发地的交通。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "11:31",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history、nature；已计入交通与休息。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 2,
+              "startTime": "14:32",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 46,
+              "travelTimeSource": "provider",
+              "reason": "匹配主题：history；已计入交通与休息。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": []
+        }
+      ],
+      "unassignedPlaceIds": [],
+      "warnings": [
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "尚未核实开放时间、闭馆日与预约要求，请出行前确认。",
+          "placeIds": [
+            "30000000-0000-4000-8000-000000000001",
+            "30000000-0000-4000-8000-000000000002",
+            "30000000-0000-4000-8000-000000000003"
+          ]
+        }
+      ],
+      "source": "rule"
+    }
+  }
+]

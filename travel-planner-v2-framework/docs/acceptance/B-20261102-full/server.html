@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>服务器 Docker 与清理复核</title><style>body{margin:0;background:#edf2f7;color:#182b42;font-family:'Microsoft YaHei','Segoe UI',sans-serif;font-size:15px;line-height:1.6}main{max-width:1100px;margin:24px auto;padding:24px 32px;background:white;border-radius:14px}h1{font-size:30px;margin:6px 0 12px}h2{font-size:20px;margin-top:22px}h3{font-size:16px}p{margin:10px 0}.muted{color:#556c82;font-size:13px}nav{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0}a{color:#1467a8;text-decoration:none}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#f1f8f6;border:1px solid #cfe6de;border-radius:10px;padding:16px}.number{font-size:30px;font-weight:700;color:#137c58}.note{padding:13px 17px;background:#fff7e8;border-left:4px solid #c78418;border-radius:4px}.pass{color:#08724c;font-weight:650}table{border-collapse:collapse;width:100%;font-size:13px;margin:12px 0}td,th{text-align:left;border-bottom:1px solid #dce5ee;padding:8px 10px;vertical-align:top}th{background:#eef4fa}pre{background:#f6f8fb;border:1px solid #dbe4ee;padding:15px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 Consolas,'Microsoft YaHei',monospace;border-radius:6px}details{margin:12px 0}summary{cursor:pointer;color:#1467a8}.reply{border-left:4px solid #168b66;background:#eef9f4;padding:16px 20px;font-size:17px}.pill{display:inline-block;padding:3px 10px;border-radius:20px;background:#e8f6ef;color:#08724c;font-size:13px}footer{border-top:1px solid #dce5ee;padding-top:15px;margin-top:26px;color:#556c82;font-size:12px}code{background:#eef2f7;padding:1px 4px}ul{padding-left:24px}@media(max-width:800px){main{margin:0;padding:20px}.cards{grid-template-columns:repeat(2,1fr)}}</style><main><div class="muted">Travel Planning Assistant · B · 2026-11-02 · 实际执行证据</div><h1>服务器 Docker 与清理复核</h1><nav><a href="index.html">验收总览</a><a href="model.html">真实 prompt / 回复</a><a href="pipeline.html">B 模型落库链路</a><a href="coverage.html">79 场景</a><a href="cli.html">命令输出</a><a href="server.html">服务器 Docker</a></nav><p>服务器 120.53.94.209；Docker 只在服务器使用；数据库与模型均绑定回环地址。</p><p><a href="12-server-docker.txt">服务器原始输出</a> · <a href="remote-commands.txt">部署与核对命令</a></p><pre>COMMAND: date -Iseconds
+2026-11-02T16:37:26+08:00
+
+COMMAND: docker server version
+29.1.3
+
+COMMAND: docker compose version
+2.40.3+ds1-0ubuntu1
+
+COMMAND: docker ps --filter label=com.docker.compose.project=tpa-b-db
+NAMES                 IMAGE                                                  STATUS                 PORTS
+tpa-b-db-postgres-1   mirror.ccs.tencentyun.com/library/postgres:17-alpine   Up 2 hours (healthy)   127.0.0.1:55432-&gt;5432/tcp
+
+COMMAND: docker inspect --format Health.Status tpa-b-db-postgres-1
+healthy
+
+COMMAND: PostgreSQL version and development directory counts
+ server_version 
+----------------
+ 17.11
+(1 row)
+
+ destinations 
+--------------
+            2
+(1 row)
+
+ places 
+--------
+      3
+(1 row)
+
+
+COMMAND: list development and dedicated test databases
+        datname        
+-----------------------
+ travel_planner
+ travel_planner_b_test
+(2 rows)
+
+
+COMMAND: remote model container and resource limits
+NAMES          IMAGE                                            STATUS          PORTS
+tpa-b-ollama   mirror.ccs.tencentyun.com/ollama/ollama:0.13.5   Up 12 minutes   127.0.0.1:11434-&gt;11434/tcp
+Status=running MemoryBytes=1782579200 NanoCpus=1500000000 Restart=unless-stopped
+
+COMMAND: model versions and immutable digests
+ollama version is 0.13.5
+{&quot;models&quot;:[{&quot;name&quot;:&quot;qwen2.5:0.5b&quot;,&quot;model&quot;:&quot;qwen2.5:0.5b&quot;,&quot;modified_at&quot;:&quot;2026-11-02T08:26:35.190821355Z&quot;,&quot;size&quot;:397821319,&quot;digest&quot;:&quot;a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67&quot;,&quot;details&quot;:{&quot;parent_model&quot;:&quot;&quot;,&quot;format&quot;:&quot;gguf&quot;,&quot;family&quot;:&quot;qwen2&quot;,&quot;families&quot;:[&quot;qwen2&quot;],&quot;parameter_size&quot;:&quot;494.03M&quot;,&quot;quantization_level&quot;:&quot;Q4_K_M&quot;}}]}
+COMMAND: test schema cleanup audit
+ nspname 
+---------
+(0 rows)
+
+
+REMOTE AUDIT EXIT: 0
+</pre><footer>本页由实际日志与 JSON 生成。截图为该报告在浏览器中的真实截图；命令行原文另存 .txt。身份为测试专用注入；高德正式服务与 A/C/D 联合流程未计为通过。</footer></main></html>

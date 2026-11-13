@@ -1,0 +1,36 @@
+Remote server: ubuntu@120.53.94.209:22. Password was entered at hidden SSH/scp prompts and is not recorded.
+Local Docker was not used.
+
+SSH forwarding used during this run:
+ssh -tt -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 127.0.0.1:55432:127.0.0.1:55432 -L 127.0.0.1:11434:127.0.0.1:11434 -p 22 ubuntu@120.53.94.209
+
+Server hardware/readiness:
+free -h
+nproc
+uname -m
+sudo -n docker ps --format '{{.Names}} {{.Status}}'
+curl -I -L --connect-timeout 5 --max-time 15 https://registry.ollama.ai/v2/library/qwen2.5/manifests/0.5b
+
+Actual model deployment:
+sudo -n docker pull mirror.ccs.tencentyun.com/ollama/ollama:0.13.5
+sudo -n docker run -d --name tpa-b-ollama --restart unless-stopped --memory 1700m --cpus 1.5 -e OLLAMA_NUM_PARALLEL=1 -e OLLAMA_MAX_LOADED_MODELS=1 -p 127.0.0.1:11434:11434 -v tpa-b-ollama-data:/root/.ollama mirror.ccs.tencentyun.com/ollama/ollama:0.13.5
+sudo -n docker exec tpa-b-ollama ollama pull qwen2.5:0.5b
+
+Image digest reported by docker pull:
+sha256:2c9595c555fd70a28363489ac03bd5bf9e7c5bdf2890373c3a830ffd7252ce6d
+
+Reusable setup script:
+scripts/remote-llm/setup.sh (copy: remote-llm-setup.sh)
+OLLAMA_IMAGE=mirror.ccs.tencentyun.com/ollama/ollama:0.13.5 bash setup.sh
+
+Upload versioned audit and setup scripts:
+scp -P 22 scripts/acceptance/remote-audit.sh scripts/remote-llm/setup.sh ubuntu@120.53.94.209:/home/ubuntu/tpa-b-db/
+
+Actual remote audit and downloaded raw output:
+bash /home/ubuntu/tpa-b-db/remote-audit.sh > /home/ubuntu/tpa-b-db/acceptance-full-audit-20261102.txt 2>&1
+scp -P 22 ubuntu@120.53.94.209:/home/ubuntu/tpa-b-db/acceptance-full-audit-20261102.txt docs/acceptance/B-20261102-full/12-server-docker.txt
+
+Reusable dual tunnel:
+npm run services:tunnel:b
+
+Do not rerun docker run over the existing container; the reusable setup script inspects and reuses it.

@@ -1,0 +1,23 @@
+COMMAND: npm run typecheck
+START UTC: 2026-11-02T08:35:42.633Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+> travel-planner-v2@0.1.0 typecheck
+> npm run typecheck --workspaces --if-present
+
+
+> @travel/api@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @travel/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @travel/shared@0.1.0 typecheck
+> tsc --noEmit
+
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:35:46.966Z

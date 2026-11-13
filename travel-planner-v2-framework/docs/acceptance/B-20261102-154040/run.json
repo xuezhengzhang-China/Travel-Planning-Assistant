@@ -1,0 +1,130 @@
+{
+  "startedAt": "2026-11-02T07:44:11.367Z",
+  "finishedAt": "2026-11-02T07:44:37.792Z",
+  "timeZone": "Asia/Shanghai",
+  "projectRoot": "F:\\TPA\\Travel-Planning-Assistant\\travel-planner-v2-framework",
+  "baseRevision": "2df4883df9d2641fb73f7481b7066c38130592c5",
+  "workingTreeChangesIncluded": true,
+  "commandGroups": 11,
+  "passed": 11,
+  "failed": 0,
+  "results": [
+    {
+      "id": "01-node",
+      "title": "Node version",
+      "command": "node --version",
+      "log": "01-node.txt",
+      "startedAt": "2026-11-02T07:44:11.368Z",
+      "elapsedMs": 51,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "02-npm",
+      "title": "npm version",
+      "command": "npm --version",
+      "log": "02-npm.txt",
+      "startedAt": "2026-11-02T07:44:11.419Z",
+      "elapsedMs": 228,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "03-lint",
+      "title": "lint",
+      "command": "npm run lint",
+      "log": "03-lint.txt",
+      "startedAt": "2026-11-02T07:44:11.647Z",
+      "elapsedMs": 2168,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "04-typecheck",
+      "title": "typecheck",
+      "command": "npm run typecheck",
+      "log": "04-typecheck.txt",
+      "startedAt": "2026-11-02T07:44:13.815Z",
+      "elapsedMs": 3587,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "05-build",
+      "title": "build",
+      "command": "npm run build",
+      "log": "05-build.txt",
+      "startedAt": "2026-11-02T07:44:17.402Z",
+      "elapsedMs": 3851,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "06-fast-tests",
+      "title": "test",
+      "command": "npm run test",
+      "log": "06-fast-tests.txt",
+      "startedAt": "2026-11-02T07:44:21.253Z",
+      "elapsedMs": 4241,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "07-migrations",
+      "title": "db:migrate:status",
+      "command": "npm run db:migrate:status",
+      "log": "07-migrations.txt",
+      "startedAt": "2026-11-02T07:44:25.494Z",
+      "elapsedMs": 1474,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "08-integration",
+      "title": "test:integration:b",
+      "command": "npm run test:integration:b",
+      "log": "08-integration.txt",
+      "startedAt": "2026-11-02T07:44:26.968Z",
+      "elapsedMs": 7459,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "09-format",
+      "title": "format:check",
+      "command": "npm run format:check",
+      "log": "09-format.txt",
+      "startedAt": "2026-11-02T07:44:34.427Z",
+      "elapsedMs": 1853,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "10-diff-check",
+      "title": "Git whitespace check",
+      "command": "git -c core.autocrlf=false diff --check",
+      "log": "10-diff-check.txt",
+      "startedAt": "2026-11-02T07:44:36.280Z",
+      "elapsedMs": 147,
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "id": "11-http-smoke",
+      "title": "Live HTTP health/readiness/authentication",
+      "command": "node apps/api/scripts/acceptance/http-smoke.cjs http://127.0.0.1:3031/api \"F:\\TPA\\Travel-Planning-Assistant\\travel-planner-v2-framework\\docs\\acceptance\\B-20261102-154040\\http-results.json\"",
+      "log": "11-http-smoke.txt",
+      "startedAt": "2026-11-02T07:44:36.463Z",
+      "elapsedMs": 985,
+      "exitCode": 0,
+      "signal": null
+    }
+  ],
+  "pending": [
+    "C real registration/login and B authenticator integration",
+    "A/C formal trip confirmation and pages",
+    "D map/journal integration",
+    "Real AMap credentials and real model provider verification",
+    "28 Postman business requests requiring real authentication/configuration"
+  ]
+}

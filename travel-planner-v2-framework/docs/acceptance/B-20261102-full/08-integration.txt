@@ -1,0 +1,36 @@
+COMMAND: npm run test:integration:b
+START UTC: 2026-11-02T08:35:57.671Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+> travel-planner-v2@0.1.0 test:integration:b
+> npm run build --workspace=@travel/api && npm run test:integration:b --workspace=@travel/api
+
+
+> @travel/api@0.1.0 build
+> tsc -p tsconfig.build.json
+
+
+> @travel/api@0.1.0 test:integration:b
+> node scripts/test-integration-b.cjs
+
+▶ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership
+  ✔ upgrade an original-schema database via forward migrations (1160.3888ms)
+  ✔ seed twice without duplicates and keep user creation separate (339.5418ms)
+  ✔ real directory filtering and stable ranking happen before pagination (285.9812ms)
+  ✔ authenticated HTTP proposal generation persists without touching formal trips (118.0832ms)
+  ✔ new app/pool reads saved proposals; cross-user reads return 404 (332.8276ms)
+  ✔ no-key HTTP generation uses real B geo fallback and persists a two-day demo (220.589ms)
+  ✔ database constraints enforce real foreign keys and owner deletion cascades (41.1194ms)
+✔ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership (2944.738ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3756.4036
+
+EXIT CODE: 0
+END UTC: 2026-11-02T08:36:04.645Z

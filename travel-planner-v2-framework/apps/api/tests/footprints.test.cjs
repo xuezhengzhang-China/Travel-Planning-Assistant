@@ -4,7 +4,6 @@ const { Buffer } = require('node:buffer');
 const { mkdtemp, readFile, readdir, rm } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
-const { URL } = require('node:url');
 const Response = globalThis.Response;
 const {
   MAX_PHOTO_BYTES,

@@ -1,0 +1,403 @@
+[
+  {
+    "caseId": "MAP-walking",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-driving",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-transit",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-transit",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.102000,30.242000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-transit",
+    "path": "/v5/direction/transit/integrated",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "city1": "0571",
+      "city2": "0571",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-REVERSE",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-UNKNOWN-CITY",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-GPS",
+    "path": "/v3/assistant/coordinate/convert",
+    "parameters": {
+      "locations": "120.140000,30.240000",
+      "coordsys": "gps",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "http",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "http",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-http",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "http",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "business",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "business",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-business",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "business",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "json",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "json",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-json",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "json",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "duration",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "duration",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "duration",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.102000,30.242000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "duration",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-duration",
+    "path": "/v5/direction/transit/integrated",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "city1": "0571",
+      "city2": "0571",
+      "output": "JSON"
+    },
+    "mode": "duration",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "slow",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "path": "/v5/direction/driving",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "slow",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "MAP-FAIL-slow",
+    "path": "/v3/geocode/regeo",
+    "parameters": {
+      "location": "120.148000,30.245000",
+      "extensions": "base",
+      "output": "JSON"
+    },
+    "mode": "slow",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.102000,30.242000",
+      "destination": "120.028000,30.381000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-OWNERSHIP",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.102000,30.242000",
+      "destination": "120.028000,30.381000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-OVERFLOW",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-DB-FAIL",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "PLAN-DB-FAIL",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.102000,30.242000",
+      "destination": "120.028000,30.381000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "LLM-REAL-B",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.148000,30.245000",
+      "destination": "120.102000,30.242000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  },
+  {
+    "caseId": "LLM-REAL-B",
+    "path": "/v5/direction/walking",
+    "parameters": {
+      "origin": "120.102000,30.242000",
+      "destination": "120.028000,30.381000",
+      "show_fields": "cost",
+      "output": "JSON"
+    },
+    "mode": "ok",
+    "service": "controlled HTTP fixture, not AMap"
+  }
+]

@@ -1,0 +1,390 @@
+[
+  {
+    "path": ".dockerignore",
+    "sha256": "f1416f59b8b536bb1e1d149b34e2a911bd63ba929bfbee0ad1a06cf72adca9fd"
+  },
+  {
+    "path": ".editorconfig",
+    "sha256": "251db34e2e35b25bcd7888df2be0f92d56e0e204a405e1374e691710ed583827"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "sha256": "b86109bd968f5451701a61092fa008570ba735b7427f77ec6666574c1878de77"
+  },
+  {
+    "path": ".gitignore",
+    "sha256": "de94fef33652d1410c1d6b7506b3d87681d01ae2f0e6fb41f8eb0ee4f7afafe8"
+  },
+  {
+    "path": ".prettierignore",
+    "sha256": "396605755d12c1bf1f94ba2282c4a9eae0942800984913f279a7ff1d45a2310e"
+  },
+  {
+    "path": ".prettierrc.json",
+    "sha256": "cb3b25949fd23c141c84113f8bed9185d452f8f720bba3f375ef6d048b02d3ae"
+  },
+  {
+    "path": "Dockerfile.dev",
+    "sha256": "89254c18102130550855f90dba08ac9def3c5c23090efb5dd51dde19878c24a1"
+  },
+  {
+    "path": "README.md",
+    "sha256": "9b420868bba08d0adb76dbd5ef1af440ead292854f50a58f09c96bb31c88fdf0"
+  },
+  {
+    "path": "apps/api/migrations/202610240001_initial_schema.js",
+    "sha256": "38a1a6a606fb3f68849b497631bd2161219a85527c0d71c413d97c1b4f4d401f"
+  },
+  {
+    "path": "apps/api/migrations/202611020001_places.js",
+    "sha256": "bef392b767aaff9f1540cf530150571ab2459e7b0a7d0d22c13e956128656c79"
+  },
+  {
+    "path": "apps/api/migrations/202611020002_recommendation_proposals.js",
+    "sha256": "b2264b78e14055b0324436d11620d350b7687ea8d3544fc6b0889535a5321bb3"
+  },
+  {
+    "path": "apps/api/package.json",
+    "sha256": "09b1b0d3bede30b6121a2ee57db50ac9f5fbcc57309a67cab01401d7e5721ff8"
+  },
+  {
+    "path": "apps/api/scripts/acceptance/http-smoke.cjs",
+    "sha256": "e5c1fa7ed71f1e043586681be66497a253bd65d729728981c82f7b1bef1e4982"
+  },
+  {
+    "path": "apps/api/scripts/acceptance/run.cjs",
+    "sha256": "268949db9ee94a7c0027d65369eb2d77802ddded02f97a2f2ed9b0dd1230f065"
+  },
+  {
+    "path": "apps/api/scripts/migration-status.cjs",
+    "sha256": "14764441c5fa9d659ba22e51ff9885da6fd2ebb44c4e050d4058868057808a9f"
+  },
+  {
+    "path": "apps/api/scripts/seed-b.cjs",
+    "sha256": "b03aedb827535e577f85dfc12681de3ef98a3d2585936b5bc27dc5aa72237782"
+  },
+  {
+    "path": "apps/api/scripts/test-integration-b.cjs",
+    "sha256": "d8e9ae89328cffbff611eb08865573333296c0869620dc99f4aeebad4bdc088e"
+  },
+  {
+    "path": "apps/api/src/app.module.ts",
+    "sha256": "6c1096b077f76d15b5de1678f029f3a4b8bfa699535d53892e479a06161f41db"
+  },
+  {
+    "path": "apps/api/src/app.ts",
+    "sha256": "1dd1aa693bf59b6d4dd03cf7c87c2ea6e8fad15a977e7cc3a2928ec2f7af8fa0"
+  },
+  {
+    "path": "apps/api/src/b/b.module.ts",
+    "sha256": "7867ab2e7c495201064777c8348f2c44fab28bebfa1e6022ecb6821c07508614"
+  },
+  {
+    "path": "apps/api/src/b/config.ts",
+    "sha256": "9d619b5f388d70aae4b8eac3da1bf537edacdebaf4d5b35010503023acf453e2"
+  },
+  {
+    "path": "apps/api/src/b/controllers.ts",
+    "sha256": "262b34c14111a0799b793ec5a3ab02be083b01e6d7ad5ea3e3611752e6b42da7"
+  },
+  {
+    "path": "apps/api/src/b/errors.ts",
+    "sha256": "2e673a77ce3c5e9fb23bfae0ee312b7d968f876bb58a39d5706d58b90042efd5"
+  },
+  {
+    "path": "apps/api/src/b/identity.ts",
+    "sha256": "b51b36a708a1e3c294c1bf62d7c6a82cf15eff29d0d46ba1b3cf8c50dc582fd4"
+  },
+  {
+    "path": "apps/api/src/b/types.ts",
+    "sha256": "576b5d4c3cab4096a6024e9780d508ede403f7f97f31f1315880e78da1229c1b"
+  },
+  {
+    "path": "apps/api/src/b/validation.ts",
+    "sha256": "619f7315497d90a9de0b533a2f48af0ab614b12cd6012a1db401e234e28ba02c"
+  },
+  {
+    "path": "apps/api/src/config/config.module.ts",
+    "sha256": "aaaf553886c02742b8179b84e78a34ad8c19321cae0cd0cc6984d7d43a090d5b"
+  },
+  {
+    "path": "apps/api/src/config/config.service.ts",
+    "sha256": "ee42f3718b21c37e51d25ee719da61be62cfe42ed971b3cd71609549b08a2e4f"
+  },
+  {
+    "path": "apps/api/src/database/database.module.ts",
+    "sha256": "2ab995d3a6c30da2904674be7d5816edf0aec6a9ebd574fc6f733094b4dcdb9e"
+  },
+  {
+    "path": "apps/api/src/database/database.service.ts",
+    "sha256": "9be7d6503d92e40543f075849344b3e73a2483b79611a0b1184622f5517061c4"
+  },
+  {
+    "path": "apps/api/src/health/health.controller.ts",
+    "sha256": "8a96eb2bccb53f0dca0a0a857ae9bc2ba42f935c51314dc4c69755731b045822"
+  },
+  {
+    "path": "apps/api/src/health/health.module.ts",
+    "sha256": "139958cdf640b7528e730cd87c995ea3b8ae47a5759770b95fe9e2d0c95e60d7"
+  },
+  {
+    "path": "apps/api/src/integrations/amap/amap.client.ts",
+    "sha256": "16a4c99bbf590b82d45ca113841307fa932d9ad15f10a0b37a26b164b951d927"
+  },
+  {
+    "path": "apps/api/src/integrations/amap/geo.service.ts",
+    "sha256": "970c56c71aeeaccc70a4fad35c1ebe959c3417d8ad3d9e650f4c249c5c19a267"
+  },
+  {
+    "path": "apps/api/src/integrations/llm/llm.advisor.ts",
+    "sha256": "8578b8be40eb030b02cab9f3d4b09cc22af98d21b0c84480df37b1e4951c4e83"
+  },
+  {
+    "path": "apps/api/src/main.ts",
+    "sha256": "db4a86b549ef1119da95f9083696e2343dd14283396f67e7f0d5d248d653d3ec"
+  },
+  {
+    "path": "apps/api/src/places/places.repository.ts",
+    "sha256": "e4b022cfd0d9c0b85130d46d9614f5e5410e11ec61bfe7d9e51c1c259cbae4b3"
+  },
+  {
+    "path": "apps/api/src/places/places.service.ts",
+    "sha256": "15df76882365820b063700e9450a50a8ac8ab04b38df4d8d0e2a1b10dc7c6962"
+  },
+  {
+    "path": "apps/api/src/recommendations/proposals.repository.ts",
+    "sha256": "a8112767d6f3c3902c828d751200e9fe1b53cbba69ae8e3c6c44032bf3202e9c"
+  },
+  {
+    "path": "apps/api/src/recommendations/recommendations.service.ts",
+    "sha256": "a57b160cd98843c798ea869c3138c070f6c31f2f6a2797758019084ba3bb23bd"
+  },
+  {
+    "path": "apps/api/src/recommendations/rule-planner.ts",
+    "sha256": "f02448cc1854ce545f9769adfffe0a54269d90d9ac6dead0f7e3b34d619d40fc"
+  },
+  {
+    "path": "apps/api/tests/b-http.test.cjs",
+    "sha256": "79d9d32addff626eeb60a1f325d73f9168d71efe5404765c9cb3e477ec8f4adb"
+  },
+  {
+    "path": "apps/api/tests/config.test.cjs",
+    "sha256": "647410aef67692af3460e3e45d1dca193819ad1044b2b779aec8876791eeb122"
+  },
+  {
+    "path": "apps/api/tests/database.test.cjs",
+    "sha256": "80c980518b60317cc01c7ada05fd284788c62a79af946103bf7ffe84b6f853c8"
+  },
+  {
+    "path": "apps/api/tests/health.test.cjs",
+    "sha256": "71488010c6726907416b1e933bac245c533d17ecc86fafdbedfa0c072a36cc04"
+  },
+  {
+    "path": "apps/api/tests/helpers/b.cjs",
+    "sha256": "e77a7ec9887686711f9f5c30aecc4acb36aeb20e41e7508ebb757d735e56308c"
+  },
+  {
+    "path": "apps/api/tests/integration/b.test.cjs",
+    "sha256": "26ea0dd2241ec5c8415adebd9bca234565dc27f65b22a4cab2f2a4c5db1fa283"
+  },
+  {
+    "path": "apps/api/tests/integrations.test.cjs",
+    "sha256": "b4ffc9ff779d1e6d136bdb1114a7c5a1ebc3e47ecc59ac032688f329631a9d59"
+  },
+  {
+    "path": "apps/api/tests/llm.test.cjs",
+    "sha256": "1a8781628c4dcb7d295c5ed7b4e61064342d233592d797f697342e1b3100dbc0"
+  },
+  {
+    "path": "apps/api/tests/migration-status.test.cjs",
+    "sha256": "fe37de2726aea44f8342e245be49397d6fabd2db59da2a7655e9b48d723538f3"
+  },
+  {
+    "path": "apps/api/tests/places.test.cjs",
+    "sha256": "168e9918651af52eaa5772f82208d5cfa2130ccf7690bffbddf5d27c67a3ab96"
+  },
+  {
+    "path": "apps/api/tests/recommendations.test.cjs",
+    "sha256": "f8cd2e5c62a317c4ab889cc9f8dad13b669ae94c9c1ed2451eaf6888b7626941"
+  },
+  {
+    "path": "apps/api/tsconfig.build.json",
+    "sha256": "e0c88c0581574b9592a2fd3b0ec4cd2da88c2b05188abbee6172b96f95f1bea7"
+  },
+  {
+    "path": "apps/api/tsconfig.json",
+    "sha256": "b5b7df10d2cbfe97082e6e9efde513bd79808c5530f91bfcd952b296e8df403e"
+  },
+  {
+    "path": "apps/web/index.html",
+    "sha256": "655a43bc1b5a33c5e04692fc80925929a291de6904e5a2e290563e67e798bfb6"
+  },
+  {
+    "path": "apps/web/package.json",
+    "sha256": "c4debaa3926573458bbf82a3b2a7d5f208dbdb6b3b3dc81b4a5705f9694b2324"
+  },
+  {
+    "path": "apps/web/src/App.tsx",
+    "sha256": "99de5333e8a510cf91b36406e3654d12c5e268546c4553ee5ac0383be8058946"
+  },
+  {
+    "path": "apps/web/src/lib/api.ts",
+    "sha256": "7dacd482bef6634c061e9193a2be8bd7d79a1a52bfd85338d92d505f804d402f"
+  },
+  {
+    "path": "apps/web/src/main.tsx",
+    "sha256": "60d0dcfdd9591e78900501c88b4824a28d7f759aef727bdb49330a81926afae6"
+  },
+  {
+    "path": "apps/web/src/style.css",
+    "sha256": "9b3846406a7e540bce7fb4e4abbed49c8de1f6a28019896da199fc0570fdbc42"
+  },
+  {
+    "path": "apps/web/src/vite-env.d.ts",
+    "sha256": "ad6a9aa20e19760ba1114b02d0ea692886eb445062e11eb851a3fc1c1a84e628"
+  },
+  {
+    "path": "apps/web/tsconfig.json",
+    "sha256": "90cae393ae1b5fabe23c2c18d7379b95d46b87d623d800674c07a7ce7386338d"
+  },
+  {
+    "path": "apps/web/vite.config.ts",
+    "sha256": "2c3164c11e9e0ae51eeabadaf4faf47ae7728d10b6bebecd6f2a85701dbed164"
+  },
+  {
+    "path": "docker-compose.remote-db.yml",
+    "sha256": "c946c89aade939177ea5d3f76e0d28e9e9c063254a6fc375aa7c44794a957d4e"
+  },
+  {
+    "path": "docker-compose.yml",
+    "sha256": "f887df474b024a9be3c79179b73e8a2d3bc2445995ca3f784c272e846804f982"
+  },
+  {
+    "path": "docs/A-前端开发说明.md",
+    "sha256": "5ab327b066cc395b6b277cbedc1b4aa1d3f7dac2a398e05b9ed67426582e032a"
+  },
+  {
+    "path": "docs/B-API与智能推荐开发说明.md",
+    "sha256": "7ddf1aabfba22fd32efb7a18a48d0d592829993e25f92ecb75be50ba20f81e76"
+  },
+  {
+    "path": "docs/B-完整测试流程与用例.md",
+    "sha256": "9c0f79a8f7b035067f541c04ac06a3e6f205f476318c508f20a4ffc67a172af9"
+  },
+  {
+    "path": "docs/B-开发计划.md",
+    "sha256": "1da7ccf5efd48816cf0b948d7913521d415bbd28d7bcd83c2f9642d2f81a1bed"
+  },
+  {
+    "path": "docs/C-行程业务开发说明.md",
+    "sha256": "6ed84de7001cfa794fa08de5edc1817a8dd1b3cfdc5603beac2d4637344edf40"
+  },
+  {
+    "path": "docs/D-足迹与地图手账开发说明.md",
+    "sha256": "574657bc24d3776f2f9a94ab79a9d0b782c1d7e38cb1283df371a289fef2f7c2"
+  },
+  {
+    "path": "docs/api-contracts.md",
+    "sha256": "47148eb6664db3061a318fad5045a9753ecf145e6f3a16d74969cb8dc7dda73b"
+  },
+  {
+    "path": "docs/examples/B-接口测试.postman_collection.json",
+    "sha256": "4f1c1828b225e0f9620be2bd87717c5ef74e8306d916b2db5577f926a0edcd90"
+  },
+  {
+    "path": "docs/examples/README.md",
+    "sha256": "adaea7a7144f8890032bb4724e6fc075c10ed31b422669b329ae57fe46791b08"
+  },
+  {
+    "path": "docs/examples/demo-scenario.json",
+    "sha256": "7ae94db2a1bfeac83968d1aebed601efe58343d41ec5bf2e7bb03d02ac10c1fa"
+  },
+  {
+    "path": "docs/examples/error-cases.json",
+    "sha256": "d595d069522f65542774662657cf316b3fa4e8b40cba0df71ccc2ce2762a0d7c"
+  },
+  {
+    "path": "docs/总体架构.md",
+    "sha256": "00163ab420b37a3c45c811b3e057032d8c23e8328b0e0eb0ae5a02127bee7f03"
+  },
+  {
+    "path": "docs/接口与数据约定.md",
+    "sha256": "624f4d8e4a0c8d61b86bb4ac5a112dc77da69c76c43bb887ac945753b015b305"
+  },
+  {
+    "path": "docs/旅行规划助手需求规格说明书-参考文献修订版.docx",
+    "sha256": "d582b897e1b41bd575a58382c6ff8d77de42ee8600ef402dd363fa53393da7f3"
+  },
+  {
+    "path": "docs/服务器开发与测试.md",
+    "sha256": "267b7b32789a6b2d26575837bc3bedd143a1e7d89010642b3c2ceb156138bf44"
+  },
+  {
+    "path": "docs/架构验证记录.md",
+    "sha256": "fb0f3108b4fee6e3b862831a8d162fc0eed6b4f668f55d69c428f29dcfc22f87"
+  },
+  {
+    "path": "docs/现有代码问题分析与重构架构.md",
+    "sha256": "a42f627efea82da8997b57590932d6d168edfb85d49b2554fefc7dcc8fe5717f"
+  },
+  {
+    "path": "docs/联调与验收说明.md",
+    "sha256": "5029d980c85d7d25eeefea80e4f1a50328afbaa7111beda6fda740c463443afc"
+  },
+  {
+    "path": "docs/项目架构与四人分工.md",
+    "sha256": "836bcb1eb2a129c9fcbfb8d6a60456b6428f383723444d4423f6921c4890875b"
+  },
+  {
+    "path": "docs/验证记录-B.md",
+    "sha256": "d83ab2de9b2932851086c268b893b53f842ba88f99e6dcd5e06aa6aa0608b6cd"
+  },
+  {
+    "path": "eslint.config.js",
+    "sha256": "044dae0144592c6294ad9eb2d91e7ede3f895ac6384c93accc39d857cd151702"
+  },
+  {
+    "path": "package-lock.json",
+    "sha256": "78d50dffc076b9218564b611b17f6546cdd253d8de17a5cfe73bc3e69b1d475b"
+  },
+  {
+    "path": "package.json",
+    "sha256": "5da43f6e10a62b30a92516a5a61fe01399059b6b133e9b2b1c4de17064a59dfc"
+  },
+  {
+    "path": "packages/shared/package.json",
+    "sha256": "4a3ad88cea372a3d48aa496e684158c3a98e4a05e9036034fc22668948b84c0d"
+  },
+  {
+    "path": "packages/shared/src/index.ts",
+    "sha256": "8caf2a1e193338c47dfe69784ff70aeae24c7c9de4d077b2f07d2f9dd8a32aa1"
+  },
+  {
+    "path": "packages/shared/src/places.ts",
+    "sha256": "6d36a2aecb3a6163e199fa5dbb5df952e4a5d75176330d0678a537950da44ace"
+  },
+  {
+    "path": "packages/shared/src/recommendations.ts",
+    "sha256": "0294b643d28565cc307c59bd5346d83b435258825c7becb9b825d496bfac1316"
+  },
+  {
+    "path": "packages/shared/tsconfig.json",
+    "sha256": "41bb07cf3cc2cd73141b761b68ae3dc85c987be2365b7314a717bed1455d18e2"
+  },
+  {
+    "path": "scripts/acceptance/remote-audit.sh",
+    "sha256": "ffc88e85e24adc0611f1be419725e84add03d14682d73ae2648759eb5854a34b"
+  },
+  {
+    "path": "scripts/remote-db/init-test.sql",
+    "sha256": "dbc5c9d8cde1202bf5c69b7f9b4c4121db710dc6cfee92e0b3f7293965b46524"
+  },
+  {
+    "path": "scripts/remote-db/setup.py",
+    "sha256": "2b254ea268832794ff86809e54a954456607cc68de0b829d4142337248f253f0"
+  },
+  {
+    "path": "tsconfig.base.json",
+    "sha256": "5f5889ce476dc3404cbfcf9bd0c6091305d7e84ee6eb502365f46a40b0be1b11"
+  }
+]

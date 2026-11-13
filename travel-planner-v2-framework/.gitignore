@@ -10,3 +10,6 @@ coverage/
 *.log
 .DS_Store
 .vscode/
+# Keep the existing web API client despite the parent repository's Python lib/ rule.
+!apps/web/src/lib/
+!apps/web/src/lib/**

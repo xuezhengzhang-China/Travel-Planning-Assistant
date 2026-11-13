@@ -1,0 +1,345 @@
+{
+  "executedAt": "2026-11-02T07:44:37.433Z",
+  "baseUrl": "http://127.0.0.1:3031/api",
+  "total": 14,
+  "passed": 14,
+  "failed": 0,
+  "results": [
+    {
+      "name": "E01 API health",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/health",
+        "headers": {}
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+          "status": "ok",
+          "service": "travel-planner-api"
+        }
+      },
+      "actual": {
+        "status": 200,
+        "body": {
+          "status": "ok",
+          "service": "travel-planner-api"
+        }
+      },
+      "elapsedMs": 5,
+      "passed": true
+    },
+    {
+      "name": "E02 remote database ready",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/ready",
+        "headers": {}
+      },
+      "expected": {
+        "status": 200,
+        "body": {
+          "status": "ready",
+          "database": "ok"
+        }
+      },
+      "actual": {
+        "status": 200,
+        "body": {
+          "status": "ready",
+          "database": "ok"
+        }
+      },
+      "elapsedMs": 166,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/destinations",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/places",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/places/30000000-0000-4000-8000-000000000001",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/routes/preview",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/locations/reverse",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A01 reject anonymous",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/recommendations/itinerary",
+        "headers": {}
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/destinations",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/places",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:3031/api/places/30000000-0000-4000-8000-000000000001",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/routes/preview",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/locations/reverse",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 2,
+      "passed": true
+    },
+    {
+      "name": "A02 reject forged token",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3031/api/recommendations/itinerary",
+        "headers": {
+          "authorization": "Bearer invalid-acceptance-token"
+        }
+      },
+      "expected": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED"
+        }
+      },
+      "actual": {
+        "status": 401,
+        "body": {
+          "code": "UNAUTHENTICATED",
+          "message": "请先登录"
+        }
+      },
+      "elapsedMs": 1,
+      "passed": true
+    }
+  ]
+}

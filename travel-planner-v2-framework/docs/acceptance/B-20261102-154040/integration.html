@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>远程 PostgreSQL · 7 个场景通过 · B 验收证据</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f3f6f9;
+        color: #172b3a;
+        font-family: 'Microsoft YaHei', system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 1180px;
+        margin: 24px auto;
+        padding: 0 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+      h1 {
+        font-size: 27px;
+        margin: 0;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 22px 0 10px;
+      }
+      .muted {
+        color: #5b7080;
+        font-size: 12px;
+      }
+      .badge {
+        background: #d7f2e4;
+        color: #106b40;
+        border: 1px solid #b4e0c9;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 20px 0;
+      }
+      .card,
+      section {
+        background: white;
+        border: 1px solid #dfe7ec;
+        border-radius: 10px;
+        padding: 17px;
+      }
+      .metric {
+        font-size: 29px;
+        color: #117347;
+        font-weight: 750;
+      }
+      nav {
+        margin: 14px 0;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      a {
+        color: #155eb0;
+        text-decoration: none;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+      td,
+      th {
+        text-align: left;
+        border-bottom: 1px solid #e5ebef;
+        padding: 7px 10px;
+        font-size: 12px;
+        vertical-align: top;
+      }
+      th {
+        background: #edf3f7;
+      }
+      code {
+        font-size: 12px;
+      }
+      pre {
+        background: #132631;
+        color: #e4eef3;
+        padding: 18px;
+        border-radius: 8px;
+        font:
+          12px/1.48 Consolas,
+          'Microsoft YaHei',
+          monospace;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .note {
+        border-left: 4px solid #bd8423;
+        background: #fff8e8;
+        padding: 12px 16px;
+        margin: 18px 0;
+      }
+      .ok {
+        color: #117347;
+        font-weight: 700;
+      }
+      .small {
+        font-size: 12px;
+      }
+      footer {
+        margin-top: 18px;
+        color: #617383;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>远程 PostgreSQL · 7 个场景通过</h1>
+          <div class="muted">
+            执行时间 2026年11月2日 15:44:11 — 2026年11月2日 15:44:37 · Asia/Shanghai
+          </div>
+        </div>
+        <span class="badge">B 当前交付范围通过</span>
+      </header>
+      <nav>
+        <a href="index.html">验收总览</a><a href="fast-tests.html">快速测试</a
+        ><a href="integration.html">远程数据库</a><a href="server.html">服务器 Docker</a
+        ><a href="http.html">实际 HTTP 检查</a>
+      </nav>
+      <section>
+        <strong>实际命令：</strong><code>npm run test:integration:b</code>
+        <p>
+          本地 Node.js → SSH 隧道 → 120.53.94.209 的 Docker PostgreSQL；专用测试库随机
+          schema。身份由测试装配提供。
+        </p>
+        <a href="08-integration.txt">查看完整原始输出</a>
+        <pre>
+▶ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership
+  ✔ upgrade an original-schema database via forward migrations (1154.7912ms)
+  ✔ seed twice without duplicates and keep user creation separate (369.059ms)
+  ✔ real directory filtering and stable ranking happen before pagination (428.8067ms)
+  ✔ authenticated HTTP proposal generation persists without touching formal trips (150.8273ms)
+  ✔ new app/pool reads saved proposals; cross-user reads return 404 (252.4939ms)
+  ✔ no-key HTTP generation uses real B geo fallback and persists a two-day demo (313.5186ms)
+  ✔ database constraints enforce real foreign keys and owner deletion cascades (64.5082ms)
+✔ real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persistence and reconnect ownership (3183.0484ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3708.7669
+
+EXIT CODE: 0
+END UTC: 2026-11-02T07:44:34.427Z
+</pre>
+      </section>
+      <footer>
+        证据来自实际执行输出。基线 2df4883 + 工作区改动；source-manifest.json
+        记录源码哈希。截图为报告/日志查看界面。
+      </footer>
+    </main>
+  </body>
+</html>

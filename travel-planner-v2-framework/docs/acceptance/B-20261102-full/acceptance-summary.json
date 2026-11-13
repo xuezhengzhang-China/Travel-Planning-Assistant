@@ -1,0 +1,27 @@
+{
+  "commandGroups": {
+    "passed": 12,
+    "failed": 0
+  },
+  "fastTests": 42,
+  "postgresBusinessSubcases": 7,
+  "fullCases": {
+    "passed": 79,
+    "failed": 0
+  },
+  "productionHttpChecks": 14,
+  "realModelRequests": 3,
+  "unverified": [
+    "C real registration/login and B authenticator integration",
+    "A/C formal trip confirmation and pages",
+    "D map/journal integration",
+    "Real AMap provider verification; controlled HTTP adapter tests do not certify AMap permissions/data"
+  ],
+  "scope": {
+    "database": "real PostgreSQL in remote Docker",
+    "identities": "injected for acceptance only; not C login",
+    "amap": "controlled local HTTP responses through real AMap adapter",
+    "model": "real configured inference",
+    "formalTrips": "never written"
+  }
+}

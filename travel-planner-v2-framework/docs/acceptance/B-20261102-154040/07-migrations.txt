@@ -1,0 +1,22 @@
+COMMAND: npm run db:migrate:status
+START UTC: 2026-11-02T07:44:25.494Z
+WORKDIR: F:\TPA\Travel-Planning-Assistant\travel-planner-v2-framework
+
+
+> travel-planner-v2@0.1.0 db:migrate:status
+> npm run db:migrate:status --workspace=@travel/api
+
+
+> @travel/api@0.1.0 db:migrate:status
+> node scripts/migration-status.cjs
+
+┌─────────┬─────────────────────────────────────────┬───────────┐
+│ (index) │ name                                    │ status    │
+├─────────┼─────────────────────────────────────────┼───────────┤
+│ 0       │ '202610240001_initial_schema'           │ 'applied' │
+│ 1       │ '202611020001_places'                   │ 'applied' │
+│ 2       │ '202611020002_recommendation_proposals' │ 'applied' │
+└─────────┴─────────────────────────────────────────┴───────────┘
+
+EXIT CODE: 0
+END UTC: 2026-11-02T07:44:26.967Z

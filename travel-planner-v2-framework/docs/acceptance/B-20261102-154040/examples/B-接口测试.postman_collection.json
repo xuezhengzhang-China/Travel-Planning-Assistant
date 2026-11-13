@@ -1,0 +1,1117 @@
+{
+  "info": {
+    "name": "旅行规划助手 B 接口测试",
+    "description": "配套 docs/B-完整测试流程与用例.md。仅分组 01 当前可手工运行；后续分组需要 C 注册真实认证并填写真实 token。测试脚本内的假 token 无法登录正式应用。按各组 Key 前提分开执行。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cityId",
+      "value": "20000000-0000-4000-8000-000000000002",
+      "type": "string"
+    },
+    {
+      "key": "placeA",
+      "value": "30000000-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "placeB",
+      "value": "30000000-0000-4000-8000-000000000002",
+      "type": "string"
+    },
+    {
+      "key": "placeC",
+      "value": "30000000-0000-4000-8000-000000000003",
+      "type": "string"
+    },
+    {
+      "key": "startDate",
+      "value": "2026-11-10",
+      "type": "string"
+    },
+    {
+      "key": "endDate",
+      "value": "2026-11-11",
+      "type": "string"
+    },
+    {
+      "key": "proposalId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 当前即可执行：健康与未认证请求",
+      "description": "保持 SSH 隧道和本地 API 启动。不需要 accessToken。",
+      "item": [
+        {
+          "name": "E01 API 存活",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"API 存活\",function(){pm.expect(pm.response.json().status).to.equal(\"ok\");});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "E02 数据库就绪",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/ready",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"数据库可连接\",function(){pm.expect(pm.response.json().database).to.equal(\"ok\");});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "A01 匿名业务请求被拒绝",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/destinations",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "if (pm.response.code === 401) { pm.test(\"Error code UNAUTHENTICATED\", function () { pm.expect(pm.response.json().code).to.equal(\"UNAUTHENTICATED\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "A02 伪造 token 被拒绝",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/destinations",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "forged-token",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "if (pm.response.code === 401) { pm.test(\"Error code UNAUTHENTICATED\", function () { pm.expect(pm.response.json().code).to.equal(\"UNAUTHENTICATED\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 C 接通认证后：目录查询",
+      "description": "先填写真实 accessToken，并确保统一杭州演示数据已导入。",
+      "item": [
+        {
+          "name": "P01 查询城市",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/destinations?level=city",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test(\"分页结构正确\", function () { const d=pm.response.json(); pm.expect(d.items).to.be.an(\"array\"); pm.expect(Number.isInteger(d.total)).to.equal(true); pm.expect(d.total).to.be.at.least(d.items.length); }); }",
+                  "if(pm.response.code===200){pm.test(\"包含演示杭州\",function(){pm.expect(pm.response.json().items.some(x=>x.id===pm.variables.get(\"cityId\"))).to.equal(true);});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P02 搜索灵隐",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places?cityId={{cityId}}&keyword=灵隐",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test(\"分页结构正确\", function () { const d=pm.response.json(); pm.expect(d.items).to.be.an(\"array\"); pm.expect(Number.isInteger(d.total)).to.equal(true); pm.expect(d.total).to.be.at.least(d.items.length); }); }",
+                  "if(pm.response.code===200){pm.test(\"按名称筛选\",function(){pm.expect(pm.response.json().items.some(x=>x.id===pm.variables.get(\"placeB\"))).to.equal(true);pm.response.json().items.forEach(x=>pm.expect(x.name).to.include(\"灵隐\"));});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P03 历史类别筛选",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places?cityId={{cityId}}&category=history",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test(\"分页结构正确\", function () { const d=pm.response.json(); pm.expect(d.items).to.be.an(\"array\"); pm.expect(Number.isInteger(d.total)).to.equal(true); pm.expect(d.total).to.be.at.least(d.items.length); }); }",
+                  "if(pm.response.code===200){pm.test(\"类别匹配\",function(){pm.response.json().items.forEach(x=>pm.expect(x.categories).to.include(\"history\"));});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P04 艺术主题排序与分页",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places?cityId={{cityId}}&themes=art&pageSize=1",
+            "description": "受控演示数据下第一项为良渚。若目录新增其他 art 景点，应按同分 ID 顺序重新确定期望。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test(\"分页结构正确\", function () { const d=pm.response.json(); pm.expect(d.items).to.be.an(\"array\"); pm.expect(Number.isInteger(d.total)).to.equal(true); pm.expect(d.total).to.be.at.least(d.items.length); }); }",
+                  "if(pm.response.code===200){pm.test(\"演示数据艺术优先\",function(){pm.expect(pm.response.json().items[0].id).to.equal(pm.variables.get(\"placeC\"));});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P06 景点详情",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places/{{placeA}}",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"读取指定景点\",function(){pm.expect(pm.response.json().id).to.equal(pm.variables.get(\"placeA\"));});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P06 未知景点",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places/30000000-0000-4000-8000-000000000999",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });",
+                  "if (pm.response.code === 404) { pm.test(\"Error code NOT_FOUND\", function () { pm.expect(pm.response.json().code).to.equal(\"NOT_FOUND\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P05 pageSize 超限",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places?cityId={{cityId}}&pageSize=101",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P07 超出已有页数",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/places?cityId={{cityId}}&page=100000",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test(\"分页结构正确\", function () { const d=pm.response.json(); pm.expect(d.items).to.be.an(\"array\"); pm.expect(Number.isInteger(d.total)).to.equal(true); pm.expect(d.total).to.be.at.least(d.items.length); }); }",
+                  "if(pm.response.code===200){pm.test(\"空页仍有总数\",function(){pm.expect(pm.response.json().items.length).to.equal(0);pm.expect(pm.response.json().total).to.be.at.least(3);});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 C 接通认证后：推荐与输入校验",
+      "description": "默认地图无 Key、模型关闭。生成方案会写入当前真实用户的开发数据库；不写正式行程。",
+      "item": [
+        {
+          "name": "R01 两天三景点方案",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const d=pm.response.json(); const expected=[pm.variables.get(\"placeA\"),pm.variables.get(\"placeB\"),pm.variables.get(\"placeC\")];",
+                  " pm.test(\"完整方案字段与有效期\", function () { pm.expect(d.proposalId).to.match(/^[0-9a-f-]{36}$/i); pm.expect(d.days).to.be.an(\"array\"); pm.expect(d.warnings).to.be.an(\"array\"); pm.expect(d.unassignedPlaceIds).to.be.an(\"array\"); pm.expect(Date.parse(d.expiresAt)).to.be.above(Date.parse(d.generatedAt)); pm.expect(d.source).to.be.oneOf([\"rule\",\"llm-assisted\"]); });",
+                  " pm.test(\"两天日期完整\", function () { pm.expect(d.days.map(x=>x.date)).to.deep.equal([pm.variables.get(\"startDate\"),pm.variables.get(\"endDate\")]); });",
+                  " pm.test(\"每个选中景点恰好出现一次\", function () { const all=d.days.flatMap(x=>x.items.map(p=>p.placeId)).concat(d.unassignedPlaceIds); pm.expect(all.slice().sort()).to.deep.equal(expected.slice().sort()); pm.expect(new Set(all).size).to.equal(all.length); });",
+                  " pm.test(\"站序和首站交通正确\", function () { d.days.forEach(day=>day.items.forEach((p,i)=>{pm.expect(p.position).to.equal(i); pm.expect(p.durationMinutes).to.be.above(0); if(i===0){pm.expect(p.travelMinutesFromPrevious).to.equal(0);pm.expect(p.travelTimeSource).to.equal(\"none\");}else{pm.expect(Number.isInteger(p.travelMinutesFromPrevious)).to.equal(true);pm.expect(p.travelMinutesFromPrevious).to.be.above(0);pm.expect(p.travelTimeSource).to.be.oneOf([\"provider\",\"estimate\"]);} })); });",
+                  " pm.collectionVariables.set(\"proposalId\",d.proposalId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R02 同日只选择一个景点",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{startDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"同日为一天\",function(){const d=pm.response.json();pm.expect(d.days.length).to.equal(1);pm.expect(d.days[0].items[0].placeId).to.equal(pm.variables.get(\"placeA\"));});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R03 三十天上限",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"2026-11-10\",\n  \"endDate\": \"2026-12-09\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"保留所有日期\",function(){pm.expect(pm.response.json().days.length).to.equal(30);});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R04 三十一天拒绝",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"2026-11-10\",\n  \"endDate\": \"2026-12-10\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code INVALID_DATE_RANGE\", function () { pm.expect(pm.response.json().code).to.equal(\"INVALID_DATE_RANGE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R05 日期倒置",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"2026-11-11\",\n  \"endDate\": \"2026-11-10\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code INVALID_DATE_RANGE\", function () { pm.expect(pm.response.json().code).to.equal(\"INVALID_DATE_RANGE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R06 无效闰日",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"2027-02-29\",\n  \"endDate\": \"2027-03-01\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code INVALID_DATE_RANGE\", function () { pm.expect(pm.response.json().code).to.equal(\"INVALID_DATE_RANGE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R08 重复选择",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeA}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R08 空选择",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R10 非法节奏",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"fast\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R10 拒绝额外 ownerId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"standard\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ],\n  \"ownerId\": \"10000000-0000-4000-8000-000000000002\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "R11 一天轻松节奏出现未安排项",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/recommendations/itinerary",
+            "description": "前提：原演示数据、地图无 Key、模型关闭。最多两站，未安排项明确返回。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cityId\": \"{{cityId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{startDate}}\",\n  \"themes\": [\n    \"history\",\n    \"nature\"\n  ],\n  \"pace\": \"relaxed\",\n  \"transportMode\": \"walking\",\n  \"selectedPlaceIds\": [\n    \"{{placeA}}\",\n    \"{{placeB}}\",\n    \"{{placeC}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"未安排项明确\",function(){const d=pm.response.json();pm.expect(d.days.length).to.equal(1);pm.expect(d.days[0].items.length).to.be.at.most(2);pm.expect(d.unassignedPlaceIds.length).to.be.at.least(1);pm.expect(d.warnings.some(w=>w.code===\"UNASSIGNED_PLACES\")).to.equal(true);});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 C 接通认证后：地图未配置 Key",
+      "description": "专门验证无 Key 的失败路径。要求服务端 AMAP_WEB_SERVICE_KEY 为空并重启 API。",
+      "item": [
+        {
+          "name": "G02 驾车无 Key 不伪造估时",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"to\": {\n    \"longitude\": 120.102,\n    \"latitude\": 30.242,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"driving\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 503\", function () { pm.response.to.have.status(503); });",
+                  "if (pm.response.code === 503) { pm.test(\"Error code DEPENDENCY_UNAVAILABLE\", function () { pm.expect(pm.response.json().code).to.equal(\"DEPENDENCY_UNAVAILABLE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "G03 超出短距步行估算范围",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"to\": {\n    \"longitude\": 120.028,\n    \"latitude\": 30.381,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"walking\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 503\", function () { pm.response.to.have.status(503); });",
+                  "if (pm.response.code === 503) { pm.test(\"Error code DEPENDENCY_UNAVAILABLE\", function () { pm.expect(pm.response.json().code).to.equal(\"DEPENDENCY_UNAVAILABLE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "G06 无 Key 逆地理编码",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/locations/reverse",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coordinates\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 503\", function () { pm.response.to.have.status(503); });",
+                  "if (pm.response.code === 503) { pm.test(\"Error code DEPENDENCY_UNAVAILABLE\", function () { pm.expect(pm.response.json().code).to.equal(\"DEPENDENCY_UNAVAILABLE\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 C 接通认证后：路线正常或估算、输入错误",
+      "description": "步行允许 provider 或有标记的 estimate。",
+      "item": [
+        {
+          "name": "G01 西湖到灵隐步行",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"to\": {\n    \"longitude\": 120.102,\n    \"latitude\": 30.242,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"walking\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"有效路线来源与时长\",function(){const d=pm.response.json();pm.expect(Number.isInteger(d.durationMinutes)).to.equal(true);pm.expect(d.durationMinutes).to.be.above(0);pm.expect(d.source).to.be.oneOf([\"provider\",\"estimate\"]);if(d.source===\"estimate\"){pm.expect(d.warnings.some(w=>w.code===\"ROUTE_ESTIMATED\")).to.equal(true);}});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "G04 拒绝 WGS84 标签",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"WGS84\"\n  },\n  \"to\": {\n    \"longitude\": 120.102,\n    \"latitude\": 30.242,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"walking\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "G04 拒绝越界经度",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/locations/reverse",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coordinates\": {\n    \"longitude\": 181,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "if (pm.response.code === 400) { pm.test(\"Error code VALIDATION_ERROR\", function () { pm.expect(pm.response.json().code).to.equal(\"VALIDATION_ERROR\"); }); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 C 接通认证后：真实地图 Key 专项",
+      "description": "要求有效高德 Web 服务 Key，供应商不可用时不能按成功记录。不包含模型付费调用。",
+      "item": [
+        {
+          "name": "真实驾车路线",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"to\": {\n    \"longitude\": 120.102,\n    \"latitude\": 30.242,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"driving\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"供应商路线\",function(){pm.expect(pm.response.json().source).to.equal(\"provider\");});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "真实公交路线",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/routes/preview",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"to\": {\n    \"longitude\": 120.102,\n    \"latitude\": 30.242,\n    \"coordinateSystem\": \"GCJ-02\"\n  },\n  \"transportMode\": \"transit\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"供应商路线\",function(){pm.expect(pm.response.json().source).to.equal(\"provider\");});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "G06 真实地点解析",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/locations/reverse",
+            "description": "认证成功后运行；接口定义以 docs/接口与数据约定.md 为准。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coordinates\": {\n    \"longitude\": 120.148,\n    \"latitude\": 30.245,\n    \"coordinateSystem\": \"GCJ-02\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if(pm.response.code===200){pm.test(\"地点描述与城市成对返回\",function(){const d=pm.response.json();pm.expect(d.placeName).to.be.a(\"string\").and.not.empty;if(d.cityId===null){pm.expect(d.cityAdcode).to.equal(null);pm.expect(d.warnings.some(w=>w.code===\"CITY_UNCONFIRMED\")).to.equal(true);}else{pm.expect(d.cityId).to.equal(pm.variables.get(\"cityId\"));pm.expect(d.cityAdcode).to.equal(\"330100\");}});}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}
