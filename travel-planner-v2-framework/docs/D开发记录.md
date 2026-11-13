@@ -135,3 +135,30 @@
 媒体文件删除采用持久化清理队列：数据库事务先把待删存储键写入 `footprint_media_cleanup`，事务成功后尝试删除文件；失败的任务保留，并在后续足迹写入操作中重试。新增迁移 `202611030003_footprint_media_cleanup.js` 创建该队列表。
 
 测试补充了列表年份和分页参数、详情用户隔离、PATCH 校验及媒体保留/移除、媒体清理队列，以及地图年份筛选。验证结果：`npm run typecheck` 通过；`npm test` 构建成功，29 项测试全部通过。测试使用替身数据库和存储，不连接 PostgreSQL、不调用真实高德服务；本次新增迁移尚未在任何数据库执行。
+
+## 第五步：足迹地图组件与开发宿主页
+
+开发日期：2026-11-13
+
+按开发说明第 5 节第 1 条，先交付可交给 A 嵌入的地图组件，不做独立主应用：
+
+- `apps/web/src/features/footprints/FootprintMap.tsx`：接收 `markers`、`litCities`、`selectedVisitedPlaceId`、`loading`、`errorMessage`，回调 `onSelectVisitedPlace`、`onPickLocation`；加载、错误、空数据状态分别展示，不阻塞城市与足迹列表。
+- `footprint-map.types.ts`：属性类型从共享包以 type-only 导入；文档里的 `VisitedPlace[]` 对应共享契约的 `FootprintMapLocation[]`，`visitCount` 对应 `checkInCount`。
+- `map-adapter.ts`：按需插入高德 JS API v2 并缓存加载 Promise，React 严格模式重复挂载不会重复插入脚本；卸载时移除标记、监听并销毁实例。WGS-84 且没有服务端转换结果的点不画在底图上，避免把未转换坐标冒充地图坐标。
+- 地图 Key 缺失、脚本加载失败时组件显示提示，可选“重试加载地图”；已点亮城市与足迹列表始终可用。新增可选配置 `VITE_AMAP_SECURITY_CODE`，仅用于浏览器端安全密钥。
+- `apps/web/map-dev.html` 与 `src/features/footprints/dev/`：固定数据宿主页，支持 `?state=loading|error|empty`、`sdk=off`、`select=<locationId>` 直接打开某个状态；仅开发使用，不进入主应用导航，也不修改 A 的全局样式。
+
+验证：`npm run typecheck`、`npm run lint`、`npm run build --workspace=@travel/web` 通过；用无头浏览器打开开发页核对了正常、选中、缺少 Key、加载失败与空数据界面。真实高德底图渲染需要浏览器 Key 与域名白名单，本次未配置 Key，未验证真实底图。
+
+## 第六步：纯文本随笔接口（journals）
+
+开发日期：2026-11-13
+
+按开发说明第 5 节第 3 条实现纯文本随笔，并用数据库外键落实“删除到访会删除相关随笔”：
+
+- 迁移 `202611030004_journal_entries.js` 新增 `journal_entries` 表；通过 `(footprint_id, owner_id)` 复合外键跟随足迹删除。删除随笔只删随笔，不影响足迹记录与城市点亮。
+- 新增 `apps/api/src/journals/`：`POST /api/journals`、`GET /api/journals`（`footprintId`、`year`、`page`、`pageSize`）、`GET /api/journals/:id`、`PATCH /api/journals/:id`、`DELETE /api/journals/:id`；全部要求当前用户身份。
+- 共享类型新增 `Journal`、`JournalListPage`、`CreateJournalInput`。契约里的 `visitedPlaceId` 在已实现模型中叫 `footprintId`；首期 `mediaIds` 恒为空数组，提交非空 `mediaIds` 返回 400。
+- 标题可空、最长 120 字符；正文必填、最长 20000 字符，按纯文本保存，不渲染 HTML。新建随笔先校验足迹属于当前用户，他人或不存在的足迹统一返回 404。
+- 测试 `apps/api/tests/journals.test.cjs` 覆盖输入校验、足迹归属、分页与年份筛选、详情/更新隔离、删除只删随笔；`npm test` 共 69 项全部通过。
+- 本次新增迁移尚未在真实 PostgreSQL 执行；图片多图、随笔图片关联与手账 UI 仍待后续迭代。
