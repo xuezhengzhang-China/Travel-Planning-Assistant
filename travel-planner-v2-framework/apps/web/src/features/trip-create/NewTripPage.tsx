@@ -79,6 +79,7 @@ export interface NewTripPageProps {
   initialTitle?: string;
   pageTitle?: string;
   catalogPlaces?: Attraction[];
+  city?: { id: string; name: string };
   resetControl?: { allowed: boolean; onChange: (allowed: boolean) => void };
 }
 const browserDraftStorage: TripDraftStorage = { load: loadPlanner, save: savePlanner };
@@ -91,9 +92,10 @@ export default function NewTripPage({
   initialView = 'wizard',
   storage = browserDraftStorage,
   initialSchedule,
-  initialTitle = '我的北京之旅',
+  initialTitle = '我的旅行',
   pageTitle = '新建行程',
   catalogPlaces = defaultPlaces,
+  city = beijing,
   resetControl,
 }: NewTripPageProps) {
   const places = catalogPlaces;
@@ -287,7 +289,7 @@ export default function NewTripPage({
     try {
       if (onComplete)
         await onComplete({
-          cityId: beijing.id,
+          cityId: city.id,
           planningInput: {
             startDate: trip.days[0]!.date,
             endDate: trip.days.at(-1)!.date,
@@ -364,12 +366,14 @@ export default function NewTripPage({
               <span className="page-context">{APP_NAME} / 行程</span>
               <h1>{pageTitle}</h1>
             </div>
-            <span className="page-badge">北京 · {places.length} 个景点</span>
+            <span className="page-badge">
+              {city.name} · {places.length} 个景点
+            </span>
           </header>
         )}
 
         {view === 'wizard' ? (
-          <section className="planner" aria-label="创建北京行程">
+          <section className="planner" aria-label={`创建${city.name}行程`}>
             <div className="wizard-main">
               <header className="wizard-header">
                 <div>
@@ -418,16 +422,16 @@ export default function NewTripPage({
                     <div className="city-field">
                       <Icon name="pin" />
                       <select id="city" value={beijing.id} onChange={() => {}}>
-                        <option value={beijing.id}>北京 / Beijing</option>
+                        <option value={city.id}>{city.name}</option>
                       </select>
                       <span className="pill">{places.length} 个景点</span>
                     </div>
                     <p className="city-choice">
                       <Icon name="check" size={15} />
-                      北京 · {places.length} 个精选景点
+                      {city.name} · {places.length} 个精选景点
                     </p>
                     <div className="notice">
-                      本期开放北京。景点地址与行政区来自官方名录，每条资料均可查看来源。
+                      景点地址与行政区来自当前城市目录，可在详情中核对来源。
                     </div>
                   </>
                 )}
@@ -468,7 +472,7 @@ export default function NewTripPage({
                       </span>
                       <div>
                         <strong>
-                          {dates.length ? '天，留给北京和自己' : '选一个适合出发的日子'}
+                          {dates.length ? `天，留给${city.name}和自己` : '选一个适合出发的日子'}
                         </strong>
                         <p>包含出发及返程当天，单次最多 30 天。</p>
                       </div>
@@ -777,7 +781,7 @@ export default function NewTripPage({
                     if (!trip.title.trim()) {
                       setTrip({
                         ...trip,
-                        title: '我的北京之旅',
+                        title: `我的${city.name}之旅`,
                         updatedAt: new Date().toISOString(),
                       });
                       setTitleError('名称不能为空，已恢复默认名称。');

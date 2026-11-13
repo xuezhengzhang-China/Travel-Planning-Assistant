@@ -1,5 +1,5 @@
 import { validateSchedule } from '@travel/shared/recommendation-engine';
-import { ProposalReader } from '../recommendations/proposal.repository';
+import { ProposalReader } from './proposal-reader';
 import type { PlanningInput, ScheduleDay } from '@travel/shared' with {
   'resolution-mode': 'import',
 };

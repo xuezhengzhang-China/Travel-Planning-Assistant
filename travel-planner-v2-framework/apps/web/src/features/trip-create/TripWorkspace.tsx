@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PublicUser, Trip, TripList, Place } from '@travel/shared';
-import { beijing } from '../../data/beijing';
+import type { PublicUser, Trip, TripList, Place, Destination } from '@travel/shared';
 import { dateRange } from '../../data/planner';
 import { normalizeThemes } from '../../data/planner-storage';
 import type { PlannerState } from '../../data/planner-storage';
@@ -21,10 +20,10 @@ export interface TripWorkspaceProps extends TripHostEvents {
   embedded?: boolean;
   entry?: TripEntry;
 }
-function emptyState(): PlannerState {
+function emptyState(cityId: string): PlannerState {
   return {
     draft: {
-      cityId: beijing.id,
+      cityId,
       startDate: '',
       endDate: '',
       themes: [],
@@ -35,7 +34,7 @@ function emptyState(): PlannerState {
     trip: null,
   };
 }
-function validCachedState(value: PlannerState, places: Place[]): boolean {
+function validCachedState(value: PlannerState, places: Place[], cityId: string): boolean {
   const ids = new Set(places.map((place) => place.id));
   const validIds = (value: unknown): value is string[] =>
     Array.isArray(value) &&
@@ -44,7 +43,7 @@ function validCachedState(value: PlannerState, places: Place[]): boolean {
   const draft = value?.draft;
   if (
     !draft ||
-    draft.cityId !== beijing.id ||
+    draft.cityId !== cityId ||
     typeof draft.startDate !== 'string' ||
     typeof draft.endDate !== 'string' ||
     !validIds(draft.selectedPlaceIds) ||
@@ -81,6 +80,7 @@ function TripEditor({
   ownerId,
   onBack,
   places,
+  city,
   events,
 }: {
   api: TripDraftApi;
@@ -88,6 +88,7 @@ function TripEditor({
   ownerId: string;
   onBack: () => void;
   places: Place[];
+  city: Destination;
   events: TripHostEvents;
 }) {
   const [allowReset, setAllowReset] = useState(false);
@@ -99,7 +100,7 @@ function TripEditor({
     }),
   );
   const [initial] = useState(() => {
-    const serverState = resource ? fromServerTrip(resource) : emptyState();
+    const serverState = resource ? fromServerTrip(resource) : emptyState(city.id);
     // 仅恢复同一用户、同一资源和同一版本的未提交输入，不覆盖较新的服务端版本。
     try {
       const cached = JSON.parse(
@@ -108,7 +109,7 @@ function TripEditor({
       if (
         cached &&
         cached.revision === (resource?.revision ?? null) &&
-        validCachedState(cached.state, places)
+        validCachedState(cached.state, places, city.id)
       )
         return cached.state as PlannerState;
     } catch {
@@ -136,6 +137,7 @@ function TripEditor({
   return (
     <NewTripPage
       catalogPlaces={places}
+      city={{ id: city.id, name: city.name }}
       initialState={initial}
       initialTitle={resource?.title}
       pageTitle={resource ? '编辑行程' : '新建行程'}
@@ -223,6 +225,8 @@ export default function TripWorkspace({
   );
   const [list, setList] = useState<TripList | null>(null);
   const [places, setPlaces] = useState<Place[] | null>(null);
+  const [city, setCity] = useState<Destination | null>(null);
+  const [cityError, setCityError] = useState('');
   const [deletion, setDeletion] = useState<Trip | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [page, setPage] = useState(1);
@@ -237,7 +241,24 @@ export default function TripWorkspace({
   const requestedEntry = useRef('list');
   const externalEntryKey = entry ? tripEntryKey(entry) : null;
   useEffect(() => {
+    let active = true;
+    api
+      .listCities()
+      .then((cities) => {
+        if (!active) return;
+        if (cities[0]) setCity(cities[0]);
+        else setCityError('当前没有可用的城市目录，请先运行 npm run db:seed:b');
+      })
+      .catch((error) => {
+        if (active) setCityError(tripErrorMessage(error));
+      });
+    return () => {
+      active = false;
+    };
+  }, [api]);
+  useEffect(() => {
     if (!externalEntryKey || externalEntryKey === requestedEntry.current) return;
+    if (!city) return;
     requestedEntry.current = externalEntryKey;
     const request = ++requestId.current;
     let active = true;
@@ -253,7 +274,7 @@ export default function TripWorkspace({
     setOpening(true);
     setEditor(null);
     const tripId = externalEntryKey.startsWith('edit:') ? externalEntryKey.slice(5) : null;
-    Promise.all([api.getPlaces(beijing.id), tripId ? api.get(tripId) : Promise.resolve(null)])
+    Promise.all([api.getPlaces(city.id), tripId ? api.get(tripId) : Promise.resolve(null)])
       .then(([catalog, resource]) => {
         if (!active || request !== requestId.current) return;
         if (resource) {
@@ -278,13 +299,13 @@ export default function TripWorkspace({
       // StrictMode会清理并重新执行挂载效果；未完成的请求必须允许下一次效果重试。
       if (!finished && requestedEntry.current === externalEntryKey) requestedEntry.current = '';
     };
-  }, [externalEntryKey, api, entryRetry]);
+  }, [externalEntryKey, api, entryRetry, city]);
   useEffect(() => {
-    if (editor || opening) return;
+    if (editor || opening || !city) return;
     let active = true;
     setLoading(true);
     setListError('');
-    Promise.all([api.list(page), api.getPlaces(beijing.id)])
+    Promise.all([api.list(page), api.getPlaces(city.id)])
       .then(([data, catalog]) => {
         if (active) {
           setList(data);
@@ -302,7 +323,7 @@ export default function TripWorkspace({
     return () => {
       active = false;
     };
-  }, [api, page, refresh, editor, opening]);
+  }, [api, page, refresh, editor, opening, city]);
   const back = useCallback(() => {
     requestId.current++;
     setEditor(null);
@@ -368,7 +389,7 @@ export default function TripWorkspace({
         </main>
       </section>
     );
-  if (editor && places)
+  if (editor && places && city)
     return (
       <section className={`suixin-trips${embedded ? ' is-embedded' : ''}`}>
         <TripEditor
@@ -378,6 +399,7 @@ export default function TripWorkspace({
           ownerId={user.id}
           onBack={back}
           places={places}
+          city={city}
           events={{ onSaved, onDraftSaved }}
         />
       </section>
@@ -400,7 +422,7 @@ export default function TripWorkspace({
           <p>从一座城市开始，记录每一程。</p>
           <button
             className="workspace-primary"
-            disabled={opening || loading || !places || !!deletion}
+            disabled={opening || loading || !places || !city || !!deletion}
             onClick={() => {
               requestedEntry.current = 'new';
               setEditor({ resource: null });
@@ -410,9 +432,9 @@ export default function TripWorkspace({
             ＋ 新建行程
           </button>
         </div>
-        {(error || listError) && (
+        {(error || listError || cityError) && (
           <p role="alert" className="workspace-error">
-            {[error, listError].filter(Boolean).join(' ')}
+            {[error, listError, cityError].filter(Boolean).join(' ')}
             <button
               disabled={deleting}
               onClick={() => {
@@ -445,16 +467,14 @@ export default function TripWorkspace({
         ) : (
           <>
             {list?.items.length === 0 && (
-              <section className="workspace-empty">
-                还没有行程，创建你的第一份北京旅行计划。
-              </section>
+              <section className="workspace-empty">还没有行程，创建你的第一份旅行计划。</section>
             )}
             <div className="workspace-list">
               {list?.items.map((trip) => (
                 <article key={trip.id} className={`workspace-trip ${trip.status}`}>
                   <span className="workspace-status">
                     {trip.status === 'draft' ? '草稿' : '已规划'} ·{' '}
-                    {trip.planningInput.cityId === beijing.id ? '北京' : '其他城市'}
+                    {trip.planningInput.cityId === city?.id ? city?.name : '其他城市'}
                   </span>
                   <h2>{trip.title}</h2>
                   <p>

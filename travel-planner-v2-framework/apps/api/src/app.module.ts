@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { RouterModule } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { BModule } from './b/b.module';
@@ -36,7 +35,6 @@ import { UsersModule } from './users/users.module';
         },
       ],
     }),
-    RouterModule.register([{ path: 'b', module: BModule }]),
     FootprintsModule,
     JournalsModule,
   ],

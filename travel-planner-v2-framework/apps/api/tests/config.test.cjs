@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { Buffer } = require('node:buffer');
 const { resolve } = require('node:path');
 const { readConfig } = require('../dist/config/config.service.js');
 

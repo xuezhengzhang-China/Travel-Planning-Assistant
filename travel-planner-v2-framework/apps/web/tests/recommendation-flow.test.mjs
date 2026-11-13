@@ -97,7 +97,10 @@ function fixture(failSchedule = false) {
       return update(revision, { days });
     },
   };
-  return { flow: createRecommendationFlow(api), creates: () => creates };
+  return {
+    flow: createRecommendationFlow(api, null, { places: catalog.places }),
+    creates: () => creates,
+  };
 }
 function result(proposal) {
   const days = proposal.days.map((day) => ({
@@ -165,7 +168,7 @@ test('读取已规划行程后改名保存，不重算服务器参考时间', as
       assert.fail('改名不应覆盖原每日安排');
     },
   };
-  const flow = createRecommendationFlow(api, existing);
+  const flow = createRecommendationFlow(api, existing, { places: catalog.places });
   await flow.onComplete({ ...submitted, trip: { ...submitted.trip, title: '新标题' } });
   assert.equal(flow.getCurrentTrip().title, '新标题');
   assert.deepEqual(flow.getCurrentTrip().days, existing.days);
@@ -185,7 +188,7 @@ test('未确认重排时，增减已规划景点不会发出修改请求', async
   reduced.planningInput.selectedPlaceIds = reduced.planningInput.selectedPlaceIds.filter(
     (id) => id !== removed,
   );
-  const flow = createRecommendationFlow({}, existing);
+  const flow = createRecommendationFlow({}, existing, { places: catalog.places });
   await assert.rejects(flow.onComplete(reduced), /勾选允许重新规划/);
   assert.equal(flow.getCurrentTrip().revision, existing.revision);
 });

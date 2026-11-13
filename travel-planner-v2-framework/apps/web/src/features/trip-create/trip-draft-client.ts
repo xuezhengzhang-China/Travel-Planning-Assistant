@@ -5,6 +5,7 @@ import type {
   RankedPlace,
   ScheduleDay,
   Place,
+  Destination,
   PageResult,
 } from '@travel/shared';
 import type {
@@ -17,6 +18,7 @@ import type {
 } from '@travel/shared';
 import type { PlanningDraft } from '../../data/planner';
 export interface TripDraftApi {
+  listCities(): Promise<Destination[]>;
   getPlaces(cityId: string): Promise<Place[]>;
   remove(id: string, expectedRevision: number): Promise<void>;
   recommendPlaces(
@@ -42,6 +44,32 @@ export class TripApiError extends Error {
   ) {
     super(message);
   }
+}
+
+const themeLabels: Record<string, string> = {
+  history: '历史文化',
+  nature: '园林自然',
+  landmark: '城市地标',
+  art: '艺术设计',
+  family: '亲子体验',
+  local: '老街与在地体验',
+};
+
+/**
+ * B 的目录只提供主题编码与地址；界面需要中文分类和行政区展示字段。
+ * 这里做一次展示层适配，不虚构行政区，缺省为空字符串。
+ */
+function enrichPlace(place: Place): Place {
+  const raw = place as Place & { openingHoursText?: string | null };
+  return {
+    ...place,
+    district: raw.district ?? '',
+    category: raw.category ?? themeLabels[raw.categories?.[0] ?? ''] ?? '其他',
+    sourceUrl: raw.sourceUrl ?? '',
+    verifiedAt: raw.verifiedAt ?? '',
+    source: 'curated',
+    openingHours: raw.openingHours ?? raw.openingHoursText ?? null,
+  };
 }
 export function createTripDraftApi(options: {
   getAccessToken: () => string | null | Promise<string | null>;
@@ -79,6 +107,12 @@ export function createTripDraftApi(options: {
     return payload as T;
   }
   return {
+    listCities: async () => {
+      const result = await request<PageResult<Destination>>(
+        '/destinations?level=city&page=1&pageSize=100',
+      );
+      return result.items;
+    },
     remove: (id, expectedRevision) =>
       request<void>(`${resource(id)}?expectedRevision=${expectedRevision}`, 'DELETE'),
     getPlaces: async (cityId) => {
@@ -87,7 +121,7 @@ export function createTripDraftApi(options: {
         const result = await request<PageResult<Place>>(
           `/places?cityId=${encodeURIComponent(cityId)}&page=${page}&pageSize=100`,
         );
-        items.push(...result.items);
+        items.push(...result.items.map(enrichPlace));
         if (items.length >= result.total || !result.items.length) return items;
       }
     },
