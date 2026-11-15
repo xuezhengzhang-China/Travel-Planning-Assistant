@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { FootprintsModule } from './footprints/footprints.module';
 import { HealthModule } from './health/health.module';
 import { JournalsModule } from './journals/journals.module';
+import { MediaModule } from './media/media.module';
 import { TripsModule } from './trips/trips.module';
 import { UsersModule } from './users/users.module';
 
@@ -37,6 +38,7 @@ import { UsersModule } from './users/users.module';
     }),
     FootprintsModule,
     JournalsModule,
+    MediaModule,
   ],
 })
 export class AppModule {}

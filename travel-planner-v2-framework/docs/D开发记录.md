@@ -162,3 +162,24 @@
 - 标题可空、最长 120 字符；正文必填、最长 20000 字符，按纯文本保存，不渲染 HTML。新建随笔先校验足迹属于当前用户，他人或不存在的足迹统一返回 404。
 - 测试 `apps/api/tests/journals.test.cjs` 覆盖输入校验、足迹归属、分页与年份筛选、详情/更新隔离、删除只删随笔；`npm test` 共 69 项全部通过。
 - 本次新增迁移尚未在真实 PostgreSQL 执行；图片多图、随笔图片关联与手账 UI 仍待后续迭代。
+
+## 第七步：媒体接口与随笔图片
+
+开发日期：2026-11-15
+
+按统一后的目录与身份体系补齐手账图片：
+
+- 迁移 `202611150001_media_assets.js` 新增 `media_assets`（所有者、存储键、类型、大小、原名）与 `journal_media`（随笔、图片、位置）；`media_id` 唯一，保证一张图片最多关联一篇随笔；删除随笔只删关联，图片保留为未引用。
+- 新增 `apps/api/src/media/`：`POST /api/media`（multipart `file`，仅 JPEG/PNG/WebP，10 MiB 上限）、`GET /api/media/:id`（认证读取）、`DELETE /api/media/:id`（被引用时 409 `MEDIA_IN_USE`）。
+- 图片校验复用足迹的文件签名检测；错误统一抛 `ApiError`，状态码 400/404/409/413/415 与契约一致；数据库失败时补偿删除已写文件。
+- 随笔 `POST/PATCH /api/journals` 接受 `mediaIds`：UUID 数组、最多 9 个、不重复、必须属于当前用户且未被其他随笔占用；PATCH 整组替换，空数组清空；列表与详情按 `position` 返回图片 ID。
+- 共享类型新增 `MediaAsset`；`Journal.mediaIds` 不再恒空。
+- 测试新增 `apps/api/tests/media.test.cjs` 并扩展 `journals.test.cjs`，覆盖签名/大小、越权、跨随笔冲突、顺序与清空。
+- 本次迁移尚未在真实 PostgreSQL 执行；前端图片选择与预览待 A 接入。
+
+## 第八步：全国地图位置点
+
+开发日期：2026-11-15
+
+- `GET /api/footprints/map` 新增 `includeLocations=true|1`：全国视图一次返回去重后的 `locations`，供地图组件直接绘制；默认仍为空数组，`provinceAdcode` 优先。
+- 共享类型不变（`FootprintMapData.locations` 已存在）；`footprints.test.cjs` 增加跨省位置点断言。

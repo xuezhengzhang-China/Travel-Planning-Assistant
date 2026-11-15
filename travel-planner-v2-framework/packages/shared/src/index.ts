@@ -62,6 +62,7 @@ export type {
   FootprintMedia,
   FootprintMediaKind,
   FootprintPlaceSearchResult,
+  MediaAsset,
 } from './footprints.js';
 
 export type { CreateJournalInput, Journal, JournalListPage } from './journals.js';

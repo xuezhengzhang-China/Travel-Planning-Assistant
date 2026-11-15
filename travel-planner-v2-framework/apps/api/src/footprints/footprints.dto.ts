@@ -222,7 +222,7 @@ function isValidDate(value: string): boolean {
   );
 }
 
-function detectMimeType(buffer: Buffer): string | null {
+export function detectMimeType(buffer: Buffer): string | null {
   if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
     return 'image/jpeg';
   }

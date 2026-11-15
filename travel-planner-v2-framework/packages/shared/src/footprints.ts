@@ -102,3 +102,12 @@ export interface FootprintMapData {
   cities: FootprintMapCity[];
   locations: FootprintMapLocation[];
 }
+
+/** 手账图片的元数据；文件本体走认证的 GET /media/:id，不在 JSON 里暴露路径。 */
+export interface MediaAsset {
+  id: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  createdAt: string;
+}

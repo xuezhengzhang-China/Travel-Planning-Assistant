@@ -25,6 +25,8 @@ export default tseslint.config(
         fetch: 'readonly',
         URL: 'readonly',
         structuredClone: 'readonly',
+        FormData: 'readonly',
+        Blob: 'readonly',
       },
     },
     rules: { '@typescript-eslint/no-require-imports': 'off' },

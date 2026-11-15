@@ -267,6 +267,7 @@ export class FootprintsService {
     ownerId: string,
     provinceAdcode: string | null,
     year: number | null = null,
+    includeLocations = false,
   ): Promise<FootprintMapData> {
     const result = await this.database.query<EntryRow>(
       `SELECT id, text_content, longitude, latitude, coordinate_system,
@@ -297,7 +298,9 @@ export class FootprintsService {
         ? locations
             .filter((location) => location.anchor.province_adcode === provinceAdcode)
             .map(toMapLocation)
-        : [],
+        : includeLocations
+          ? locations.map(toMapLocation)
+          : [],
     };
   }
 

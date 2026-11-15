@@ -403,6 +403,11 @@ test('map data deduplicates POIs and nearby coordinates while preserving check-i
     locationCount: 4,
     checkInCount: 6,
   });
+  assert.deepEqual(national.locations, []);
+  const nationalWithLocations = await service.getMapData('owner-id', null, null, true);
+  assert.deepEqual(nationalWithLocations.summary, national.summary);
+  assert.equal(nationalWithLocations.locations.length, 4);
+  assert.ok(nationalWithLocations.locations.some((location) => location.cityName === '苏州市'));
   const shanghai = await service.getMapData('owner-id', '310000');
   assert.deepEqual(shanghai.summary, national.summary);
   assert.deepEqual(shanghai.provinces, []);

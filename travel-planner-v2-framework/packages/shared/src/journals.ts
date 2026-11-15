@@ -12,7 +12,7 @@ export interface Journal {
   title: string | null;
   /** 纯文本，按文本渲染，不渲染 HTML。 */
   body: string;
-  /** 首期恒为空；图片关联实现后按顺序返回媒体 ID。 */
+  /** 图片 ID 列表，按展示顺序；最多 9 张，更新时整组替换。 */
   mediaIds: string[];
   createdAt: string;
   updatedAt: string;
@@ -29,4 +29,5 @@ export interface CreateJournalInput {
   footprintId: string;
   title?: string;
   body: string;
+  mediaIds?: string[];
 }

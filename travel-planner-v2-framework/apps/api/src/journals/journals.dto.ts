@@ -3,16 +3,19 @@ import type { CreateJournalInput } from '@travel/shared' with { 'resolution-mode
 
 export const MAX_JOURNAL_TITLE_LENGTH = 120;
 export const MAX_JOURNAL_BODY_LENGTH = 20000;
+export const MAX_JOURNAL_MEDIA = 9;
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export interface ValidatedJournalCreate extends Omit<CreateJournalInput, 'title'> {
   title: string | null;
+  mediaIds: string[];
 }
 
 export interface ValidatedJournalUpdate {
   title?: string | null;
   body?: string;
+  mediaIds?: string[];
 }
 
 export function isUuid(value: unknown): value is string {
@@ -47,15 +50,22 @@ function readBody(value: unknown): string {
   return body;
 }
 
-/** 首期随笔只接受纯文本；带图片关联的请求必须等媒体契约落地后再放行。 */
-function rejectMediaAttachments(value: unknown): void {
-  if (value === undefined) return;
+/** mediaIds 必须是 UUID 数组：最多 9 个、不重复，顺序即展示顺序。 */
+function readMediaIds(value: unknown): string[] {
   if (!Array.isArray(value)) {
     throw new BadRequestException('mediaIds must be an array');
   }
-  if (value.length > 0) {
-    throw new BadRequestException('media attachments are not supported yet');
+  if (value.length > MAX_JOURNAL_MEDIA) {
+    throw new BadRequestException(`mediaIds must contain at most ${MAX_JOURNAL_MEDIA} items`);
   }
+  const ids = value.map((item) => {
+    if (!isUuid(item)) throw new BadRequestException('mediaIds must contain valid UUIDs');
+    return item;
+  });
+  if (new Set(ids).size !== ids.length) {
+    throw new BadRequestException('mediaIds must not contain duplicates');
+  }
+  return ids;
 }
 
 export function validateJournalCreate(body: Record<string, unknown>): ValidatedJournalCreate {
@@ -66,11 +76,11 @@ export function validateJournalCreate(body: Record<string, unknown>): ValidatedJ
   if (!isUuid(body.footprintId)) {
     throw new BadRequestException('footprintId must be a valid UUID');
   }
-  rejectMediaAttachments(body.mediaIds);
   return {
     footprintId: body.footprintId,
     title: readTitle(body.title),
     body: readBody(body.body),
+    mediaIds: body.mediaIds === undefined ? [] : readMediaIds(body.mediaIds),
   };
 }
 
@@ -79,12 +89,12 @@ export function validateJournalUpdate(body: Record<string, unknown>): ValidatedJ
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
     throw new BadRequestException('Unexpected journal field');
   }
-  rejectMediaAttachments(body.mediaIds);
   const update: ValidatedJournalUpdate = {};
   if ('title' in body) update.title = readTitle(body.title);
   if ('body' in body) update.body = readBody(body.body);
-  if (update.title === undefined && update.body === undefined) {
-    throw new BadRequestException('Provide at least one of title or body to update');
+  if ('mediaIds' in body) update.mediaIds = readMediaIds(body.mediaIds);
+  if (update.title === undefined && update.body === undefined && update.mediaIds === undefined) {
+    throw new BadRequestException('Provide at least one of title, body or mediaIds to update');
   }
   return update;
 }

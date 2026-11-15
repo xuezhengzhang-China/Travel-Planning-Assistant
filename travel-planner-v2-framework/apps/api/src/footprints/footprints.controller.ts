@@ -84,12 +84,14 @@ export class FootprintsController {
     @CurrentUser() user: AuthenticatedUser,
     @Query('provinceAdcode') provinceAdcode?: string,
     @Query('year') yearQuery?: string,
+    @Query('includeLocations') includeLocationsQuery?: string,
   ) {
     if (provinceAdcode && !/^\d{6}$/.test(provinceAdcode)) {
       throw new BadRequestException('provinceAdcode must be a six-digit administrative code');
     }
     const year = parseOptionalInteger(yearQuery, 'year', 1000, 9999);
-    return this.footprints.getMapData(user.userId, provinceAdcode ?? null, year);
+    const includeLocations = parseBooleanFlag(includeLocationsQuery, 'includeLocations');
+    return this.footprints.getMapData(user.userId, provinceAdcode ?? null, year, includeLocations);
   }
 
   @Get('media/:id')
@@ -160,4 +162,11 @@ function parseOptionalInteger(
     throw new BadRequestException(`${name} is outside the supported range`);
   }
   return parsed;
+}
+
+function parseBooleanFlag(value: string | undefined, name: string): boolean {
+  if (value === undefined) return false;
+  if (value === 'true' || value === '1') return true;
+  if (value === 'false' || value === '0') return false;
+  throw new BadRequestException(`${name} must be true or false`);
 }
