@@ -154,9 +154,7 @@ function initialDemoState(): DemoState {
 export default function FootprintMapDevPage() {
   const [demoState, setDemoState] = useState<DemoState>(initialDemoState);
   const [disableSdk, setDisableSdk] = useState(() => initialSearch().get('sdk') === 'off');
-  const [selectedId, setSelectedId] = useState<string | null>(() =>
-    initialSearch().get('select'),
-  );
+  const [selectedId, setSelectedId] = useState<string | null>(() => initialSearch().get('select'));
   const [log, setLog] = useState<string[]>([]);
 
   const markers = useMemo(() => (demoState === 'empty' ? [] : fixedMarkers), [demoState]);
