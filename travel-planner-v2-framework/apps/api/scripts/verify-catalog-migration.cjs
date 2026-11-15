@@ -1,11 +1,27 @@
 const assert = require('node:assert/strict');
 const { randomBytes, randomUUID } = require('node:crypto');
+const { readdirSync } = require('node:fs');
 const { resolve } = require('node:path');
 const { Pool } = require('pg');
 const { runner } = require('node-pg-migrate');
 const catalog = require('@travel/shared/beijing-catalog.json');
 const { generatePlan } = require('@travel/shared/recommendation-engine');
 require('dotenv').config({ path: resolve(__dirname, '../../../.env'), quiet: true });
+
+const migrationsDir = resolve(__dirname, '../migrations');
+const migrationNames = readdirSync(migrationsDir)
+  .filter((file) => file.endsWith('.js'))
+  .sort()
+  .map((file) => file.slice(0, -3));
+const catalogMigration = '202611060004_c_place_catalog_and_trip_relations';
+const retireMigration = '202611060005_retire_c_catalog';
+const catalogIndex = migrationNames.indexOf(catalogMigration);
+const retireIndex = migrationNames.indexOf(retireMigration);
+// 目录迁移之前要先建好 destinations；之后的迁移数按文件名计算，避免插入新迁移后固定条数失效。
+const initialCount = 3;
+if (catalogIndex < initialCount || retireIndex <= catalogIndex) {
+  throw new Error('迁移顺序与目录/退役迁移的预期不符');
+}
 // 只在本次创建的独立临时库验证；不会对项目库执行 down 或清空操作。
 async function verify() {
   const source = new URL(process.env.DATABASE_URL);
@@ -18,7 +34,7 @@ async function verify() {
   let created = false;
   const options = {
     databaseUrl: target.toString(),
-    dir: resolve(__dirname, '../migrations'),
+    dir: migrationsDir,
     migrationsTable: 'pgmigrations',
     direction: 'up',
     logger: { info() {}, warn() {}, error() {} },
@@ -26,13 +42,13 @@ async function verify() {
   try {
     await admin.query(`CREATE DATABASE "${name}"`);
     created = true;
-    await runner({ ...options, count: 3 });
+    await runner({ ...options, count: initialCount });
     const bDestinationId = randomUUID();
     await testDb.query(
       "INSERT INTO destinations(id, name, level, adcode) VALUES ($1, 'B upgrade fixture', 'province', '990000')",
       [bDestinationId],
     );
-    await runner({ ...options, count: 4 });
+    await runner({ ...options, count: catalogIndex + 1 - initialCount });
     assert.equal(
       (await testDb.query('SELECT id FROM destinations WHERE adcode = $1', ['990000'])).rows[0].id,
       bDestinationId,
@@ -92,8 +108,8 @@ async function verify() {
       plan.days,
     );
     console.log('PASS: 新迁移回滚与再次升级均保持安排一致');
-    // places 统一到 B：最后一步迁移删除 C 的旧目录表与相关外键。
-    await runner({ ...options, count: 1 });
+    // places 统一到 B：继续执行到退役迁移，删除 C 的旧目录表与相关外键。
+    await runner({ ...options, count: retireIndex - catalogIndex });
     for (const table of ['c_places', 'c_destinations']) {
       assert.equal(
         (await testDb.query('SELECT to_regclass($1) AS relation', [`public.${table}`])).rows[0]
@@ -109,7 +125,7 @@ async function verify() {
     await admin.end();
   }
 }
-verify().catch(() => {
-  console.error('Migration verification failed');
+verify().catch((error) => {
+  console.error(`Migration verification failed: ${error instanceof Error ? error.message : error}`);
   process.exitCode = 1;
 });
