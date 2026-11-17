@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { LoginResponse } from '@travel/shared';
-import TripWorkspace from './features/trip-create/TripWorkspace';
+import AppShell from './features/shell/AppShell';
+import { createApiClient } from './lib/api-client';
 import { createSessionClient } from './features/trip-create/session-client';
 import { tripErrorMessage } from './features/trip-create/trip-errors';
 import { APP_NAME } from './features/trip-create/branding';
@@ -57,6 +58,8 @@ export default function App() {
     () => (session && Date.parse(session.expiresAt) > Date.now() ? session.accessToken : null),
     [session],
   );
+  // 全站统一客户端：token 注入与错误码解析都在这里，各页面不再自己拼请求。
+  const apiClient = useMemo(() => createApiClient({ getAccessToken }), [getAccessToken]);
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (busy) return;
@@ -86,10 +89,11 @@ export default function App() {
     );
   if (session)
     return (
-      <TripWorkspace
+      <AppShell
         key={session.user.id}
         user={session.user}
         getAccessToken={getAccessToken}
+        client={apiClient}
         entry={tripEntry}
         onNavigate={navigateTrip}
         onSignOut={() => {
@@ -101,6 +105,9 @@ export default function App() {
           setSession(null);
           setTripEntry({ view: 'list' });
           setError('');
+        }}
+        onUserUpdated={(user) => {
+          setSession((current) => (current ? { ...current, user } : current));
         }}
       />
     );

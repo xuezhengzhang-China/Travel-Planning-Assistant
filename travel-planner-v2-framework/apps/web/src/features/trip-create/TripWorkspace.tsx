@@ -16,6 +16,8 @@ export interface TripWorkspaceProps extends TripHostEvents {
   user: PublicUser;
   getAccessToken: () => string | null | Promise<string | null>;
   onSignOut?: () => void;
+  /** 由宿主提供的「我的资料」入口；不传则不显示该按钮。 */
+  onOpenProfile?: () => void;
   api?: TripDraftApi;
   embedded?: boolean;
   entry?: TripEntry;
@@ -211,6 +213,7 @@ export default function TripWorkspace({
   user,
   getAccessToken,
   onSignOut,
+  onOpenProfile,
   api: suppliedApi,
   embedded = false,
   entry,
@@ -415,6 +418,7 @@ export default function TripWorkspace({
           </div>
           <div className="workspace-actions">
             <span>{user.displayName ?? user.email}</span>
+            {onOpenProfile && <button onClick={onOpenProfile}>我的资料</button>}
             {onSignOut && <button onClick={onSignOut}>退出登录</button>}
           </div>
         </header>
