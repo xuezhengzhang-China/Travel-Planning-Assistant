@@ -93,6 +93,7 @@ test('candidate planning reuses directed route lookups without treating reverse 
   });
   await service.generate(fixture.requests.recommendationRequest, fixture.actors.primary.userId);
   assert.equal(new Set(calls).size, calls.length);
-  assert.ok(calls.includes('120.148>120.102'));
-  assert.ok(calls.includes('120.102>120.148'));
+  const [first, second] = fixture.places.map((place) => place.coordinates.longitude);
+  assert.ok(calls.includes(`${first}>${second}`));
+  assert.ok(calls.includes(`${second}>${first}`));
 });

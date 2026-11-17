@@ -590,12 +590,15 @@ export default function NewTripPage({
                               </button>
                             </div>
                             <p className="address">{place.address}</p>
+                            {place.openingHours && <p className="address">{place.openingHours}</p>}
                             <p className="match">{rankMap.get(place.id)?.reasons.join('；')}</p>
                             <div className="attraction-meta">
                               <span>建议 {place.suggestedDurationMinutes} 分钟</span>
-                              <a href={place.sourceUrl} target="_blank" rel="noreferrer">
-                                官方资料 ↗
-                              </a>
+                              {place.sourceUrl && (
+                                <a href={place.sourceUrl} target="_blank" rel="noreferrer">
+                                  官方资料 ↗
+                                </a>
+                              )}
                             </div>
                           </article>
                         ))}
@@ -683,7 +686,7 @@ export default function NewTripPage({
                       </aside>
                     </div>
                     <p className="source-note">
-                      名称与地址来源于官方名录，部分资料较早；游玩时长为规划估计。出行前请核实开放、预约与入口信息。资料核对：2026-10-30。
+                      游玩时长为规划估计。出行前请确认当日开放、预约和入园信息。
                     </p>
                   </>
                 )}

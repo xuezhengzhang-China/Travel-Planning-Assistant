@@ -10,6 +10,7 @@ export interface Attraction {
   name: string;
   district: string;
   address: string;
+  openingHours?: string | null;
   category: string;
   categories: import('@travel/shared').Theme[];
   excursion: boolean;
