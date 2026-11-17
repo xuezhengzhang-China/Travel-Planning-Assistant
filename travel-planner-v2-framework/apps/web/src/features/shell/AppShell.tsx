@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { PublicUser } from '@travel/shared';
 import type { ApiClient } from '../../lib/api-client';
 import type { TripEntry } from '../trip-create/host-integration';
+import FootprintPage from '../footprints/FootprintPage';
 import ProfilePage from '../profile/ProfilePage';
 import TripWorkspace from '../trip-create/TripWorkspace';
 import './shell.css';
@@ -108,14 +109,7 @@ export default function AppShell({
         />
       )}
 
-      {tab === 'footprints' && (
-        <PendingPage
-          eyebrow="YOUR TRAVEL MEMORIES"
-          title="旅行足迹"
-          summary="走过的地方，都是生活的礼物。"
-          todo="将接入 GET /api/footprints/map（含 includeLocations=true）与足迹录入表单；无高德 Key 时需提示“城市归属不可用”。"
-        />
-      )}
+      {tab === 'footprints' && <FootprintPage client={client} />}
 
       <nav className="bottom-nav" aria-label="主导航">
         {SHELL_TABS.map((item) => (
