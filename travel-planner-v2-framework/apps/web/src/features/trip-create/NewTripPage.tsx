@@ -1,5 +1,5 @@
 import { rankPlaces, generatePlan, scheduleGroups } from '@travel/shared/recommendation-engine';
-import type { PlanningInput, Proposal, ScheduleDay } from '@travel/shared';
+import type { Destination, PlanningInput, Proposal, ScheduleDay } from '@travel/shared';
 import { toDraftPlanningInput } from './trip-draft-client';
 import { tripErrorMessage } from './trip-errors';
 import { useEffect, useRef, useState } from 'react';
@@ -14,8 +14,10 @@ import {
   type PlanningDraft,
 } from '../../data/planner';
 import { loadPlanner, savePlanner, themes, type PlannerState } from '../../data/planner-storage';
+import { wgs84ToGcj02 } from '../../lib/coords';
 import './trip-create.css';
 import { APP_NAME } from './branding';
+import TripPreparation from './TripPreparation';
 
 const defaultPlaces = listPlaces(beijing.id);
 const steps = ['目的地', '旅行日期', '旅行偏好', '挑选景点'];
@@ -81,6 +83,19 @@ export interface NewTripPageProps {
   catalogPlaces?: Attraction[];
   city?: { id: string; name: string };
   resetControl?: { allowed: boolean; onChange: (allowed: boolean) => void };
+  readOnly?: boolean;
+  cities?: Destination[];
+  provinces?: Destination[];
+  onCityChange?: (city: Destination) => void;
+  reverseGeocode?: (
+    longitude: number,
+    latitude: number,
+  ) => Promise<{
+    placeName: string;
+    cityId: string | null;
+    cityAdcode: string | null;
+    warnings: unknown[];
+  }>;
 }
 const browserDraftStorage: TripDraftStorage = { load: loadPlanner, save: savePlanner };
 export default function NewTripPage({
@@ -97,6 +112,11 @@ export default function NewTripPage({
   catalogPlaces = defaultPlaces,
   city = beijing,
   resetControl,
+  readOnly = false,
+  cities = [],
+  provinces = [],
+  onCityChange,
+  reverseGeocode,
 }: NewTripPageProps) {
   const places = catalogPlaces;
   const byId = new Map(places.map((place) => [place.id, place]));
@@ -109,6 +129,43 @@ export default function NewTripPage({
   const [step, setStep] = useState(0);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('全部');
+  const [cityQuery, setCityQuery] = useState('');
+  const [locationMsg, setLocationMsg] = useState('');
+
+  function locateCity() {
+    if (!navigator.geolocation) {
+      setLocationMsg('浏览器不支持定位，请手动搜索城市。');
+      return;
+    }
+    setLocationMsg('正在定位…');
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const gcj = wgs84ToGcj02(coords.longitude, coords.latitude);
+        try {
+          const result = await reverseGeocode?.(gcj.longitude, gcj.latitude);
+          if (result?.cityId) {
+            const matched = cities.find((c) => c.id === result.cityId);
+            if (matched) {
+              setLocationMsg(`已定位到：${matched.name}，已为你选中。`);
+              onCityChange?.(matched);
+            } else {
+              setLocationMsg(`已定位到：${result.placeName}，但该城市不在目录中，请手动选择。`);
+            }
+          } else {
+            setLocationMsg(
+              `当前位置：${coords.longitude.toFixed(4)}, ${coords.latitude.toFixed(4)}（未能确认所在城市）。`,
+            );
+          }
+        } catch {
+          setLocationMsg(
+            `当前位置：${coords.longitude.toFixed(4)}, ${coords.latitude.toFixed(4)}。`,
+          );
+        }
+      },
+      () => setLocationMsg('定位失败，请允许定位权限或手动搜索城市。'),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  }
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -421,11 +478,48 @@ export default function NewTripPage({
                     </label>
                     <div className="city-field">
                       <Icon name="pin" />
-                      <select id="city" value={beijing.id} onChange={() => {}}>
-                        <option value={city.id}>{city.name}</option>
-                      </select>
-                      <span className="pill">{places.length} 个景点</span>
+                      <input
+                        type="search"
+                        placeholder="搜索城市"
+                        value={cityQuery}
+                        onChange={(event) => setCityQuery(event.target.value)}
+                      />
+                      <button type="button" className="locate-button" onClick={locateCity}>
+                        定位
+                      </button>
                     </div>
+                    {locationMsg && <p className="city-choice">{locationMsg}</p>}
+                    <select
+                      id="city"
+                      value={city.id}
+                      onChange={(event) => {
+                        const selected = cities.find((c) => c.id === event.target.value);
+                        if (selected) onCityChange?.(selected);
+                      }}
+                    >
+                      {cities.length === 0 ? (
+                        <option value={city.id}>{city.name}</option>
+                      ) : (
+                        provinces.map((province) => {
+                          const groupCities = cities.filter(
+                            (c) =>
+                              c.parentId === province.id &&
+                              (cityQuery.trim() === '' || c.name.includes(cityQuery.trim())),
+                          );
+                          if (groupCities.length === 0) return null;
+                          return (
+                            <optgroup key={province.id} label={province.name}>
+                              {groupCities.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                  {c.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          );
+                        })
+                      )}
+                    </select>
+                    <span className="pill">{places.length} 个景点</span>
                     <p className="city-choice">
                       <Icon name="check" size={15} />
                       {city.name} · {places.length} 个精选景点
@@ -754,42 +848,48 @@ export default function NewTripPage({
                     {transports[trip.transport]}
                   </p>
                 </div>
-                <button
-                  className="secondary"
-                  onClick={() => {
-                    navigate(0);
-                    setView('wizard');
-                  }}
-                >
-                  修改规划条件
-                </button>
+                {!readOnly && (
+                  <button
+                    className="secondary"
+                    onClick={() => {
+                      navigate(0);
+                      setView('wizard');
+                    }}
+                  >
+                    修改规划条件
+                  </button>
+                )}
               </header>
-              <label className="field-label title-field">
-                行程名称
-                <input
-                  value={trip.title}
-                  maxLength={80}
-                  onChange={(event) => {
-                    setTrip({
-                      ...trip,
-                      title: event.target.value,
-                      updatedAt: new Date().toISOString(),
-                    });
-                    setTitleError('');
-                  }}
-                  onBlur={() => {
-                    if (!trip.title.trim()) {
+              {readOnly ? (
+                <h3 className="trip-view-title">{trip.title}</h3>
+              ) : (
+                <label className="field-label title-field">
+                  行程名称
+                  <input
+                    value={trip.title}
+                    maxLength={80}
+                    onChange={(event) => {
                       setTrip({
                         ...trip,
-                        title: `我的${city.name}之旅`,
+                        title: event.target.value,
                         updatedAt: new Date().toISOString(),
                       });
-                      setTitleError('名称不能为空，已恢复默认名称。');
-                    }
-                  }}
-                />
-              </label>
-              {titleError && <p role="status">{titleError}</p>}
+                      setTitleError('');
+                    }}
+                    onBlur={() => {
+                      if (!trip.title.trim()) {
+                        setTrip({
+                          ...trip,
+                          title: `我的${city.name}之旅`,
+                          updatedAt: new Date().toISOString(),
+                        });
+                        setTitleError('名称不能为空，已恢复默认名称。');
+                      }
+                    }}
+                  />
+                </label>
+              )}
+              {!readOnly && titleError && <p role="status">{titleError}</p>}
               <div className="notice">
                 可移动日期、调整顺序和增减景点；参考时间会随修改重新计算。
                 {onComplete ? '点击保存行程后同步到服务器。' : '更改保存在当前浏览器。'}
@@ -841,55 +941,57 @@ export default function NewTripPage({
                                   {place.suggestedDurationMinutes} 分钟
                                 </span>
                               </div>
-                              <div className="schedule-actions">
-                                <select
-                                  aria-label={`移动${place.name}到日期`}
-                                  value={day.date}
-                                  onChange={(event) =>
-                                    changeDays(movePlace(trip.days, id, event.target.value))
-                                  }
-                                >
-                                  {trip.days.map((target) => (
-                                    <option key={target.date} value={target.date}>
-                                      {target.date}
-                                    </option>
-                                  ))}
-                                </select>
-                                <button
-                                  aria-label={`上移${place.name}`}
-                                  disabled={index === 0}
-                                  onClick={() => changeDays(reorderPlace(trip.days, id, -1))}
-                                >
-                                  ↑
-                                </button>
-                                <button
-                                  aria-label={`下移${place.name}`}
-                                  disabled={index === day.placeIds.length - 1}
-                                  onClick={() => changeDays(reorderPlace(trip.days, id, 1))}
-                                >
-                                  ↓
-                                </button>
-                                <button
-                                  aria-label={`删除${place.name}`}
-                                  onClick={() => {
-                                    changeDays(
-                                      trip.days.map((value) => ({
-                                        ...value,
-                                        placeIds: value.placeIds.filter(
-                                          (placeId) => placeId !== id,
+                              {!readOnly && (
+                                <div className="schedule-actions">
+                                  <select
+                                    aria-label={`移动${place.name}到日期`}
+                                    value={day.date}
+                                    onChange={(event) =>
+                                      changeDays(movePlace(trip.days, id, event.target.value))
+                                    }
+                                  >
+                                    {trip.days.map((target) => (
+                                      <option key={target.date} value={target.date}>
+                                        {target.date}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    aria-label={`上移${place.name}`}
+                                    disabled={index === 0}
+                                    onClick={() => changeDays(reorderPlace(trip.days, id, -1))}
+                                  >
+                                    ↑
+                                  </button>
+                                  <button
+                                    aria-label={`下移${place.name}`}
+                                    disabled={index === day.placeIds.length - 1}
+                                    onClick={() => changeDays(reorderPlace(trip.days, id, 1))}
+                                  >
+                                    ↓
+                                  </button>
+                                  <button
+                                    aria-label={`删除${place.name}`}
+                                    onClick={() => {
+                                      changeDays(
+                                        trip.days.map((value) => ({
+                                          ...value,
+                                          placeIds: value.placeIds.filter(
+                                            (placeId) => placeId !== id,
+                                          ),
+                                        })),
+                                      );
+                                      patch({
+                                        selectedPlaceIds: draft.selectedPlaceIds.filter(
+                                          (value) => value !== id,
                                         ),
-                                      })),
-                                    );
-                                    patch({
-                                      selectedPlaceIds: draft.selectedPlaceIds.filter(
-                                        (value) => value !== id,
-                                      ),
-                                    });
-                                  }}
-                                >
-                                  移除
-                                </button>
-                              </div>
+                                      });
+                                    }}
+                                  >
+                                    移除
+                                  </button>
+                                </div>
+                              )}
                             </li>
                           );
                         })}
@@ -897,41 +999,52 @@ export default function NewTripPage({
                       {!day.placeIds.length && (
                         <p className="empty compact">留白的一天，也可以很精彩。</p>
                       )}
-                      <select
-                        className="add-place"
-                        aria-label={`为${day.date}添加景点`}
-                        value=""
-                        disabled={allocated.size === places.length}
-                        onChange={(event) => {
-                          const id = event.target.value;
-                          if (!byId.has(id)) return;
-                          changeDays(
-                            trip.days.map((value) =>
-                              value.date === day.date
-                                ? { ...value, placeIds: [...value.placeIds, id] }
-                                : value,
-                            ),
-                          );
-                          patch({
-                            selectedPlaceIds: [...new Set([...draft.selectedPlaceIds, id])],
-                          });
-                        }}
-                      >
-                        <option value="">
-                          {allocated.size === places.length ? '全部景点已安排' : '＋ 添加一个景点'}
-                        </option>
-                        {places
-                          .filter((place) => !allocated.has(place.id))
-                          .map((place) => (
-                            <option key={place.id} value={place.id}>
-                              {place.name}
-                            </option>
-                          ))}
-                      </select>
+                      {!readOnly && (
+                        <select
+                          className="add-place"
+                          aria-label={`为${day.date}添加景点`}
+                          value=""
+                          disabled={allocated.size === places.length}
+                          onChange={(event) => {
+                            const id = event.target.value;
+                            if (!byId.has(id)) return;
+                            changeDays(
+                              trip.days.map((value) =>
+                                value.date === day.date
+                                  ? { ...value, placeIds: [...value.placeIds, id] }
+                                  : value,
+                              ),
+                            );
+                            patch({
+                              selectedPlaceIds: [...new Set([...draft.selectedPlaceIds, id])],
+                            });
+                          }}
+                        >
+                          <option value="">
+                            {allocated.size === places.length
+                              ? '全部景点已安排'
+                              : '＋ 添加一个景点'}
+                          </option>
+                          {places
+                            .filter((place) => !allocated.has(place.id))
+                            .map((place) => (
+                              <option key={place.id} value={place.id}>
+                                {place.name}
+                              </option>
+                            ))}
+                        </select>
+                      )}
                     </section>
                   );
                 })}
               </div>
+              <TripPreparation
+                destination={city.name}
+                startDate={trip.days[0]?.date ?? ''}
+                endDate={trip.days.at(-1)?.date ?? ''}
+                themes={trip.themes}
+                transport={trip.transport}
+              />
               <div className="submit-feedback" aria-live="polite">
                 {submitError && (
                   <p className="error" role="alert">
@@ -945,17 +1058,26 @@ export default function NewTripPage({
                 )}
               </div>
               <div className="trip-footer">
-                <span className={saved ? 'save-status' : 'error'} role="status">
-                  {saved
-                    ? onComplete
-                      ? '✓ 编辑内容已暂存，点击保存后同步服务器'
-                      : '✓ 更改已保存在本浏览器 · 不跨设备同步'
-                    : '暂存失败，请保留页面'}
-                </span>
-
-                <button className="primary" disabled={submitting} onClick={() => void complete()}>
-                  {submitting ? '正在保存…' : onComplete ? '保存行程' : '保存至本浏览器'}
-                </button>
+                {readOnly ? (
+                  <span className="save-status">查看模式 · 返回列表可继续编辑</span>
+                ) : (
+                  <>
+                    <span className={saved ? 'save-status' : 'error'} role="status">
+                      {saved
+                        ? onComplete
+                          ? '✓ 编辑内容已暂存，点击保存后同步服务器'
+                          : '✓ 更改已保存在本浏览器 · 不跨设备同步'
+                        : '暂存失败，请保留页面'}
+                    </span>
+                    <button
+                      className="primary"
+                      disabled={submitting}
+                      onClick={() => void complete()}
+                    >
+                      {submitting ? '正在保存…' : onComplete ? '保存行程' : '保存至本浏览器'}
+                    </button>
+                  </>
+                )}
               </div>
             </section>
           )

@@ -23,6 +23,8 @@ export interface AtlasMapProps {
   locations: FootprintMapLocation[];
   /** 传了才可点击行政区（全国视图用来下钻）。 */
   onSelectRegion?: (adcode: string, name: string) => void;
+  /** 点击足迹点位时回调。 */
+  onSelectLocation?: (location: FootprintMapLocation) => void;
   /** 行政区名称标签数量多时会挤，省级视图可以关掉。 */
   showLabels?: boolean;
 }
@@ -41,6 +43,7 @@ export default function AtlasMap({
   adcode,
   locations,
   onSelectRegion,
+  onSelectLocation,
   showLabels = adcode === NATIONAL_ADCODE,
 }: AtlasMapProps) {
   const [geo, setGeo] = useState<AtlasGeo | null>(null);
@@ -181,6 +184,10 @@ export default function AtlasMap({
               className="atlas-pin"
               transform={`translate(${x},${y})`}
               aria-label={location.placeName ?? location.cityName ?? '足迹'}
+              role={onSelectLocation ? 'button' : undefined}
+              tabIndex={onSelectLocation ? 0 : undefined}
+              style={onSelectLocation ? { cursor: 'pointer' } : undefined}
+              onClick={onSelectLocation ? () => onSelectLocation(location) : undefined}
             >
               <path d={PIN_PATH} />
               <circle cy="-23" r="4" />

@@ -18,6 +18,7 @@ export const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 export const MAX_UPLOAD_BYTES = MAX_VIDEO_BYTES;
 export const MAX_TEXT_LENGTH = 10000;
+export const MAX_FOOTPRINT_MEDIA = 9;
 
 export interface ValidatedFootprintInput extends Omit<CreateFootprintInput, 'text'> {
   text: string | null;
@@ -31,6 +32,7 @@ export interface ValidatedUpload {
 export interface ValidatedFootprintUpdate {
   input: ValidatedFootprintInput;
   removeMedia: boolean;
+  removeMediaIds: string[];
   locationChanged: boolean;
 }
 
@@ -125,6 +127,7 @@ export function validateFootprintUpdate(
     'recordedOn',
     'poiId',
     'removeMedia',
+    'removeMediaIds',
   ]);
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
     throw new BadRequestException('Unexpected footprint field');
@@ -152,6 +155,7 @@ export function validateFootprintUpdate(
   if (removeMedia && hasFile) {
     throw new BadRequestException('Cannot replace and remove media in the same request');
   }
+  const removeMediaIds = parseUuidList(body.removeMediaIds);
   if (body.poiId !== undefined && body.poiId !== null && typeof body.poiId !== 'string') {
     throw new BadRequestException('poiId must be a string or null');
   }
@@ -185,10 +189,11 @@ export function validateFootprintUpdate(
   return {
     input: validateFootprintInput(
       merged,
-      hasFile || (existing.media !== null && !removeMedia),
+      hasFile || (existing.media.length > 0 && !removeMedia),
       now,
     ),
     removeMedia,
+    removeMediaIds,
     locationChanged: coordinatesChanged || body.poiId !== undefined,
   };
 }
@@ -241,4 +246,26 @@ export function detectMimeType(buffer: Buffer): string | null {
     return 'video/webm';
   }
   return null;
+}
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function parseUuidList(value: unknown): string[] {
+  if (value === undefined || value === null || value === '') return [];
+  const raw = Array.isArray(value) ? value : [value];
+  const result: string[] = [];
+  for (const item of raw) {
+    if (typeof item !== 'string') {
+      throw new BadRequestException('removeMediaIds must be a string or array of strings');
+    }
+    for (const part of item.split(',')) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+      if (!UUID_PATTERN.test(trimmed)) {
+        throw new BadRequestException('removeMediaIds must be valid UUIDs');
+      }
+      result.push(trimmed);
+    }
+  }
+  return [...new Set(result)];
 }

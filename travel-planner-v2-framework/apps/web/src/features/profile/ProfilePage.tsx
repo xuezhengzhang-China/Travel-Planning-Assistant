@@ -40,6 +40,28 @@ export default function ProfilePage({
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [fontSize, setFontSize] = useState(
+    () => localStorage.getItem('wander-font-size') || 'medium',
+  );
+  const [theme, setTheme] = useState(() => localStorage.getItem('wander-theme') || 'green');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('wander-font-size', fontSize);
+    } catch {
+      /* 忽略存储失败 */
+    }
+    document.documentElement.dataset.font = fontSize;
+  }, [fontSize]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('wander-theme', theme);
+    } catch {
+      /* 忽略存储失败 */
+    }
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     let active = true;
@@ -197,6 +219,57 @@ export default function ProfilePage({
             <button type="button" onClick={onSignOut}>
               <span aria-hidden="true">⏻</span>退出登录<i aria-hidden="true">›</i>
             </button>
+          </div>
+
+          <div className="settings-card">
+            <h3>偏好设置</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(true);
+                setNotice('');
+                setError('');
+              }}
+            >
+              <span aria-hidden="true">♙</span>个人资料<i aria-hidden="true">›</i>
+            </button>
+            <div className="pref-row">
+              <span className="pref-icon" aria-hidden="true">
+                文
+              </span>
+              <span className="pref-label">字体与字号</span>
+              <select value={fontSize} onChange={(event) => setFontSize(event.target.value)}>
+                <option value="small">小</option>
+                <option value="medium">标准</option>
+                <option value="large">大</option>
+              </select>
+            </div>
+            <div className="pref-row">
+              <span className="pref-icon" aria-hidden="true">
+                ☼
+              </span>
+              <span className="pref-label">主题颜色</span>
+              <div className="theme-swatches">
+                {(
+                  [
+                    ['green', '#587d65'],
+                    ['blue', '#4a7ba6'],
+                    ['orange', '#c88a4a'],
+                    ['pink', '#b56a8c'],
+                  ] as const
+                ).map(([id, color]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`theme-swatch${theme === id ? ' active' : ''}`}
+                    style={{ background: color }}
+                    aria-label={`主题颜色 ${id}`}
+                    aria-pressed={theme === id}
+                    onClick={() => setTheme(id)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
           <p className="profile-version">WANDER · TRAVEL PLANNER</p>

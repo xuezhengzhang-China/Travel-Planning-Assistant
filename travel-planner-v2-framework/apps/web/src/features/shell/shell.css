@@ -559,7 +559,7 @@
 
 .sub-page {
   min-height: calc(100vh - 160px);
-  padding-top: 20px;
+  padding: 20px 22px 0;
 }
 
 .sub-page-title {

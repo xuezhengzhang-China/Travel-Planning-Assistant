@@ -142,13 +142,15 @@ test('failed database save compensates by deleting an uploaded file', async (t) 
         recordedOn: today,
         text: null,
       },
-      {
-        buffer: Buffer.from([0xff, 0xd8, 0xff]),
-        mimetype: 'image/jpeg',
-        size: 3,
-        originalname: 'photo.jpg',
-      },
-      { kind: 'photo', mimeType: 'image/jpeg' },
+      [
+        {
+          buffer: Buffer.from([0xff, 0xd8, 0xff]),
+          mimetype: 'image/jpeg',
+          size: 3,
+          originalname: 'photo.jpg',
+        },
+      ],
+      [{ kind: 'photo', mimeType: 'image/jpeg' }],
     ),
     /simulated database failure/,
   );
@@ -220,13 +222,15 @@ test('footprint save writes coordinates, date, and media metadata in one transac
       recordedOn: today,
       text: 'A visit',
     },
-    {
-      buffer: Buffer.from([0xff, 0xd8, 0xff]),
-      mimetype: 'image/jpeg',
-      size: 3,
-      originalname: 'photo.jpg',
-    },
-    { kind: 'photo', mimeType: 'image/jpeg' },
+    [
+      {
+        buffer: Buffer.from([0xff, 0xd8, 0xff]),
+        mimetype: 'image/jpeg',
+        size: 3,
+        originalname: 'photo.jpg',
+      },
+    ],
+    [{ kind: 'photo', mimeType: 'image/jpeg' }],
   );
   assert.equal(statements.length, 2);
   assert.deepEqual(statements[0].values.slice(2), [
@@ -246,17 +250,20 @@ test('footprint save writes coordinates, date, and media metadata in one transac
     null,
   ]);
   assert.equal(statements[1].values[4], 'photo');
+  assert.equal(statements[1].values[8], 0);
   assert.equal(result.recordedOn, today);
   assert.equal(result.latitude, 31.2304);
-  assert.deepEqual(result.media, {
-    id: statements[1].values[0],
-    kind: 'photo',
-    originalName: 'photo.jpg',
-    mimeType: 'image/jpeg',
-    sizeBytes: 3,
-    createdAt: '2026-11-03T00:00:00.000Z',
-  });
-  assert.equal(Object.hasOwn(result.media, 'storageKey'), false);
+  assert.deepEqual(result.media, [
+    {
+      id: statements[1].values[0],
+      kind: 'photo',
+      originalName: 'photo.jpg',
+      mimeType: 'image/jpeg',
+      sizeBytes: 3,
+      createdAt: '2026-11-03T00:00:00.000Z',
+    },
+  ]);
+  assert.equal(Object.hasOwn(result.media[0], 'storageKey'), false);
   assert.equal((await readdir(directory)).length, 1);
 });
 
@@ -452,7 +459,8 @@ test('footprint list applies owner/year filters, ordering, and pagination', asyn
     async query(text, values) {
       calls.push({ text, values });
       if (text.includes('COUNT(*)')) return { rows: [{ total: '3' }] };
-      return { rows: [joinedMapEntry({ id: 'listed-entry', recorded_on: '2025-06-07' })] };
+      if (text.includes('FROM footprint_media')) return { rows: [] };
+      return { rows: [mapEntry({ id: 'listed-entry', recorded_on: '2025-06-07' })] };
     },
   };
   const service = new FootprintsService(database, {}, amapStub);
@@ -475,7 +483,7 @@ test('footprint list applies owner/year filters, ordering, and pagination', asyn
         cityName: '上海市',
         cityAdcode: '310100',
         recordedOn: '2025-06-07',
-        media: null,
+        media: [],
         createdAt: '2026-11-03T00:00:00.000Z',
         updatedAt: '2026-11-03T00:00:00.000Z',
       },
@@ -484,18 +492,20 @@ test('footprint list applies owner/year filters, ordering, and pagination', asyn
     pageSize: 1,
     total: 3,
   });
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3);
   assert.match(calls[0].text, /e\.owner_id = \$1/);
   assert.match(calls[0].text, /EXTRACT\(YEAR FROM e\.recorded_on\) = \$2/);
   assert.deepEqual(calls[0].values, ['owner-1', 2025]);
   assert.match(calls[1].text, /ORDER BY e\.recorded_on DESC/);
   assert.deepEqual(calls[1].values, ['owner-1', 2025, 1, 1]);
+  assert.match(calls[2].text, /entry_id = ANY\(\$2::uuid\[\]\)/);
+  assert.deepEqual(calls[2].values, ['owner-1', ['listed-entry']]);
 });
 
 test('footprint details are restricted to the owner', async () => {
   const database = {
     async query(text, values) {
-      assert.match(text, /e\.id = \$1 AND e\.owner_id = \$2/);
+      assert.match(text, /id = \$1 AND owner_id = \$2/);
       assert.deepEqual(values, ['entry-id', 'owner-1']);
       return { rows: [] };
     },
@@ -524,7 +534,7 @@ test('footprint updates preserve omitted fields and validate media and coordinat
     cityName: '上海市',
     cityAdcode: '310100',
     recordedOn: today,
-    media: null,
+    media: [],
     createdAt: '2026-11-03T00:00:00.000Z',
     updatedAt: '2026-11-03T00:00:00.000Z',
   };
@@ -539,6 +549,7 @@ test('footprint updates preserve omitted fields and validate media and coordinat
       poiId: 'poi-123',
     },
     removeMedia: false,
+    removeMediaIds: [],
     locationChanged: false,
   });
   assert.throws(
@@ -604,28 +615,37 @@ test('footprint metadata updates avoid external location lookups and keep media 
     },
   };
   const service = new FootprintsService(database, {}, locationService);
-  const result = await service.update('owner-1', 'entry-id', {
-    input: {
-      longitude: existing.longitude,
-      latitude: existing.latitude,
-      coordinateSystem: existing.coordinate_system,
-      recordedOn: today,
-      text: 'Edited text',
-      poiId: existing.poi_id,
+  const result = await service.update(
+    'owner-1',
+    'entry-id',
+    {
+      input: {
+        longitude: existing.longitude,
+        latitude: existing.latitude,
+        coordinateSystem: existing.coordinate_system,
+        recordedOn: today,
+        text: 'Edited text',
+        poiId: existing.poi_id,
+      },
+      removeMedia: false,
+      removeMediaIds: [],
+      locationChanged: false,
     },
-    removeMedia: false,
-    locationChanged: false,
-  });
+    [],
+    [],
+  );
 
   assert.equal(result.text, 'Edited text');
-  assert.deepEqual(result.media, {
-    id: 'media-id',
-    kind: 'photo',
-    originalName: 'photo.jpg',
-    mimeType: 'image/jpeg',
-    sizeBytes: 10,
-    createdAt: '2026-11-03T00:00:00.000Z',
-  });
+  assert.deepEqual(result.media, [
+    {
+      id: 'media-id',
+      kind: 'photo',
+      originalName: 'photo.jpg',
+      mimeType: 'image/jpeg',
+      sizeBytes: 10,
+      createdAt: '2026-11-03T00:00:00.000Z',
+    },
+  ]);
   assert.equal(resolved, false);
   assert.ok(clientQueries.some(({ text }) => text.includes('owner_id = $2')));
 });
@@ -726,20 +746,26 @@ test('removing a footprint attachment queues cleanup and returns no media', asyn
     amapStub,
   );
 
-  const result = await service.update('owner-1', 'entry-id', {
-    input: {
-      longitude: currentEntry.longitude,
-      latitude: currentEntry.latitude,
-      coordinateSystem: currentEntry.coordinate_system,
-      recordedOn: today,
-      text: 'Keep text',
+  const result = await service.update(
+    'owner-1',
+    'entry-id',
+    {
+      input: {
+        longitude: currentEntry.longitude,
+        latitude: currentEntry.latitude,
+        coordinateSystem: currentEntry.coordinate_system,
+        recordedOn: today,
+        text: 'Keep text',
+      },
+      removeMedia: true,
+      locationChanged: false,
     },
-    removeMedia: true,
-    locationChanged: false,
-  });
+    [],
+    [],
+  );
 
   assert.equal(result.text, 'Keep text');
-  assert.equal(result.media, null);
+  assert.deepEqual(result.media, []);
   assert.deepEqual(deletedFiles, ['old-media.jpg']);
   assert.deepEqual(queued, []);
 });
@@ -764,18 +790,5 @@ function mapEntry(overrides) {
     created_at: new Date('2026-11-03T00:00:00.000Z'),
     updated_at: new Date('2026-11-03T00:00:00.000Z'),
     ...overrides,
-  };
-}
-
-function joinedMapEntry(overrides) {
-  return {
-    ...mapEntry(overrides),
-    media_id: null,
-    media_kind: null,
-    media_original_name: null,
-    media_mime_type: null,
-    media_size_bytes: null,
-    media_created_at: null,
-    media_storage_key: null,
   };
 }

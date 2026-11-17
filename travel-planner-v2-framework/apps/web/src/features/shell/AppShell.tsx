@@ -3,6 +3,7 @@ import type { PublicUser } from '@travel/shared';
 import type { ApiClient } from '../../lib/api-client';
 import type { TripEntry } from '../trip-create/host-integration';
 import FootprintPage from '../footprints/FootprintPage';
+import HomePage from '../home/HomePage';
 import ProfilePage from '../profile/ProfilePage';
 import TripWorkspace from '../trip-create/TripWorkspace';
 import './shell.css';
@@ -27,40 +28,6 @@ export interface AppShellProps {
   onNavigate?: (entry: TripEntry) => void;
   onSignOut: () => void;
   onUserUpdated: (user: PublicUser) => void;
-}
-
-/**
- * 占位页：外壳先立起来，内容按 tab 逐个接入。
- *
- * 故意写清「下一步接哪个接口」，而不是空白一片——这样进度对谁都可见。
- */
-function PendingPage({
-  eyebrow,
-  title,
-  summary,
-  todo,
-}: {
-  eyebrow: string;
-  title: string;
-  summary: string;
-  todo: string;
-}) {
-  return (
-    <section className="sub-page">
-      <p className="eyebrow">{eyebrow}</p>
-      <div className="sub-page-title">
-        <div>
-          <h1>{title}</h1>
-          <p>{summary}</p>
-        </div>
-      </div>
-      <div className="settings-card">
-        <h3>待接入</h3>
-        <p>{todo}</p>
-      </div>
-      <p className="profile-version">WANDER · TRAVEL PLANNER</p>
-    </section>
-  );
 }
 
 export default function AppShell({
@@ -100,14 +67,7 @@ export default function AppShell({
         />
       )}
 
-      {tab === 'home' && (
-        <PendingPage
-          eyebrow="YOUR TRAVEL ASSISTANT"
-          title="旅行助手"
-          summary="从一个目的地开始，看看这座城市能怎么玩。"
-          todo="将接入 GET /api/destinations 与 GET /api/places，展示目的地目录、城市名片与推荐景点。"
-        />
-      )}
+      {tab === 'home' && <HomePage client={client} />}
 
       {tab === 'footprints' && <FootprintPage client={client} />}
 

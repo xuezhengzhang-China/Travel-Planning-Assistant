@@ -12,17 +12,18 @@ import {
   Post,
   Query,
   StreamableFile,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import type { FootprintEntry } from '@travel/shared' with { 'resolution-mode': 'import' };
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/auth.types';
 import { FootprintsService } from './footprints.service';
 import {
+  MAX_FOOTPRINT_MEDIA,
   MAX_UPLOAD_BYTES,
   validateFootprintInput,
   validateFootprintUpdate,
@@ -54,18 +55,18 @@ export class FootprintsController {
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    FileInterceptor('file', {
-      limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+    FilesInterceptor('files', MAX_FOOTPRINT_MEDIA, {
+      limits: { fileSize: MAX_UPLOAD_BYTES, files: MAX_FOOTPRINT_MEDIA },
     }),
   )
   async create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() body: Record<string, unknown>,
-    @UploadedFile() file: UploadedMedia | undefined,
+    @UploadedFiles() files: UploadedMedia[],
   ): Promise<FootprintEntry> {
-    const input = validateFootprintInput(body, Boolean(file));
-    const upload = file ? validateUpload(file) : undefined;
-    return this.footprints.create(user.userId, input, file, upload);
+    const input = validateFootprintInput(body, files.length > 0);
+    const uploads = files.map((file) => validateUpload(file));
+    return this.footprints.create(user.userId, input, files, uploads);
   }
 
   @Get('places/search')
@@ -120,20 +121,20 @@ export class FootprintsController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    FileInterceptor('file', {
-      limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+    FilesInterceptor('files', MAX_FOOTPRINT_MEDIA, {
+      limits: { fileSize: MAX_UPLOAD_BYTES, files: MAX_FOOTPRINT_MEDIA },
     }),
   )
   async update(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) entryId: string,
     @Body() body: Record<string, unknown>,
-    @UploadedFile() file: UploadedMedia | undefined,
+    @UploadedFiles() files: UploadedMedia[],
   ) {
     const existing = await this.footprints.getById(user.userId, entryId);
-    const update = validateFootprintUpdate(body, Boolean(file), existing);
-    const upload = file ? validateUpload(file) : undefined;
-    return this.footprints.update(user.userId, entryId, update, file, upload);
+    const update = validateFootprintUpdate(body, files.length > 0, existing);
+    const uploads = files.map((file) => validateUpload(file));
+    return this.footprints.update(user.userId, entryId, update, files, uploads);
   }
 
   @Delete(':id')

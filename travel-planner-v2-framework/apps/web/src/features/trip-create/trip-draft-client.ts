@@ -19,6 +19,16 @@ import type {
 import type { PlanningDraft } from '../../data/planner';
 export interface TripDraftApi {
   listCities(): Promise<Destination[]>;
+  listProvinces(): Promise<Destination[]>;
+  reverseGeocode(
+    longitude: number,
+    latitude: number,
+  ): Promise<{
+    placeName: string;
+    cityId: string | null;
+    cityAdcode: string | null;
+    warnings: unknown[];
+  }>;
   getPlaces(cityId: string): Promise<Place[]>;
   remove(id: string, expectedRevision: number): Promise<void>;
   recommendPlaces(
@@ -113,6 +123,16 @@ export function createTripDraftApi(options: {
       );
       return result.items;
     },
+    listProvinces: async () => {
+      const result = await request<PageResult<Destination>>(
+        '/destinations?level=province&page=1&pageSize=100',
+      );
+      return result.items;
+    },
+    reverseGeocode: (longitude, latitude) =>
+      request('/locations/reverse', 'POST', {
+        coordinates: { longitude, latitude, coordinateSystem: 'GCJ-02' },
+      }),
     remove: (id, expectedRevision) =>
       request<void>(`${resource(id)}?expectedRevision=${expectedRevision}`, 'DELETE'),
     getPlaces: async (cityId) => {
@@ -215,8 +235,6 @@ export function fromServerTrip(trip: Trip) {
     art: '艺术设计',
     local: '老街与在地体验',
   };
-  if (trip.planningInput.cityId !== '11000000-0000-4000-8000-000000000001')
-    throw new Error('当前选择页面仅支持北京');
   if (trip.planningInput.themes.some((theme) => !reverse[theme]))
     throw new Error('当前页面暂不支持此主题，请扩展主题目录后加载');
   return {

@@ -26,7 +26,8 @@ export interface FootprintEntry {
   cityName: string | null;
   cityAdcode: string | null;
   recordedOn: string;
-  media: FootprintMedia | null;
+  /** 该足迹附带的媒体（图片/视频），按 position 排序，最多 9 个。 */
+  media: FootprintMedia[];
   createdAt: string;
   updatedAt: string;
 }

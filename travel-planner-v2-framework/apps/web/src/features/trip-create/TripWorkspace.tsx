@@ -79,18 +79,26 @@ function validCachedState(value: PlannerState, places: Place[], cityId: string):
 function TripEditor({
   api,
   resource,
+  readOnly = false,
   ownerId,
   onBack,
   places,
   city,
+  cities,
+  provinces,
+  onCityChange,
   events,
 }: {
   api: TripDraftApi;
   resource: Trip | null;
+  readOnly?: boolean;
   ownerId: string;
   onBack: () => void;
   places: Place[];
   city: Destination;
+  cities: Destination[];
+  provinces: Destination[];
+  onCityChange: (city: Destination) => void;
   events: TripHostEvents;
 }) {
   const [allowReset, setAllowReset] = useState(false);
@@ -142,7 +150,12 @@ function TripEditor({
       city={{ id: city.id, name: city.name }}
       initialState={initial}
       initialTitle={resource?.title}
-      pageTitle={resource ? '编辑行程' : '新建行程'}
+      pageTitle={readOnly ? '查看行程' : resource ? '编辑行程' : '新建行程'}
+      readOnly={readOnly}
+      cities={cities}
+      provinces={provinces}
+      onCityChange={onCityChange}
+      reverseGeocode={api.reverseGeocode}
       initialView={initial.trip ? 'trip' : 'wizard'}
       initialSchedule={
         resource &&
@@ -229,12 +242,14 @@ export default function TripWorkspace({
   const [list, setList] = useState<TripList | null>(null);
   const [places, setPlaces] = useState<Place[] | null>(null);
   const [city, setCity] = useState<Destination | null>(null);
+  const [cities, setCities] = useState<Destination[]>([]);
+  const [provinces, setProvinces] = useState<Destination[]>([]);
   const [cityError, setCityError] = useState('');
   const [deletion, setDeletion] = useState<Trip | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
-  const [editor, setEditor] = useState<{ resource: Trip | null } | null>(null);
+  const [editor, setEditor] = useState<{ resource: Trip | null; readOnly?: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
   const [opening, setOpening] = useState(false);
   const [error, setError] = useState('');
@@ -245,11 +260,12 @@ export default function TripWorkspace({
   const externalEntryKey = entry ? tripEntryKey(entry) : null;
   useEffect(() => {
     let active = true;
-    api
-      .listCities()
-      .then((cities) => {
+    Promise.all([api.listCities(), api.listProvinces()])
+      .then(([cityList, provinceList]) => {
         if (!active) return;
-        if (cities[0]) setCity(cities[0]);
+        setCities(cityList);
+        setProvinces(provinceList);
+        if (cityList[0]) setCity(cityList[0]);
         else setCityError('当前没有可用的城市目录，请先运行 npm run db:seed:b');
       })
       .catch((error) => {
@@ -336,7 +352,7 @@ export default function TripWorkspace({
     requestedEntry.current = 'list';
     notifyHost(onNavigate, { view: 'list' });
   }, [onNavigate]);
-  async function open(id: string) {
+  async function open(id: string, readOnly = false) {
     const request = ++requestId.current;
     setOpening(true);
     setError('');
@@ -346,7 +362,7 @@ export default function TripWorkspace({
       if (resource.planningInput.selectedPlaceIds.some((id) => !places?.some((p) => p.id === id)))
         throw new Error('行程包含当前目录中不存在的景点，请先与景点数据负责人核对。');
       if (request === requestId.current) {
-        setEditor({ resource });
+        setEditor({ resource, readOnly });
         requestedEntry.current = `edit:${id}`;
         notifyHost(onNavigate, { view: 'edit', tripId: id });
       }
@@ -376,6 +392,26 @@ export default function TripWorkspace({
       setDeleting(false);
     }
   }
+  const onCityChange = useCallback(
+    (next: Destination) => {
+      setCity(next);
+      setPlaces(null);
+      setOpening(true);
+      setError('');
+      api
+        .getPlaces(next.id)
+        .then((catalog) => {
+          setPlaces(catalog);
+          setOpening(false);
+        })
+        .catch((failure) => {
+          setError(tripErrorMessage(failure));
+          setOpening(false);
+        });
+    },
+    [api],
+  );
+
   if (opening)
     return (
       <section className={`suixin-trips${embedded ? ' is-embedded' : ''}`}>
@@ -396,13 +432,17 @@ export default function TripWorkspace({
     return (
       <section className={`suixin-trips${embedded ? ' is-embedded' : ''}`}>
         <TripEditor
-          key={editor.resource?.id ?? 'new'}
+          key={`${editor.resource?.id ?? 'new'}:${city.id}`}
           api={api}
           resource={editor.resource}
+          readOnly={editor.readOnly}
           ownerId={user.id}
           onBack={back}
           places={places}
           city={city}
+          cities={cities}
+          provinces={provinces}
+          onCityChange={onCityChange}
           events={{ onSaved, onDraftSaved }}
         />
       </section>
@@ -493,6 +533,13 @@ export default function TripWorkspace({
                       aria-label={`删除行程${trip.title}`}
                     >
                       删除
+                    </button>
+                    <button
+                      disabled={opening || !places || !!deletion}
+                      onClick={() => void open(trip.id, true)}
+                      aria-label={`查看行程${trip.title}`}
+                    >
+                      查看
                     </button>
                     <button
                       disabled={opening || !places || !!deletion}

@@ -96,3 +96,84 @@
 .profile-form .profile-actions button:disabled {
   opacity: 0.6;
 }
+
+/* 偏好设置：字体字号 / 主题颜色 */
+.pref-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 4px;
+  border-bottom: 1px solid #eef2ea;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.pref-row:last-child {
+  border-bottom: 0;
+}
+
+.pref-icon {
+  width: 20px;
+  text-align: center;
+  color: #91a18d;
+}
+
+.pref-label {
+  flex: 1;
+}
+
+.pref-row select {
+  padding: 6px 10px;
+  border: 1px solid #dce4d3;
+  border-radius: 10px;
+  background: #fff;
+  color: #263b30;
+  font-size: 12px;
+}
+
+.theme-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-swatch {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.theme-swatch.active {
+  border-color: #263b30;
+}
+
+/* 主题颜色：覆盖外壳的 --green 等强调色变量 */
+:root[data-theme='blue'] .app-shell {
+  --green: #4a7ba6;
+  --green-dark: #2f4d66;
+  --green-light: #e8f0f5;
+}
+
+:root[data-theme='orange'] .app-shell {
+  --green: #c88a4a;
+  --green-dark: #7a5230;
+  --green-light: #f5ecdf;
+}
+
+:root[data-theme='pink'] .app-shell {
+  --green: #b56a8c;
+  --green-dark: #6f3f56;
+  --green-light: #f5e6ec;
+}
+
+/* 字号：小/大档缩放外壳基础字号（按钮与输入框用 font:inherit 会跟随） */
+:root[data-font='small'] .app-shell {
+  font-size: 14px;
+}
+
+:root[data-font='large'] .app-shell {
+  font-size: 17px;
+}

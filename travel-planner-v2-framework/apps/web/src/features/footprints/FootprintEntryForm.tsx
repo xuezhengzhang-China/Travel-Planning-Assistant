@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import type { FootprintPlaceSearchResult } from '@travel/shared';
-
-interface CreatedEntry {
-  id: string;
-  recordedOn: string;
-}
+import type { FootprintEntry, FootprintMedia, FootprintPlaceSearchResult } from '@travel/shared';
+import { ApiError, type ApiClient } from '../../lib/api-client';
+import { compressImageFile, ImageCompressError } from '../../lib/compress-image';
 
 function todayInShanghai(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -18,28 +15,84 @@ function todayInShanghai(): string {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
-export default function FootprintEntryForm() {
+/** 显示足迹已有的媒体（图片/视频）。 */
+function ExistingMedia({ client, media }: { client: ApiClient; media: FootprintMedia }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    let objectUrl: string | null = null;
+    client
+      .blob(`/footprints/media/${media.id}`)
+      .then((blob) => {
+        objectUrl = URL.createObjectURL(blob);
+        if (active) setUrl(objectUrl);
+      })
+      .catch(() => {
+        /* 读取失败静默降级。 */
+      });
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [client, media.id]);
+
+  if (!url) return <span className="footprint-media-pending">媒体加载中…</span>;
+  return media.kind === 'video' ? (
+    <video src={url} controls className="footprint-media" />
+  ) : (
+    <img src={url} alt={media.originalName} className="footprint-media" />
+  );
+}
+
+export interface FootprintEntryFormProps {
+  client: ApiClient;
+  /** 保存成功后通知宿主刷新列表与地图。 */
+  onSaved?: () => void;
+  /** 传入则为编辑模式（预填该足迹），不传为新建。 */
+  initialEntry?: FootprintEntry | null;
+  onCancel?: () => void;
+}
+
+export default function FootprintEntryForm({
+  client,
+  onSaved,
+  initialEntry,
+  onCancel,
+}: FootprintEntryFormProps) {
+  const editing = initialEntry ?? null;
   const locationOverridden = useRef(false);
-  const [recordedOn, setRecordedOn] = useState(todayInShanghai);
-  const [longitude, setLongitude] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [coordinateSystem, setCoordinateSystem] = useState<'WGS-84' | 'GCJ-02'>('WGS-84');
+  const [recordedOn, setRecordedOn] = useState(editing?.recordedOn ?? todayInShanghai());
+  const [longitude, setLongitude] = useState(editing ? String(editing.longitude) : '');
+  const [latitude, setLatitude] = useState(editing ? String(editing.latitude) : '');
+  const [coordinateSystem, setCoordinateSystem] = useState<'WGS-84' | 'GCJ-02'>(
+    editing?.coordinateSystem ?? 'WGS-84',
+  );
   const [locationSource, setLocationSource] = useState<'automatic' | 'manual' | 'searched'>(
-    'manual',
+    editing?.poiId ? 'searched' : 'manual',
   );
   const [placeKeyword, setPlaceKeyword] = useState('');
   const [places, setPlaces] = useState<FootprintPlaceSearchResult[]>([]);
   const [placeSearchMessage, setPlaceSearchMessage] = useState('');
   const [selectedPlace, setSelectedPlace] = useState<FootprintPlaceSearchResult | null>(null);
-  const [locationMessage, setLocationMessage] = useState('正在获取当前位置…');
-  const [text, setText] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [locationMessage, setLocationMessage] = useState(
+    editing
+      ? editing.placeName
+        ? `正在编辑：${editing.placeName}`
+        : editing.placeAddress
+          ? `正在编辑：${editing.placeAddress}`
+          : '正在编辑已保存的足迹。'
+      : '正在获取当前位置…',
+  );
+  const [text, setText] = useState(editing?.text ?? '');
+  const [files, setFiles] = useState<File[]>([]);
+  const [removedMediaIds, setRemovedMediaIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    if (editing) return;
     if (!navigator.geolocation) {
-      setLocationMessage('浏览器不支持自动定位，请手动填写经纬度。');
+      setLocationMessage('浏览器不支持自动定位，请手动填写经纬度或搜索地点。');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -52,7 +105,7 @@ export default function FootprintEntryForm() {
         setSelectedPlace(null);
         setLocationMessage('已获取当前位置（WGS-84）。');
       },
-      () => setLocationMessage('未能获取位置，请允许定位权限或手动填写经纬度。'),
+      () => setLocationMessage('未能获取位置，请手动填写经纬度或搜索地点。'),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
     );
   }, []);
@@ -61,23 +114,15 @@ export default function FootprintEntryForm() {
     setPlaceSearchMessage('');
     setPlaces([]);
     try {
-      const response = await fetch(
-        `/api/footprints/places/search?keywords=${encodeURIComponent(placeKeyword.trim())}`,
+      const results = await client.request<FootprintPlaceSearchResult[]>(
+        `/footprints/places/search?keywords=${encodeURIComponent(placeKeyword.trim())}`,
       );
-      const payload = (await response.json().catch(() => null)) as
-        FootprintPlaceSearchResult[] | { message?: string } | null;
-      if (!response.ok) {
-        throw new Error(
-          !Array.isArray(payload) && payload?.message
-            ? payload.message
-            : `地点搜索失败（${response.status}）。`,
-        );
-      }
-      if (!Array.isArray(payload)) throw new Error('地点搜索返回了无法识别的结果。');
-      setPlaces(payload);
-      if (payload.length === 0) setPlaceSearchMessage('没有找到地点，请换一个关键词。');
+      setPlaces(results);
+      if (results.length === 0) setPlaceSearchMessage('没有找到地点，请换一个关键词。');
     } catch (error) {
-      setPlaceSearchMessage(error instanceof Error ? error.message : '地点搜索失败，请稍后重试。');
+      setPlaceSearchMessage(
+        error instanceof ApiError ? error.message : '地点搜索失败，请稍后重试。',
+      );
     }
   }
 
@@ -95,12 +140,7 @@ export default function FootprintEntryForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
     setMessage('');
-    if (!text.trim() && !file) {
-      setMessage('请填写文字，或选择一张照片/一个视频。');
-      return;
-    }
     setBusy(true);
     try {
       const body = new FormData();
@@ -108,31 +148,37 @@ export default function FootprintEntryForm() {
       body.set('longitude', longitude);
       body.set('latitude', latitude);
       body.set('coordinateSystem', coordinateSystem);
-      body.set('text', text);
-      if (selectedPlace) body.set('poiId', selectedPlace.poiId);
-      if (file) body.set('file', file);
-
-      const response = await fetch('/api/footprints', { method: 'POST', body });
-      if (!response.ok) {
-        const error = (await response.json().catch(() => null)) as {
-          message?: string | string[];
-        } | null;
-        const errorMessage = Array.isArray(error?.message)
-          ? error.message.join('、')
-          : error?.message;
-        if (response.status === 401) {
-          throw new Error('需要先登录才能保存；登录功能尚未接入。');
-        }
-        throw new Error(errorMessage || `保存失败（${response.status}）。`);
+      body.set(
+        'text',
+        text.trim() ||
+          (files.length === 0 ? (selectedPlace ? `打卡：${selectedPlace.name}` : '到此一游') : ''),
+      );
+      // 编辑时若没有重新搜索地点，保留原 poiId，避免位置（地点名）丢失。
+      const poiId = selectedPlace?.poiId ?? editing?.poiId ?? null;
+      if (poiId) body.set('poiId', poiId);
+      for (const item of files) {
+        // 图片先压缩再上传（与手账一致）；视频原样上传。
+        const uploadFile = item.type.startsWith('image/') ? await compressImageFile(item) : item;
+        body.append('files', uploadFile);
       }
-      const entry = (await response.json()) as CreatedEntry;
-      setMessage(`已保存：${entry.recordedOn} 的足迹记录。`);
-      setText('');
-      setFile(null);
-      const input = form.querySelector<HTMLInputElement>('input[type="file"]');
-      if (input) input.value = '';
+      if (editing && removedMediaIds.length > 0) {
+        body.set('removeMediaIds', removedMediaIds.join(','));
+      }
+
+      if (editing) {
+        await client.request(`/footprints/${editing.id}`, { method: 'PATCH', body });
+        setMessage('足迹已更新。');
+      } else {
+        await client.request<FootprintEntry>('/footprints', { body });
+        setMessage('足迹已保存。');
+      }
+      onSaved?.();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '保存失败，请稍后重试。');
+      setMessage(
+        error instanceof ApiError || error instanceof ImageCompressError
+          ? error.message
+          : '保存失败，请稍后重试。',
+      );
     } finally {
       setBusy(false);
     }
@@ -140,9 +186,9 @@ export default function FootprintEntryForm() {
 
   return (
     <section className="footprint-card" aria-labelledby="footprint-title">
-      <h2 id="footprint-title">记录一条足迹</h2>
+      <h2 id="footprint-title">{editing ? '编辑足迹' : '记录一条足迹'}</h2>
       <p className="footprint-description">
-        每条记录都会保存日期和位置；可以写文字，也可以附一张照片或一个视频。
+        每条记录都会保存日期和位置；可以写文字，也可以附最多 9 张照片或视频。
       </p>
       <form className="footprint-form" onSubmit={submit}>
         <label>
@@ -208,6 +254,7 @@ export default function FootprintEntryForm() {
                   locationOverridden.current = true;
                   setLocationSource('manual');
                   setSelectedPlace(null);
+                  setCoordinateSystem('WGS-84');
                   setLocationMessage('使用手动填写的位置。');
                   setLongitude(event.target.value);
                 }}
@@ -226,32 +273,20 @@ export default function FootprintEntryForm() {
                   locationOverridden.current = true;
                   setLocationSource('manual');
                   setSelectedPlace(null);
+                  setCoordinateSystem('WGS-84');
                   setLocationMessage('使用手动填写的位置。');
                   setLatitude(event.target.value);
                 }}
               />
             </label>
           </div>
-          {locationSource === 'manual' ? (
-            <label>
-              坐标类型
-              <select
-                value={coordinateSystem}
-                onChange={(event) =>
-                  setCoordinateSystem(event.target.value === 'GCJ-02' ? 'GCJ-02' : 'WGS-84')
-                }
-              >
-                <option value="WGS-84">WGS-84</option>
-                <option value="GCJ-02">GCJ-02（地图坐标）</option>
-              </select>
-            </label>
-          ) : (
-            <small>
-              {locationSource === 'searched'
-                ? '选中的地点将由服务端按高德 POI 编号确认。'
-                : '当前位置按 WGS-84 保存；服务端会在高德服务可用时转换地图坐标。'}
-            </small>
-          )}
+          <small>
+            {locationSource === 'searched'
+              ? '已按地图坐标记录该地点，无需手动填写坐标。'
+              : locationSource === 'automatic'
+                ? '已按当前位置（GPS）记录，服务端会自动转换地图坐标。'
+                : '手动填写的经纬度按 GPS 原始坐标保存。'}
+          </small>
         </fieldset>
         <label>
           文字（可选）
@@ -263,18 +298,59 @@ export default function FootprintEntryForm() {
             placeholder="写下此刻的见闻……"
           />
         </label>
+
+        {(editing?.media.length ?? 0) > 0 && (
+          <div className="footprint-existing-media">
+            {editing?.media.map((media) => {
+              const removed = removedMediaIds.includes(media.id);
+              return (
+                <div key={media.id} className="footprint-media-item">
+                  <ExistingMedia client={client} media={media} />
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    disabled={busy}
+                    onClick={() =>
+                      setRemovedMediaIds((current) =>
+                        removed ? current.filter((id) => id !== media.id) : [...current, media.id],
+                      )
+                    }
+                  >
+                    {removed ? '恢复' : '移除'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <label>
-          照片或视频（可选，最多一个文件）
+          {(editing?.media.length ?? 0) > 0
+            ? '追加照片或视频（可选）'
+            : '照片或视频（可选，最多 9 个）'}
           <input
             type="file"
+            multiple
             accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            onChange={(event) => {
+              setFiles(Array.from(event.target.files ?? []));
+            }}
           />
         </label>
-        {file && <p className="selected-file">{file.name}</p>}
-        <button type="submit" disabled={busy}>
-          {busy ? '正在保存…' : '保存足迹'}
-        </button>
+        {files.length > 0 && (
+          <p className="selected-file">{files.map((item) => item.name).join('、')}</p>
+        )}
+
+        <div className="footprint-actions">
+          {onCancel && (
+            <button type="button" className="secondary-button" disabled={busy} onClick={onCancel}>
+              取消
+            </button>
+          )}
+          <button type="submit" className="primary-button" disabled={busy}>
+            {busy ? '正在保存…' : editing ? '保存修改' : '保存足迹'}
+          </button>
+        </div>
         {message && (
           <p className="footprint-message" role="status">
             {message}

@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import type {
   FootprintEntry,
   FootprintMapCity,
@@ -13,11 +13,12 @@ import type { PoolClient } from 'pg';
 import { DatabaseService } from '../database/database.service';
 import { AmapLocationService, type ResolvedFootprintLocation } from './amap-location.service';
 import { MediaStorageService } from './media-storage.service';
-import type {
-  UploadedMedia,
-  ValidatedFootprintInput,
-  ValidatedFootprintUpdate,
-  ValidatedUpload,
+import {
+  MAX_FOOTPRINT_MEDIA,
+  type UploadedMedia,
+  type ValidatedFootprintInput,
+  type ValidatedFootprintUpdate,
+  type ValidatedUpload,
 } from './footprints.dto';
 
 const logger = new Logger('FootprintsService');
@@ -52,14 +53,8 @@ interface MediaRow {
   storage_key: string;
 }
 
-interface JoinedEntryRow extends EntryRow {
-  media_id: string | null;
-  media_kind: 'photo' | 'video' | null;
-  media_original_name: string | null;
-  media_mime_type: string | null;
-  media_size_bytes: string | number | null;
-  media_created_at: Date | null;
-  media_storage_key: string | null;
+interface MediaRowWithEntry extends MediaRow {
+  entry_id: string;
 }
 
 interface LocationGroup {
@@ -80,10 +75,10 @@ export class FootprintsService {
   async create(
     ownerId: string,
     input: ValidatedFootprintInput,
-    file?: UploadedMedia,
-    upload?: ValidatedUpload,
+    files: UploadedMedia[],
+    uploads: ValidatedUpload[],
   ): Promise<FootprintEntry> {
-    if (Boolean(file) !== Boolean(upload)) {
+    if (files.length !== uploads.length) {
       throw new Error('Uploaded media validation result is required');
     }
     const location = await this.amap.resolve(
@@ -93,22 +88,34 @@ export class FootprintsService {
       input.poiId ?? null,
     );
     const entryId = randomUUID();
-    const mediaId = file ? randomUUID() : null;
-    const storageKey =
-      file && upload ? await this.storage.write(file.buffer, upload.mimeType) : null;
+    const mediaIds = files.map(() => randomUUID());
+    const storageKeys = await Promise.all(
+      files.map((file, index) => this.storage.write(file.buffer, uploads[index].mimeType)),
+    );
     try {
       const created = await this.database.transaction(async (client) => {
         const entry = await this.insertEntry(client, entryId, ownerId, input, location);
-        const media =
-          file && upload && mediaId && storageKey
-            ? await this.insertMedia(client, entryId, ownerId, mediaId, storageKey, file, upload)
-            : null;
+        const media: MediaRow[] = [];
+        for (let position = 0; position < files.length; position += 1) {
+          media.push(
+            await this.insertMedia(
+              client,
+              entryId,
+              ownerId,
+              mediaIds[position],
+              storageKeys[position],
+              position,
+              files[position],
+              uploads[position],
+            ),
+          );
+        }
         return toFootprintEntry(entry, media);
       });
       await this.drainMediaCleanupQueue();
       return created;
     } catch (error) {
-      if (storageKey) {
+      for (const storageKey of storageKeys) {
         try {
           await this.storage.delete(storageKey);
         } catch (cleanupError) {
@@ -133,15 +140,20 @@ export class FootprintsService {
       filterValues,
     );
     const offset = (page - 1) * pageSize;
-    const rowsResult = await this.database.query<JoinedEntryRow>(
-      `${joinedEntrySelect}
+    const rowsResult = await this.database.query<EntryRow>(
+      `${entrySelect}
        WHERE e.owner_id = $1${filter}
        ORDER BY e.recorded_on DESC, e.created_at DESC, e.id
        LIMIT $${filterValues.length + 1} OFFSET $${filterValues.length + 2}`,
       [...filterValues, pageSize, offset],
     );
+    const entries = rowsResult.rows;
+    const mediaByEntry = await this.loadMediaByEntry(
+      ownerId,
+      entries.map((entry) => entry.id),
+    );
     return {
-      items: rowsResult.rows.map(toJoinedFootprintEntry),
+      items: entries.map((entry) => toFootprintEntry(entry, mediaByEntry.get(entry.id) ?? [])),
       page,
       pageSize,
       total: Number(countResult.rows[0]?.total ?? 0),
@@ -149,26 +161,38 @@ export class FootprintsService {
   }
 
   async getById(ownerId: string, entryId: string): Promise<FootprintEntry> {
-    const result = await this.database.query<JoinedEntryRow>(
-      `${joinedEntrySelect} WHERE e.id = $1 AND e.owner_id = $2`,
+    const result = await this.database.query<EntryRow>(
+      `SELECT id, text_content, longitude, latitude, coordinate_system,
+              place_name, place_address, poi_id, map_longitude, map_latitude,
+              province_name, province_adcode, city_name, city_adcode,
+              recorded_on::text AS recorded_on, created_at, updated_at
+       FROM footprint_entries
+       WHERE id = $1 AND owner_id = $2`,
       [entryId, ownerId],
     );
-    const row = result.rows[0];
-    if (!row) throw new NotFoundException({ code: 'NOT_FOUND', message: 'Footprint not found' });
-    return toJoinedFootprintEntry(row);
+    const entry = result.rows[0];
+    if (!entry) throw new NotFoundException({ code: 'NOT_FOUND', message: 'Footprint not found' });
+    const mediaResult = await this.database.query<MediaRow>(
+      `SELECT id, kind, original_name, mime_type, size_bytes, created_at, storage_key
+       FROM footprint_media
+       WHERE entry_id = $1 AND owner_id = $2
+       ORDER BY position, created_at`,
+      [entryId, ownerId],
+    );
+    return toFootprintEntry(entry, mediaResult.rows);
   }
 
   async update(
     ownerId: string,
     entryId: string,
     update: ValidatedFootprintUpdate,
-    file?: UploadedMedia,
-    upload?: ValidatedUpload,
+    files: UploadedMedia[],
+    uploads: ValidatedUpload[],
   ): Promise<FootprintEntry> {
-    if (Boolean(file) !== Boolean(upload)) {
+    if (files.length !== uploads.length) {
       throw new Error('Uploaded media validation result is required');
     }
-    const { input, removeMedia } = update;
+    const { input, removeMedia, removeMediaIds } = update;
     const resolvedLocation = update.locationChanged
       ? await this.amap.resolve(
           input.longitude,
@@ -177,8 +201,10 @@ export class FootprintsService {
           input.poiId ?? null,
         )
       : null;
-    const storageKey =
-      file && upload ? await this.storage.write(file.buffer, upload.mimeType) : null;
+    const mediaIds = files.map(() => randomUUID());
+    const storageKeys = await Promise.all(
+      files.map((file, index) => this.storage.write(file.buffer, uploads[index].mimeType)),
+    );
     try {
       const updated = await this.database.transaction(async (client) => {
         const ownedEntry = await client.query<EntryRow>(
@@ -195,17 +221,36 @@ export class FootprintsService {
         }
         const oldMediaResult = await client.query<MediaRow>(
           `SELECT id, kind, original_name, mime_type, size_bytes, created_at, storage_key
-           FROM footprint_media WHERE entry_id = $1 AND owner_id = $2 FOR UPDATE`,
+           FROM footprint_media WHERE entry_id = $1 AND owner_id = $2
+           ORDER BY position, created_at
+           FOR UPDATE`,
           [entryId, ownerId],
         );
-        const oldMedia = oldMediaResult.rows[0] ?? null;
-        if (oldMedia && (removeMedia || storageKey)) {
-          await this.queueMediaCleanup(client, oldMedia.storage_key);
-          await client.query('DELETE FROM footprint_media WHERE id = $1 AND owner_id = $2', [
-            oldMedia.id,
+        const oldMedia = oldMediaResult.rows;
+
+        const removedIds = new Set(removeMediaIds);
+        if (removeMedia) {
+          // removeMedia 表示「移除全部媒体」。
+          for (const media of oldMedia) {
+            await this.queueMediaCleanup(client, media.storage_key);
+          }
+          await client.query('DELETE FROM footprint_media WHERE entry_id = $1 AND owner_id = $2', [
+            entryId,
             ownerId,
           ]);
+        } else if (removeMediaIds.length > 0) {
+          // 逐张移除：只删除指定的媒体。
+          for (const media of oldMedia) {
+            if (removedIds.has(media.id)) {
+              await this.queueMediaCleanup(client, media.storage_key);
+            }
+          }
+          await client.query(
+            'DELETE FROM footprint_media WHERE entry_id = $1 AND owner_id = $2 AND id = ANY($3::uuid[])',
+            [entryId, ownerId, removeMediaIds],
+          );
         }
+
         const entry = await this.updateEntry(
           client,
           entryId,
@@ -213,26 +258,35 @@ export class FootprintsService {
           input,
           resolvedLocation ?? resolvedLocationFromEntry(currentEntry),
         );
-        const media =
-          file && upload && storageKey
-            ? await this.insertMedia(
-                client,
-                entryId,
-                ownerId,
-                randomUUID(),
-                storageKey,
-                file,
-                upload,
-              )
-            : oldMedia && !removeMedia
-              ? oldMedia
-              : null;
+
+        const keptMedia = removeMedia ? [] : oldMedia.filter((media) => !removedIds.has(media.id));
+        if (keptMedia.length + files.length > MAX_FOOTPRINT_MEDIA) {
+          throw new BadRequestException(
+            `A footprint can have at most ${MAX_FOOTPRINT_MEDIA} media files`,
+          );
+        }
+
+        const media: MediaRow[] = [...keptMedia];
+        for (let index = 0; index < files.length; index += 1) {
+          media.push(
+            await this.insertMedia(
+              client,
+              entryId,
+              ownerId,
+              mediaIds[index],
+              storageKeys[index],
+              keptMedia.length + index,
+              files[index],
+              uploads[index],
+            ),
+          );
+        }
         return toFootprintEntry(entry, media);
       });
       await this.drainMediaCleanupQueue();
       return updated;
     } catch (error) {
-      if (storageKey) await this.removeOrQueueMedia(storageKey);
+      for (const storageKey of storageKeys) await this.removeOrQueueMedia(storageKey);
       throw error;
     }
   }
@@ -315,6 +369,28 @@ export class FootprintsService {
     const media = result.rows[0];
     if (!media) throw new NotFoundException({ code: 'NOT_FOUND', message: 'Media not found' });
     return { bytes: await this.storage.read(media.storage_key), mimeType: media.mime_type };
+  }
+
+  /** 批量读取一批足迹的全部媒体，按 position、created_at 排序后按 entry_id 分组。 */
+  private async loadMediaByEntry(
+    ownerId: string,
+    entryIds: string[],
+  ): Promise<Map<string, MediaRow[]>> {
+    const mediaByEntry = new Map<string, MediaRow[]>();
+    if (entryIds.length === 0) return mediaByEntry;
+    const result = await this.database.query<MediaRowWithEntry>(
+      `SELECT id, entry_id, kind, original_name, mime_type, size_bytes, created_at, storage_key
+       FROM footprint_media
+       WHERE owner_id = $1 AND entry_id = ANY($2::uuid[])
+       ORDER BY position, created_at`,
+      [ownerId, entryIds],
+    );
+    for (const row of result.rows) {
+      const media = mediaByEntry.get(row.entry_id) ?? [];
+      media.push(row);
+      mediaByEntry.set(row.entry_id, media);
+    }
+    return mediaByEntry;
   }
 
   private async insertEntry(
@@ -405,16 +481,27 @@ export class FootprintsService {
     ownerId: string,
     id: string,
     storageKey: string,
+    position: number,
     file: UploadedMedia,
     upload: ValidatedUpload,
   ): Promise<MediaRow> {
     const originalName = file.originalname.replace(/^.*[\\/]/, '').slice(0, 255) || 'upload';
     const result = await client.query<MediaRow>(
       `INSERT INTO footprint_media
-         (id, entry_id, owner_id, storage_key, kind, original_name, mime_type, size_bytes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         (id, entry_id, owner_id, storage_key, kind, original_name, mime_type, size_bytes, position)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING id, kind, original_name, mime_type, size_bytes, created_at, storage_key`,
-      [id, entryId, ownerId, storageKey, upload.kind, originalName, upload.mimeType, file.size],
+      [
+        id,
+        entryId,
+        ownerId,
+        storageKey,
+        upload.kind,
+        originalName,
+        upload.mimeType,
+        file.size,
+        position,
+      ],
     );
     return result.rows[0];
   }
@@ -479,37 +566,11 @@ export class FootprintsService {
   }
 }
 
-const joinedEntrySelect = `SELECT e.id, e.text_content, e.longitude, e.latitude, e.coordinate_system,
+const entrySelect = `SELECT e.id, e.text_content, e.longitude, e.latitude, e.coordinate_system,
        e.place_name, e.place_address, e.poi_id, e.map_longitude, e.map_latitude,
        e.province_name, e.province_adcode, e.city_name, e.city_adcode,
-       e.recorded_on::text AS recorded_on, e.created_at, e.updated_at,
-       m.id AS media_id, m.kind AS media_kind, m.original_name AS media_original_name,
-       m.mime_type AS media_mime_type, m.size_bytes AS media_size_bytes,
-       m.created_at AS media_created_at, m.storage_key AS media_storage_key
-       FROM footprint_entries e
-       LEFT JOIN footprint_media m ON m.entry_id = e.id AND m.owner_id = e.owner_id`;
-
-function toJoinedFootprintEntry(row: JoinedEntryRow): FootprintEntry {
-  const media: MediaRow | null =
-    row.media_id &&
-    row.media_kind &&
-    row.media_original_name &&
-    row.media_mime_type &&
-    row.media_size_bytes !== null &&
-    row.media_created_at &&
-    row.media_storage_key
-      ? {
-          id: row.media_id,
-          kind: row.media_kind,
-          original_name: row.media_original_name,
-          mime_type: row.media_mime_type,
-          size_bytes: row.media_size_bytes,
-          created_at: row.media_created_at,
-          storage_key: row.media_storage_key,
-        }
-      : null;
-  return toFootprintEntry(row, media);
-}
+       e.recorded_on::text AS recorded_on, e.created_at, e.updated_at
+       FROM footprint_entries e`;
 
 function resolvedLocationFromEntry(entry: EntryRow): ResolvedFootprintLocation {
   return {
@@ -528,17 +589,15 @@ function resolvedLocationFromEntry(entry: EntryRow): ResolvedFootprintLocation {
   };
 }
 
-function toFootprintEntry(entry: EntryRow, media: MediaRow | null): FootprintEntry {
-  const mappedMedia: FootprintMedia | null = media
-    ? {
-        id: media.id,
-        kind: media.kind,
-        originalName: media.original_name,
-        mimeType: media.mime_type,
-        sizeBytes: Number(media.size_bytes),
-        createdAt: media.created_at.toISOString(),
-      }
-    : null;
+function toFootprintEntry(entry: EntryRow, media: MediaRow[]): FootprintEntry {
+  const mappedMedia: FootprintMedia[] = media.map((item) => ({
+    id: item.id,
+    kind: item.kind,
+    originalName: item.original_name,
+    mimeType: item.mime_type,
+    sizeBytes: Number(item.size_bytes),
+    createdAt: item.created_at.toISOString(),
+  }));
   return {
     id: entry.id,
     text: entry.text_content,
