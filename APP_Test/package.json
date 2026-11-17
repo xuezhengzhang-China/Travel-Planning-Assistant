@@ -1,0 +1,14 @@
+{
+  "name": "travel-planner-b-tdd-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "B 模块冻结的 100 项 TDD 核心测试；需要显式指定被测工程与阶段。",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "test": "node scripts/tdd-run.cjs",
+    "test:tdd": "node scripts/tdd-run.cjs"
+  }
+}
