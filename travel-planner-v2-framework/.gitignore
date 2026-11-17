@@ -13,3 +13,6 @@ coverage/
 # Keep the existing web API client despite the parent repository's Python lib/ rule.
 !apps/web/src/lib/
 !apps/web/src/lib/**
+# legacy-v1 快照沿用 V1 的 src/lib 结构，同样需要规避父仓库的 Python lib/ 规则。
+!apps/web/legacy-v1/src/lib/
+!apps/web/legacy-v1/src/lib/**

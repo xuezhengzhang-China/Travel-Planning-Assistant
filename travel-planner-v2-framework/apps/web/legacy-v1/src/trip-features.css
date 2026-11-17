@@ -1,0 +1,38 @@
+.fold-section { margin: 20px 0; border: 1px solid #e0e6d8; border-radius: 18px; background: #fdfef9; overflow: hidden; }
+.fold-section > summary { display: flex; align-items: center; gap: 12px; padding: 18px 20px; color: #405b47; font-size: 16px; font-weight: 600; cursor: pointer; list-style: none; }
+.fold-section > summary::-webkit-details-marker { display: none; }
+.fold-section > summary small { margin-left: auto; color: #8a9785; font-size: 12px; font-weight: 400; }
+.fold-section > summary i { font-style: normal; transition: transform .2s; }
+.fold-section[open] > summary i { transform: rotate(180deg); }
+.fold-section > summary:focus-visible { outline: 2px solid #91a383; outline-offset: -4px; }
+.fold-content { padding: 0 20px 20px; }
+.fold-content > .atlas-panel { border: 0; padding: 0; background: transparent; }
+.destination-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.destination-filters label { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #6e8069; }
+.destination-filters input, .destination-filters select { width: 100%; box-sizing: border-box; padding: 11px; border: 1px solid #dce4d3; border-radius: 10px; background: white; color: #405b47; font: inherit; }
+.destination-groups { max-height: 450px; overflow: auto; margin-top: 15px; scrollbar-color: #c3d0b8 transparent; }
+.destination-groups .fold-section { margin: 10px 0; border-radius: 12px; }
+.destination-groups summary { padding: 13px; font-size: 14px; }
+.destination-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+.destination-grid button { display: flex; flex-direction: column; align-items: center; gap: 6px; min-height: 64px; padding: 10px; font: inherit; cursor: pointer; }
+.destination-grid small { font-size: 10px; color: #8a9785; }
+.feature-checkbox { display: flex !important; flex-direction: row !important; align-items: center; gap: 9px; margin: 14px 0; color: #687d60; font-size: 13px; }
+.feature-checkbox input, .reminder-item input, .packing-item input { width: 16px !important; height: 16px; accent-color: #7f9a6d; flex-shrink: 0; }
+.reminder-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.reminder-preview { display: flex; flex-direction: column; text-align: left; gap: 8px; padding: 15px; border: 1px solid #e1e8d9; border-radius: 12px; background: #f0f4e9; color: #4f6847; font: inherit; cursor: pointer; }
+.reminder-preview small { color: #8b987e; font-size: 12px; }
+.reminder-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.reminder-items { margin: 20px 0; }
+.reminder-item, .packing-item { display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; color: #52694c; border-bottom: 1px solid #e9ede3; cursor: pointer; }
+.reminder-item > span, .packing-item > span { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.reminder-item strong, .packing-item strong { font-size: 14px; }
+.reminder-item small, .packing-item small { color: #8b9883; font-size: 12px; line-height: 1.7; }
+.is-complete strong { text-decoration: line-through; opacity: .6; }
+.weather-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #52694c; }
+.weather-strip { display: flex; gap: 10px; overflow-x: auto; margin: 18px 0; }
+.weather-strip > div { flex: 0 0 125px; display: flex; flex-direction: column; gap: 10px; padding: 15px; background: #eef3e7; border-radius: 12px; color: #56704d; font-size: 13px; }
+.weather-strip small { color: #8b987f; font-size: 11px; }
+.weather-note { padding: 14px; border-radius: 12px; background: #f1f2e8; color: #7a8269; font-size: 13px; line-height: 1.8; }
+.packing-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+.feature-error { color: #a25943; font-size: 13px; }
+@media(max-width: 600px) { .fold-section > summary { padding: 16px 14px; } .fold-content { padding: 0 14px 16px; } .fold-section > summary small { font-size: 10px; } .destination-filters, .reminder-overview, .packing-grid { grid-template-columns: 1fr; } .weather-heading { flex-wrap: wrap; } }

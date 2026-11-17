@@ -1,0 +1,28 @@
+.journal-intro { color: #827d73; font-size: 13px; line-height: 1.7; }
+.journal-editor, .journal-card { padding: 24px; border: 1px solid #e6e1d7; border-radius: 18px; background: #fffdf8; margin: 20px 0; }
+.journal-editor h3, .journal-card h3 { margin: 0 0 18px; }
+.journal-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.journal-editor label { display: flex; flex-direction: column; gap: 9px; font-size: 14px; }
+.journal-editor input, .journal-editor select, .journal-editor textarea { width: 100%; box-sizing: border-box; border: 1px solid #ddd8ce; border-radius: 10px; padding: 12px; background: white; color: #393c34; font: inherit; }
+.journal-editor input:focus, .journal-editor select:focus, .journal-editor textarea:focus { outline: 2px solid #91a383; outline-offset: 2px; }
+.journal-thoughts { margin: 20px 0; }
+.journal-editor textarea { resize: vertical; }
+.journal-photos { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.journal-photos img { width: var(--journal-photo-size, 180px); height: var(--journal-photo-size, 180px); max-width: 100%; object-fit: cover; border-radius: 10px; }
+.journal-size-small { --journal-photo-size: 100px; }
+.journal-size-medium { --journal-photo-size: 180px; }
+.journal-size-large { --journal-photo-size: 280px; }
+.journal-photos > a, .journal-photo { max-width: 100%; }
+.journal-card > .journal-editor { margin: 0; padding: 0; border: 0; background: transparent; }
+.journal-size-control { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #526548; }
+.journal-size-control select { padding: 8px 12px; border: 1px solid #ddd8ce; border-radius: 8px; background: #fffdf8; font: inherit; }
+.journal-photo { position: relative; }
+.journal-photo button { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 50%; background: #fff; width: 26px; height: 26px; cursor: pointer; }
+.journal-upload { padding: 14px; border: 1px dashed #a6ad98; border-radius: 10px; color: #526548; }
+.journal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.journal-meta { display: flex; flex-wrap: wrap; gap: 16px; color: #758269; font-size: 13px; }
+.journal-card time { display: block; color: #827d73; font-size: 13px; margin-bottom: 10px; }
+.journal-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; }
+.journal-card h3, .journal-meta { overflow-wrap: anywhere; }
+.journal-error { color: #a23e32; }
+@media (max-width: 600px) { .journal-fields { grid-template-columns: 1fr; } .journal-editor, .journal-card { padding: 18px; } .travel-journal .journal-heading { flex-wrap: wrap; gap: 12px; } }

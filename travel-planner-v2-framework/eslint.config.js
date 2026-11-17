@@ -3,7 +3,15 @@ import prettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/node_modules/**', 'coverage/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      'coverage/**',
+      // liuyan 分支 V1 前端快照，按原样保存，不参与 lint 门禁（见该目录 README）。
+      'apps/web/legacy-v1/**',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -39,6 +47,8 @@ export default tseslint.config(
         Buffer: 'readonly',
         Response: 'readonly',
         structuredClone: 'readonly',
+        Blob: 'readonly',
+        FormData: 'readonly',
       },
     },
   },
