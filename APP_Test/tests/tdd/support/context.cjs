@@ -302,12 +302,30 @@ async function database(t, options = {}) {
     dependency(path.join(root, "apps/api/scripts/seed-b.cjs")).seedB(admin);
   if (options.migrate !== false) await migrate();
   if (options.seed !== false) await seed();
-  if (options.users !== false && options.migrate !== false)
-    for (const [index, owner] of [userA, userB].entries())
-      await admin.query("INSERT INTO users(id,email) VALUES($1,$2)", [
+  if (options.users !== false && options.migrate !== false) {
+    // Planning-only integration uses synthetic actors, never login accounts.
+    // Permit the later auth migration to require credential columns without weakening its constraints.
+    const columns = await admin.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_schema=$1 AND table_name='users'",
+      [schema],
+    );
+    const credentials = ["password_hash", "password_salt"].filter((name) =>
+      columns.rows.some((row) => row.column_name === name),
+    );
+    for (const [index, owner] of [userA, userB].entries()) {
+      const values = [
         owner,
         `tdd-${index}@fixture.invalid`,
-      ]);
+        "隔离测试身份",
+        ...credentials.map(() => "not-a-login-credential"),
+      ];
+      const names = ["id", "email", "display_name", ...credentials];
+      await admin.query(
+        `INSERT INTO users(${names.join(",")}) VALUES(${values.map((_, i) => "$" + (i + 1)).join(",")})`,
+        values,
+      );
+    }
+  }
   url.searchParams.set("options", `-c search_path=${schema},public`);
   return { admin, schema, url: url.toString(), migrate, seed, Client };
 }

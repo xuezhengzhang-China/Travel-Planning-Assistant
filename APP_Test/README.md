@@ -1,216 +1,211 @@
-# B 模块 TDD 测试：代码架构与使用说明
+# 旅行规划助手：全软件 TDD 测试
 
-本文件夹集中保存本轮 B 模块的测试代码、用例清单、运行脚本和[测试计划](测试计划.md)，可以整体复制或交给其他开发者。
+本目录是整个软件的测试工程，覆盖 A 的用户界面、B 的地点与推荐、C 的认证与行程、D 的到访/足迹/手账/图片，以及它们之间的协作流程。
 
-编写日期：2026-11-17；目录整理日期：2026-11-18。**当前状态：已编写、未执行。** 本次只移动文件、补充文档并做静态检查，没有运行测试，也没有测得初始 0% 或最终 100%。下文的安装、构建、SSH 和测试命令均供后续执行。
+编写日期：2026-11-18。**状态：测试代码已编写，尚未执行。** 本次仅进行静态语法、文件引用和清单一致性检查，没有启动 API、浏览器、数据库、SSH、模型或地图调用，没有新的通过率或截图。下文命令供后续获准运行时使用。
 
-## 1. 文件夹结构
+课程要求采用“先测试，再实现，再重构”：从有效业务失败基线开始，逐阶段修改软件实现，让同一套测试逐步通过。**0% 和 100% 是目标，必须用真实执行记录证明。** 已有软件实现不会自动变成初始 0%，环境损坏或跳过不能冒充业务失败。
+
+## 1. 从哪里开始看
+
+- [测试计划](测试计划.md)：测试范围、方法、T0—T10 开发安排和完成标准。
+- [测试接入约定](docs/测试接入约定.md)：页面定位标识、文件存储和认证过期等测试配置约定。
+- [需求覆盖矩阵](docs/需求覆盖矩阵.md)：各模块与原 I01— I18 如何落到实际用例。
+- [全软件冻结清单](cases/app-core.v1.json)：全部编号、标题、方法、依赖、阶段和文件。
+- `docs/依据/`：编写测试时采用的 v1.1 接口契约及 A/C/D 开发说明快照；其中历史相对引用保留原文。
+
+原有 100 个规划核心用例继续参与总集合。旧的 B 专项说明和计划保存在 `B核心测试说明.md`、`B核心测试计划.md`，其命令仅供历史参考，当前全软件入口以本文为准。
+
+## 2. 测试代码架构
 
 ```text
-B_TDD_Test/
-├── README.md                         # 架构、配置、测试步骤与结果解释
-├── 测试计划.md                       # 测试范围、方法、T0—T8 开发安排
-├── package.json                      # 本文件夹自己的 npm 测试入口
-├── .env.example                      # 测试库配置模板，不含真实凭据
-├── .gitignore                        # 忽略私有配置与生成的报告
+App_Test/
+├── README.md                         # 本文：架构、配置、测试和报告
+├── 测试计划.md                       # 全软件 TDD 计划
+├── package.json / package-lock.json   # 独立测试依赖与固定安装版本
+├── .env.example / .gitignore          # 配置模板；忽略密钥和生成报告
 ├── cases/
-│   └── tdd-core.v1.json               # 冻结的 100 个逻辑用例及需求对应关系
+│   ├── app-core.v1.json               # 全软件 222 项冻结清单
+│   ├── tdd-core.v1.json               # 原 100 项规划子集清单
+│   └── image-fixtures.json            # 合成且可解码的 PNG/JPEG/WebP
+├── tests/
+│   ├── tdd/                          # 规划、地图、模型和方案的 100 项核心测试
+│   └── app/
+│       ├── core.test.cjs              # 全集合唯一注册入口
+│       ├── auth.cases.cjs             # 真实注册、登录、令牌与资料
+│       ├── trips.cases.cjs            # 草稿、版本、确认、重置与事务
+│       ├── visits.cases.cjs           # 真实到访和城市归属
+│       ├── footprints.cases.cjs       # 聚合、年份过滤和点亮生命周期
+│       ├── journals.cases.cjs         # 随笔 CRUD、文本与归属
+│       ├── media.cases.cjs            # 文件上传、签名、大小、关联与补偿
+│       ├── security.cases.cjs         # 权限、SQL 输入、错误脱敏和 CORS
+│       ├── database.cases.cjs         # 完整迁移、升级、重启与并发
+│       ├── ui.cases.cjs               # 真实页面 + 可控接口的交互测试
+│       ├── e2e.cases.cjs              # 真实页面 + 真实 API/数据库的两条流程
+│       ├── external.cases.cjs         # 真实模型 prompt/回复和真实高德
+│       └── support/
+│           ├── world.cjs             # 实际 createApp、真实注册、资源和数据库隔离
+│           └── browser.cjs           # Vite、Playwright、UI 固定响应和截图
 ├── scripts/
-│   ├── tdd-run.cjs                    # 环境检查、启动测试、保存阶段证据
-│   └── tdd-reporter.cjs               # 按冻结清单统计并输出逐项结果
-├── tests/tdd/
-│   ├── core.test.cjs                  # 统一注册清单中的全部用例
-│   ├── validation.cases.cjs           # V：输入校验
-│   ├── catalog.cases.cjs              # C：地点目录与真实 SQL
-│   ├── planner.cases.cjs              # P：规则排程
-│   ├── proposals.cases.cjs            # S：方案、迁移与持久化
-│   ├── geo.cases.cjs                  # R/G：路线、地理和降级
-│   ├── model.cases.cjs                # M：模型适配、重排与回退
-│   ├── http.cases.cjs                 # H：HTTP 契约与身份边界
-│   └── support/
-│       ├── context.cjs               # 装配真实被测模块、依赖替身与测试资源
-│       └── fixtures.cjs              # 固定城市、景点、用户、时钟和节奏契约
-└── reports/tdd/                      # 以后实际执行时才创建
-    └── <UTC时间戳>-<阶段>-<进程号>/
+│   ├── app-run.cjs                    # 全软件执行入口、环境检查和证据保存
+│   ├── app-reporter.cjs               # 全集合固定分母统计
+│   ├── static-check.cjs               # 只检查语法和声明，不执行测试
+│   └── tdd-*.cjs                     # 保留的规划专项入口
+└── reports/app/                       # 实际运行后才生成
 ```
-
-业务源码不放在这个文件夹里。测试通过显式指定的目标工程，加载其 `apps/api/dist/` 中的真实 B 模块；不会默认选取上级目录的 `.subject` 参考代码。
-
-## 2. 测试代码如何协作
 
 ```mermaid
 flowchart TD
-    A["npm test：显式指定目标工程与阶段"] --> B["tdd-run.cjs：检查依赖、构建与接口骨架"]
-    B --> C["core.test.cjs：核对并注册冻结的 100 个用例"]
-    D["tdd-core.v1.json：固定编号、标题、数量与方法"] --> C
-    C --> E["七个 cases.cjs：输入、调用与断言"]
-    E --> F["context.cjs + fixtures.cjs：装配和固定数据"]
-    F --> G["目标工程的真实业务模块"]
-    F --> H["服务器 PostgreSQL 专用测试库"]
-    F --> I["本地可控 HTTP 地图/模型服务"]
-    C --> J["tdd-reporter.cjs：逐项统计"]
-    J --> K["reports/tdd：控制台、JSON、阶段 Markdown"]
+    A["npm test：目标工程 + 阶段"] --> B["app-run：环境和可加载骨架检查"]
+    B --> C["core.test：按冻结清单注册全部用例"]
+    D["app-core.v1.json：固定编号和分母"] --> C
+    C --> E["规划核心 + 全软件业务用例"]
+    E --> F["真实业务导出 / createApp / 服务器测试库"]
+    E --> G["真实 React 页面 + 可控 API 响应"]
+    E --> H["真实 React 页面 + 真实 API + 测试库"]
+    E --> I["显式开启的真实模型和高德专项"]
+    C --> J["app-reporter：通过 / 失败 / 阻塞 / 未执行"]
+    J --> K["JSON、命令行、阶段 Markdown、截图和外部调用证据"]
 ```
 
-- **清单层**：`tdd-core.v1.json` 保存唯一编号、标题、阶段、依赖、方法及文件路径。分母固定为 100，一个用例内多条断言或多组数据仍只算一项。
-- **用例层**：各 `*.cases.cjs` 导出“编号 → 标题与测试函数”。`core.test.cjs` 检查编号、标题、文件和数量是否一致，再交给 Node.js 内置的 `node:test` 执行。
-- **支撑层**：`fixtures.cjs` 独立定义预期契约；`context.cjs` 加载实际被测模块，装配固定时钟、内存仓库、真实 NestJS 应用、本地 HTTP 服务和数据库隔离。依赖替身用于隔离外部条件，不负责实现待验证的排程或 SQL 行为。
-- **执行与报告层**：`tdd-run.cjs` 检查目标与阶段，顺序执行完整集合，保存版本、清单/测试文件/部分构建产物的 SHA-256；`tdd-reporter.cjs` 区分通过、业务失败、阻塞和未执行。
+测试使用 Node.js 内置 `node:test` 和 `assert`；浏览器使用 Playwright。目标工程通过绝对路径加载，不自动选取 `.subject` 或已经实现的旧分支。测试工程没有业务实现，也不会生成假的 Auth、Trip 或 Journal 来满足断言。
 
-单个逻辑用例默认超时 30 秒；HTTP 服务使用本机随机端口并在用例结束后关闭，无需预先启动前端或 API。测试文件为 CommonJS `.cjs`，测试框架使用 Node.js 内置模块；NestJS、PostgreSQL 驱动等从目标工程自身的依赖中加载。
+`tests/app/support/world.cjs` 调用目标工程真实 `createApp`，使用随机本机端口。全软件用例经真实注册/登录取得令牌；规划子集中的身份替身只用于该子集的隔离装配。
 
-## 3. 测试哪些内容、采用什么方法
+UI01— UI20 使用固定 API 响应检查真实页面行为；这些响应只是 UI 的依赖替身。E2E01— E2E04 将浏览器请求转交真实应用并原样返回响应，验证真实认证、数据库保存、图片读取和刷新恢复，不用模拟接口冒充端到端通过。
 
-| 编号 | 数量 | 对应文件 | 验证重点与方法 |
-| --- | ---: | --- | --- |
-| V01—V20 | 20 | `validation.cases.cjs` | 日期、UUID、数量、枚举、坐标、分页；等价类、边界值、表驱动 |
-| C01—C12 | 12 | `catalog.cases.cjs` | 城市/景点筛选、排序、分页、归属和 SQL 特殊输入；真实 PostgreSQL 集成 |
-| P01—P22 | 22 | `planner.cases.cjs` | 三种节奏、时间预算、完整性、确定性；决策表、独立不变量断言、固定种子组合 |
-| S01—S12 | 12 | `proposals.cases.cjs` | 迁移、种子、快照、有效期、所有权、重启与事务；固定时钟、真实数据库、故障注入 |
-| R01—R10 | 10 | `geo.cases.cjs` | 三交通方式、耗时、超时、缓存、调用预算与降级；实际适配器加可控 HTTP 响应 |
-| G01—G06 | 6 | `geo.cases.cjs` | 逆地理、行政区映射与 GPS 转换；正常/异常响应矩阵 |
-| M01—M10 | 10 | `model.cases.cjs` | 模型请求、严格输出、完整排列、重排采用与回退；结构矩阵、慢响应、故障注入 |
-| H01—H08 | 8 | `http.cases.cjs` | 六接口、身份、错误结构与脱敏；真实 NestJS 和 HTTP 请求 |
-| 合计 | **100** | `cases/tdd-core.v1.json` | 固定逻辑用例集合，当前尚未执行 |
+## 3. 测试范围与数量
 
-需要真实数据库的 **21 项**：C01—C12，S01/S02/S08—S12，H01/H02。其余用例不要求测试库；完整验收仍必须包含这 21 项。
+| 范围                                   | 编号                     |    数量 | 主要方法                                                |
+| -------------------------------------- | ------------------------ | ------: | ------------------------------------------------------- |
+| 地点、输入、排程、方案、地图和模型适配 | V/C/P/S/R/G/M/H          |     100 | 单元、边界、性质、真实 SQL、实际适配器与可控 HTTP       |
+| 注册登录、资料、令牌到期               | A01— A13                 |      13 | 真实 HTTP、并发注册、数据库密码检查、短有效期           |
+| 草稿、版本、方案确认和正式日程         | T01— T24                 |      24 | 状态迁移、并发、故障注入与真实事务                      |
+| 到访记录                               | D01— D10                 |      10 | CRUD、日期/坐标边界、跨用户权限                         |
+| 足迹与城市点亮                         | F01— F08                 |       8 | 同集合聚合、组合过滤、删除生命周期                      |
+| 图文随笔                               | J01— J10                 |      10 | CRUD、文本契约、权限与失败回滚                          |
+| 图片                                   | U01— U15                 |      15 | 实际图片、10 MiB 边界、9 张限制、关联竞争与补偿         |
+| 公共安全                               | SEC01— SEC08             |       8 | 身份矩阵、SQL 输入、脱敏与 CORS                         |
+| 全软件数据库与重启                     | DB01— DB05               |       5 | 完整迁移、基础库升级、真实应用重启和并发提交            |
+| 页面交互与异常                         | UI01— UI20               |      20 | 浏览器操作、可控响应、手机与电脑布局                    |
+| 两条真实主流程                         | E2E01— E2E04             |       4 | 390/1280 宽度，真实页面/API/数据库/文件                 |
+| 正式外部服务                           | EX01— EX05               |       5 | 真实模型 prompt→回复→校验/方案；真实高德路线/逆地理/GPS |
+| **合计**                               | **固定集合 app-core.v1** | **222** | 每个逻辑编号只计一次                                    |
 
-HTTP 覆盖以下六个接口：
+其中 118 项需要服务器专用 PostgreSQL 测试库，24 项需要浏览器（20 项 UI + 4 项真实端到端），5 项需要显式启用真实外部服务。单个用例内的多组输入和多个断言不额外增加分母。
 
-```text
-GET  /api/destinations
-GET  /api/places
-GET  /api/places/:id
-POST /api/routes/preview
-POST /api/locations/reverse
-POST /api/recommendations/itinerary
-```
+## 4. 执行前准备
 
-正向 HTTP 用例中的 `tdd-a`、`tdd-b` 仅是测试装配内的身份；H07 验证默认生产身份配置会拒绝这些 token。地图和模型的核心测试使用本地可控服务，不需要真实高德 Key 或在线模型。真实模型的 prompt/回复验收、真实高德专项和 A/C/D 联合业务流程须另行执行，本集合的 100% 只代表约定的 B 核心范围。
+这些步骤本次没有执行。
 
-## 4. 执行前需要准备什么
+1. Node.js 至少 22.12.0；准备目标工程的依赖与可构建接口骨架。
+2. 测试数据库继续使用服务器 Docker 中的 PostgreSQL。本机只运行测试客户端、临时 API、Vite 和浏览器。
+3. `TEST_DATABASE_URL` 指向已经存在的专用 `_test` 数据库；账号须有创建 schema 和执行迁移权限。
+4. 浏览器默认在 Windows 使用已安装的 Edge；其他平台可安装 Playwright Chromium。缺少浏览器属于环境阻塞。
+5. 按[测试接入约定](docs/测试接入约定.md)接入页面标识、隔离文件目录和短令牌有效期；缺少业务接口/页面应产生真实失败。
 
-1. 安装 Node.js **22.12.0 或更高版本**及 npm。
-2. 准备目标工程，路径应指向含 `apps/api`、`packages` 和根 `package.json` 的 `travel-planner-v2-framework` 层。
-3. 在目标工程安装依赖并构建 API，保留 `apps/api/migrations` 和 `apps/api/scripts/seed-b.cjs`。迁移与种子使用目标版本自身的文件。
-4. 准备服务器 Docker 中的 PostgreSQL 专用测试库，例如 `travel_planner_b_test`。连接账号须能在该库创建 schema 并执行迁移；不需要本机 Docker。
-
-本测试文件夹没有额外 npm 依赖，不需要在这里运行 `npm install`。**需要安装的是被测工程的依赖**。例如，在未来实际执行前：
+先安装测试依赖，再在**目标工程**安装依赖并构建 API：
 
 ```powershell
-# 按实际路径替换；此教学工程尚需自行准备。
-$env:TPA_TDD_SUBJECT_ROOT = 'F:\TPA\独立TDD工程\travel-planner-v2-framework'
-Set-Location $env:TPA_TDD_SUBJECT_ROOT
+Set-Location F:\TPA\Test_coding\App_Test
+npm ci
+
+# 改为实际 TDD 教学工程；当前并未替你创建该教学版本。
+$env:TPA_APP_SUBJECT_ROOT = 'F:\TPA\独立TDD工程\travel-planner-v2-framework'
+Set-Location $env:TPA_APP_SUBJECT_ROOT
 npm ci
 npm run build --workspace=@travel/api
 ```
 
-运行器要求校验函数、BModule、地点 Service/Repository、规则排程、推荐 Service/Repository、地图/地理和模型适配器等接口骨架能够正常导出；具体导出名称列在 `scripts/tdd-run.cjs` 的 `interfaces` 中。缺少文件、依赖或导出会先报环境错误，不能算有效业务 Red。
+Windows 默认浏览器渠道为 `msedge`。若使用 Playwright 自带 Chromium，在测试目录执行 `npx playwright install chromium`，并将 `TPA_BROWSER_CHANNEL` 设为空字符串。运行器会自动启动和关闭随机端口的 API/Vite；不用手动运行前端、API 或全局迁移命令。每次业务代码修改后，应重新构建 API，否则可能仍测试旧的 `dist`。
 
-若按课程演示从 0% 开始，应选取尚无本轮业务逻辑、但接口骨架可构建和加载的独立教学版本。已有完整 B 实现的版本可能一开始就有用例通过，须保留真实结果。
+## 5. 配置数据库、模型与地图
 
-## 5. 配置服务器测试库
-
-按此前服务器的端口约定，若本机尚无隧道，在另一个终端建立 SSH 转发并保持终端开启：
+若仍使用此前服务器端口，在独立终端开启隧道并保持运行：
 
 ```powershell
-ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:55432:127.0.0.1:55432 -p 22 ubuntu@120.53.94.209
+ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:55432:127.0.0.1:55432 -L 127.0.0.1:11434:127.0.0.1:11434 -p 22 ubuntu@120.53.94.209
 ```
 
-按 SSH 提示完成认证。服务器服务或端口变更时应同步调整连接配置。
-
-在测试文件夹复制配置模板，并编辑其中的测试库用户名、密码和库名：
+按 SSH 提示认证；文档和代码不保存服务器密码。端口变更时同步调整配置。
 
 ```powershell
-Set-Location F:\TPA\Test_coding\B_TDD_Test
+Set-Location F:\TPA\Test_coding\App_Test
 Copy-Item .env.example .env
-# 用编辑器修改 .env 后，显式指定该文件。
-$env:TPA_TDD_ENV_FILE = (Resolve-Path .env).Path
+# 用编辑器填写实际测试库连接；完整外部专项还要填写/开启模型和地图配置。
+$env:TPA_APP_ENV_FILE = (Resolve-Path .env).Path
 ```
 
-模板只包含以下格式的占位连接串，凭据中的特殊字符须按 URL 编码：
+模板提供服务器 PostgreSQL、Ollama 兼容地址和显式开关。模型可使用此前的 `qwen2.5:0.5b`，是否满足严格结构化输出要由 EX01 实测；不支持该能力会如实失败，不将回退算成真实模型有效输出通过。
 
-```dotenv
-TEST_DATABASE_URL=postgresql://TEST_USER:REPLACE_WITH_YOUR_PASSWORD@127.0.0.1:55432/travel_planner_b_test
-```
+`.env` 中默认 `TPA_APP_REAL_MODEL=0`、`TPA_APP_REAL_AMAP=0`。普通业务装配强制关闭真实地图/模型，适配器子集使用本地可控服务；只有 EX 专项读取真实配置。完整 222/222 必须显式开启真实专项并满足全部依赖，缺 Key/服务时会记阻塞，不会宣称全软件完成。
 
-也可直接设置进程环境变量 `TEST_DATABASE_URL`；它优先于文件配置。`TPA_TDD_ENV_FILE` 指向的文件只读取 `TEST_DATABASE_URL`，不会读取其中的目标路径或模型配置，因此 `TPA_TDD_SUBJECT_ROOT` 仍须单独设置。
+入口只从私有文件读取测试库、模型、地图、真实调用开关及浏览器渠道的白名单变量；系统环境变量优先。目标路径仍单独通过 `TPA_APP_SUBJECT_ROOT` 或 `--subject` 指定。
 
-测试库必须已存在，库名仅允许小写字母、数字和下划线，并以 `_test` 结尾。每个真库用例创建独立随机 `tdd_*` schema，正常清理阶段只删除自己的 schema；进程被强制终止时可能留下该 schema。测试不会创建整个数据库。
+每个真库用例创建自己的随机 schema，结束时先关闭应用连接池再删除自己的 schema。全软件应用不会回落查询 `public` 中同名业务表。文件写入独立临时目录，用例结束后清理；强制杀死进程可能留下本次临时资源。
 
-## 6. 如何运行测试
+## 6. 如何测试与推进 TDD
 
-确认目标路径、构建与测试库配置后，在本文件夹执行：
+本次只编写，以下命令供后续执行：
 
 ```powershell
-Set-Location F:\TPA\Test_coding\B_TDD_Test
-$env:TPA_TDD_SUBJECT_ROOT = 'F:\TPA\独立TDD工程\travel-planner-v2-framework'
-$env:TPA_TDD_ENV_FILE = (Resolve-Path .env).Path
+Set-Location F:\TPA\Test_coding\App_Test
+$env:TPA_APP_SUBJECT_ROOT = 'F:\TPA\独立TDD工程\travel-planner-v2-framework'
+$env:TPA_APP_ENV_FILE = (Resolve-Path .env).Path
 npm test -- --phase T0
-# 查看退出码：
 $LASTEXITCODE
 ```
 
-也可用命令行参数传入目标：
+也可用 `npm test -- --subject 'F:\实际工程路径' --phase T0`。非 Git 工程额外传 `--revision '真实来源版本标识'`；Git 工程自动记录提交和工作区是否有未提交修改。
+
+`T0` 至 `T10` 始终运行同一完整集合，不按阶段筛选成功子集。每完成一部分实现：重新构建 API、执行相应阶段、保存真实报告和 Git 提交。阶段安排见[测试计划](测试计划.md)。
 
 ```powershell
-npm test -- --subject 'F:\TPA\独立TDD工程\travel-planner-v2-framework' --phase T0
+# 只做静态检查，不启动任何业务、浏览器或服务：
+npm run check:static
+
+# 后续实现一部分业务并重新构建后，执行完整集合：
+npm test -- --phase T1
+# ……依次推进至 T10，实际比例以报告为准。
 ```
 
-目标不是 Git 工作目录时，额外传 `--revision` 记录真实来源标识，例如：
+`npm run test:planning -- --phase T0` 仅执行保留的 100 项规划子集，不是全软件验收入口。它仍使用旧变量 `TPA_TDD_SUBJECT_ROOT`/`TPA_TDD_ENV_FILE`；全软件优先使用本文的新变量和 `npm test`。
 
-```powershell
-npm test -- --subject 'F:\TPA\独立TDD工程\travel-planner-v2-framework' --phase T0 --revision '实际来源提交或版本标识'
-```
+## 7. 报告、截图与通过率
 
-在 `F:\TPA\Test_coding` 上级目录执行 `npm run test:tdd -- --phase T0` 也会转交此处入口；在上级目录直接执行 `npm test` 仍属于旧回归工程。
+进入执行阶段后创建 `reports/app/<UTC时间戳>-<阶段>-<进程号>/`：
 
-T0—T8 都运行同一完整集合。阶段参数只标记开发进度，不筛选用例，也不会把结果强制改成目标比例：
+| 文件                               | 内容                                                       |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `execution.json`                   | 目标版本、阶段、命令、起止时间、测试/源码/构建哈希         |
+| `console.txt`                      | 脱敏的测试子进程控制台输出                                 |
+| `app-results.json`                 | 222 项逐项状态、原因、耗时与固定分母统计                   |
+| `阶段结果.md`                      | 可阅读的实际通过率与逐项结果表                             |
+| `screenshots/*.png`                | 浏览器用例清理前保存的实际页面截图；未进入浏览器时可能没有 |
+| `http-requests.jsonl`              | 请求方法、路径和状态，不保存令牌或密码                     |
+| `browser-requests.jsonl`           | 页面请求摘要及页面运行错误                                 |
+| `real-model-prompt-response.jsonl` | 实际 prompt、供应商原始回复、校验和最终方案证据            |
+| `real-amap.jsonl`                  | 实际服务返回的路线、逆地理和坐标结果                       |
 
-| 阶段 | 对应开发工作 |
-| --- | --- |
-| T0 | 测试先行版本与有效初始失败基线 |
-| T1 | 输入校验与归一化 |
-| T2 | 地点目录 |
-| T3 | 规则排程 |
-| T4 | 方案持久化 |
-| T5 | 地图与地理服务 |
-| T6 | 模型适配与建议处理 |
-| T7 | 六接口、身份及错误契约收口 |
-| T8 | 重构与回归 |
-
-后续每轮按“修改业务代码 → 重新构建 API → 运行同一集合 → 保存本轮报告与提交”推进，例如 T1 使用 `npm test -- --phase T1`。若未重新构建，测试加载的仍可能是旧的 `dist`。T8 的旧回归、lint、类型检查和构建需按[测试计划](测试计划.md)另行完成，不包含在 100 项业务通过率内。
-
-## 7. 报告在哪里、怎样判断结果
-
-实际进入测试执行后，报告保存在本文件夹的 `reports/tdd/<UTC时间戳>-<阶段>-<进程号>/`：
-
-| 文件 | 内容 |
-| --- | --- |
-| `execution.json` | 目标路径、来源版本、阶段、起止时间、测试/清单/构建哈希和子进程退出码 |
-| `console.txt` | 本次测试子进程的控制台输出 |
-| `core-results.json` | 每个逻辑用例的状态、原因、耗时及固定分母统计 |
-| `阶段结果.md` | 可阅读的阶段结果与逐项用例表 |
-
-前置环境检查失败时会在控制台报错并退出，可能尚未创建报告目录。本目录中的 `.gitignore` 默认忽略运行报告与 `.env`；需要作为课程证据交付时，另行审阅、归档并提交所需材料。
+前置依赖/骨架检查失败时可能尚未创建报告目录。浏览器启动前已失败的用例不会有页面截图。报告目录默认被 Git 忽略，阶段交付时审阅后归档所需材料。
 
 ```text
-核心通过率 = 实际通过的逻辑用例数 / 100 × 100%
+全软件核心通过率 = 实际通过的逻辑用例数 / 222 × 100%
 ```
 
-| 退出码 | 含义与处理 |
-| --- | --- |
-| 0 | 完整核心集合全部通过；结合逐项结果确认适用版本 |
-| 1 | 存在业务断言失败，修改对应业务实现后重新构建并复测 |
-| 2 | 环境/工具问题，或存在阻塞、未执行；先修复配置与环境 |
-| 3 | T0 实际已有通过项，需核对起始版本，保留真实结果 |
+| 退出码 | 含义                                      |
+| ------ | ----------------------------------------- |
+| 0      | 全部 222 项有效执行并通过                 |
+| 1      | 存在业务断言失败                          |
+| 2      | 环境/工具错误，或有阻塞、未执行           |
+| 3      | T0 已有实际通过项，需核对起点，不改写结果 |
 
-数据库未配置或连接不可用时，对应项记为阻塞，不计通过，也不会从分母移除。只有 `validMeasurement=true`，且全部 100 项都有有效业务结果，才适合比较开发阶段通过率；环境缺失不能作为初始 0% 的证据。用例内部若产生非标准子进程退出码，还应查看日志定位异常。
+只有 `validMeasurement=true`，全部编号都有有效结果且没有环境阻塞，才比较业务开发阶段的通过率。N/N 才是该版本冻结范围的 100%；不以旧报告、跳过或环境损坏制造 0%/100%。未预期子进程退出码同时参看控制台与执行元数据。
 
-最终核心完成标准是 100/100 通过、失败/阻塞/未执行均为 0，并保留真实的测试先行提交、业务实现提交和各阶段报告。当前没有执行记录，不应将上级目录历史报告当成本集合的结果。
+## 8. 当前状态与维护
 
-## 8. 添加或维护测试
+当前业务参考版本已有 B 和基础框架，认证、正式行程、D 业务及完整页面仍待开发。这些用例是未来开发的验收约束，不是功能已完成的声明。没有本轮实际通过率，也没有伪造失败/成功报告。
 
-先在对应 `*.cases.cjs` 编写“编号、中文标题、执行函数”，再同步更新 `cases/tdd-core.v1.json`。七个现有模块由 `core.test.cjs` 显式加载；新增第八个模块时，还需更新其模块列表和运行器的测试文件哈希清单。
+公共接口遵循 v1.1；密码最小长度、真实令牌实现、文件清理任务等尚未确定的策略不随意编造。内部测试接入约定单独列出，后续与负责实现的人对齐。真实地图 JS 的视觉高亮、设备定位权限、无障碍和长时间负载还需补充人工/专项检查，见覆盖矩阵。
 
-本轮 v1 已冻结为 100 项。新增需求、修订契约或调整分母时，应记录新版本、原因及变化，不能静默删除失败项或只运行成功子集。修改测试与业务代码的提交顺序、阶段目标和联合验收范围，统一以本文件夹的[测试计划](测试计划.md)为准。
+新增用例需同时更新模块和版本化清单；需求变化要记录新版本、原因和分母变化。修改注册入口、支撑代码或构建产物时，运行静态检查并在后续完整测试中验证。提交建议：`test: 新增全软件 TDD 测试与测试说明`。

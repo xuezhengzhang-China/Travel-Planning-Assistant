@@ -1,0 +1,377 @@
+{
+  "description": "合成开发样例，不是实时景点资料、真实账号或已运行接口",
+  "fixedNow": "2026-10-26T01:10:00.000Z",
+  "actors": {
+    "primary": { "userId": "10000000-0000-4000-8000-000000000001" },
+    "other": { "userId": "10000000-0000-4000-8000-000000000002" }
+  },
+  "destinations": [
+    {
+      "id": "20000000-0000-4000-8000-000000000001",
+      "name": "浙江省",
+      "level": "province",
+      "parentId": null,
+      "adcode": "330000",
+      "timeZone": "Asia/Shanghai"
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000002",
+      "name": "杭州市",
+      "level": "city",
+      "parentId": "20000000-0000-4000-8000-000000000001",
+      "adcode": "330100",
+      "timeZone": "Asia/Shanghai"
+    }
+  ],
+  "places": [
+    {
+      "id": "30000000-0000-4000-8000-000000000001",
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "name": "西湖（演示）",
+      "categories": ["nature", "landmark"],
+      "address": "杭州市，具体入口待核实",
+      "coordinates": {
+        "longitude": 120.148,
+        "latitude": 30.245,
+        "coordinateSystem": "GCJ-02"
+      },
+      "suggestedDurationMinutes": 90,
+      "description": "用于测试自然主题与地图标记的演示地点。",
+      "openingHoursText": null,
+      "source": "fixture",
+      "updatedAt": "2026-10-26T00:00:00.000Z"
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000002",
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "name": "灵隐景区（演示）",
+      "categories": ["history", "nature"],
+      "address": "杭州市，具体入口待核实",
+      "coordinates": {
+        "longitude": 120.102,
+        "latitude": 30.242,
+        "coordinateSystem": "GCJ-02"
+      },
+      "suggestedDurationMinutes": 120,
+      "description": "用于测试历史文化偏好和交通估算的演示地点。",
+      "openingHoursText": null,
+      "source": "fixture",
+      "updatedAt": "2026-10-26T00:00:00.000Z"
+    },
+    {
+      "id": "30000000-0000-4000-8000-000000000003",
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "name": "良渚博物院（演示）",
+      "categories": ["history", "art"],
+      "address": "杭州市，具体入口待核实",
+      "coordinates": {
+        "longitude": 120.028,
+        "latitude": 30.381,
+        "coordinateSystem": "GCJ-02"
+      },
+      "suggestedDurationMinutes": 120,
+      "description": "用于测试第二天安排和开放信息未核实提示的演示地点。",
+      "openingHoursText": null,
+      "source": "fixture",
+      "updatedAt": "2026-10-26T00:00:00.000Z"
+    }
+  ],
+  "requests": {
+    "createTrip": {
+      "title": "杭州两日游",
+      "cityId": "20000000-0000-4000-8000-000000000002"
+    },
+    "updatePlanning": {
+      "expectedRevision": 1,
+      "planningInput": {
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": ["history", "nature"],
+        "pace": "standard",
+        "transportMode": "walking"
+      }
+    },
+    "renameTrip": { "expectedRevision": 2, "title": "杭州两日慢游" },
+    "setSelections": {
+      "expectedRevision": 3,
+      "placeIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "recommendationRequest": {
+      "cityId": "20000000-0000-4000-8000-000000000002",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-02",
+      "themes": ["history", "nature"],
+      "pace": "standard",
+      "transportMode": "walking",
+      "selectedPlaceIds": [
+        "30000000-0000-4000-8000-000000000001",
+        "30000000-0000-4000-8000-000000000002",
+        "30000000-0000-4000-8000-000000000003"
+      ]
+    },
+    "applyProposal": {
+      "expectedRevision": 4,
+      "proposalId": "50000000-0000-4000-8000-000000000001"
+    },
+    "createVisitedPlace": {
+      "placeId": "30000000-0000-4000-8000-000000000001",
+      "visitedOn": "2026-10-20"
+    },
+    "createJournal": {
+      "visitedPlaceId": "60000000-0000-4000-8000-000000000001",
+      "title": "沿湖走走",
+      "body": "沿着湖边慢慢走，记下一段平静的下午。",
+      "mediaIds": ["80000000-0000-4000-8000-000000000001"]
+    }
+  },
+  "responses": {
+    "tripDraft": {
+      "id": "40000000-0000-4000-8000-000000000001",
+      "ownerId": "10000000-0000-4000-8000-000000000001",
+      "title": "杭州两日慢游",
+      "revision": 4,
+      "status": "draft",
+      "planningInput": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": ["history", "nature"],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "days": [],
+      "createdAt": "2026-10-26T00:50:00.000Z",
+      "updatedAt": "2026-10-26T00:59:00.000Z"
+    },
+    "proposal": {
+      "proposalId": "50000000-0000-4000-8000-000000000001",
+      "inputSnapshot": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": ["history", "nature"],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "generatedAt": "2026-10-26T01:00:00.000Z",
+      "expiresAt": "2026-10-26T01:30:00.000Z",
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配园林自然主题；未提供首站出发地。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "12:15",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 90,
+              "travelTimeSource": "estimate",
+              "reason": "匹配历史文化与园林自然；步行时间为合成估算。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配历史文化主题；开放信息需另行核实。"
+            }
+          ]
+        }
+      ],
+      "unassignedPlaceIds": [],
+      "warnings": [
+        {
+          "code": "ROUTE_ESTIMATED",
+          "message": "分段交通时间为演示估算，不是实时路线。",
+          "placeIds": ["30000000-0000-4000-8000-000000000002"]
+        },
+        {
+          "code": "OPENING_HOURS_UNVERIFIED",
+          "message": "演示地点开放信息未核实，请出行前确认。"
+        }
+      ],
+      "source": "rule"
+    },
+    "tripPlanned": {
+      "id": "40000000-0000-4000-8000-000000000001",
+      "ownerId": "10000000-0000-4000-8000-000000000001",
+      "title": "杭州两日慢游",
+      "revision": 5,
+      "status": "planned",
+      "planningInput": {
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "startDate": "2026-11-01",
+        "endDate": "2026-11-02",
+        "themes": ["history", "nature"],
+        "pace": "standard",
+        "transportMode": "walking",
+        "selectedPlaceIds": [
+          "30000000-0000-4000-8000-000000000001",
+          "30000000-0000-4000-8000-000000000002",
+          "30000000-0000-4000-8000-000000000003"
+        ]
+      },
+      "days": [
+        {
+          "date": "2026-11-01",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000001",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 90,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配园林自然主题；未提供首站出发地。"
+            },
+            {
+              "placeId": "30000000-0000-4000-8000-000000000002",
+              "position": 1,
+              "startTime": "12:15",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 90,
+              "travelTimeSource": "estimate",
+              "reason": "匹配历史文化与园林自然；步行时间为合成估算。"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-02",
+          "items": [
+            {
+              "placeId": "30000000-0000-4000-8000-000000000003",
+              "position": 0,
+              "startTime": "09:00",
+              "durationMinutes": 120,
+              "travelMinutesFromPrevious": 0,
+              "travelTimeSource": "none",
+              "reason": "匹配历史文化主题；开放信息需另行核实。"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-10-26T00:50:00.000Z",
+      "updatedAt": "2026-10-26T01:10:00.000Z"
+    },
+    "visitedPlaces": [
+      {
+        "id": "60000000-0000-4000-8000-000000000001",
+        "placeId": "30000000-0000-4000-8000-000000000001",
+        "placeName": "西湖（演示）",
+        "coordinates": {
+          "longitude": 120.148,
+          "latitude": 30.245,
+          "coordinateSystem": "GCJ-02"
+        },
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "cityAdcode": "330100",
+        "visitedOn": "2026-10-20",
+        "createdAt": "2026-10-26T00:00:00.000Z",
+        "updatedAt": "2026-10-26T00:00:00.000Z"
+      },
+      {
+        "id": "60000000-0000-4000-8000-000000000002",
+        "placeId": "30000000-0000-4000-8000-000000000002",
+        "placeName": "灵隐景区（演示）",
+        "coordinates": {
+          "longitude": 120.102,
+          "latitude": 30.242,
+          "coordinateSystem": "GCJ-02"
+        },
+        "cityId": "20000000-0000-4000-8000-000000000002",
+        "cityAdcode": "330100",
+        "visitedOn": "2026-10-21",
+        "createdAt": "2026-10-26T00:00:00.000Z",
+        "updatedAt": "2026-10-26T00:00:00.000Z"
+      }
+    ],
+    "media": {
+      "id": "80000000-0000-4000-8000-000000000001",
+      "originalName": "demo-lake.png",
+      "mimeType": "image/png",
+      "sizeBytes": 1024,
+      "createdAt": "2026-10-26T00:00:00.000Z"
+    },
+    "journal": {
+      "id": "70000000-0000-4000-8000-000000000001",
+      "visitedPlaceId": "60000000-0000-4000-8000-000000000001",
+      "title": "沿湖走走",
+      "body": "沿着湖边慢慢走，记下一段平静的下午。",
+      "mediaIds": ["80000000-0000-4000-8000-000000000001"],
+      "createdAt": "2026-10-26T00:00:00.000Z",
+      "updatedAt": "2026-10-26T00:00:00.000Z"
+    },
+    "footprints": {
+      "markers": [
+        {
+          "id": "60000000-0000-4000-8000-000000000001",
+          "placeId": "30000000-0000-4000-8000-000000000001",
+          "placeName": "西湖（演示）",
+          "coordinates": {
+            "longitude": 120.148,
+            "latitude": 30.245,
+            "coordinateSystem": "GCJ-02"
+          },
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "cityAdcode": "330100",
+          "visitedOn": "2026-10-20",
+          "createdAt": "2026-10-26T00:00:00.000Z",
+          "updatedAt": "2026-10-26T00:00:00.000Z"
+        },
+        {
+          "id": "60000000-0000-4000-8000-000000000002",
+          "placeId": "30000000-0000-4000-8000-000000000002",
+          "placeName": "灵隐景区（演示）",
+          "coordinates": {
+            "longitude": 120.102,
+            "latitude": 30.242,
+            "coordinateSystem": "GCJ-02"
+          },
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "cityAdcode": "330100",
+          "visitedOn": "2026-10-21",
+          "createdAt": "2026-10-26T00:00:00.000Z",
+          "updatedAt": "2026-10-26T00:00:00.000Z"
+        }
+      ],
+      "litCities": [
+        {
+          "cityId": "20000000-0000-4000-8000-000000000002",
+          "cityAdcode": "330100",
+          "cityName": "杭州市",
+          "visitCount": 2
+        }
+      ]
+    }
+  }
+}
