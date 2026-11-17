@@ -1,0 +1,86 @@
+/* 开发宿主页样式，仅随 map-dev.html 使用，不进入主应用。 */
+.dev-shell {
+  width: min(860px, calc(100% - 40px));
+  margin: 48px auto 80px;
+}
+.dev-eyebrow {
+  margin: 0;
+  color: #63806e;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.dev-header h1 {
+  margin: 10px 0 8px;
+  font-size: 34px;
+  letter-spacing: -0.03em;
+}
+.dev-header p {
+  margin: 0;
+  color: #627068;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.dev-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 24px 0;
+}
+.dev-controls fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid #dce5db;
+  border-radius: 10px;
+  background: white;
+}
+.dev-controls legend {
+  padding: 0 5px;
+  color: #3f4f45;
+  font-size: 13px;
+  font-weight: 600;
+}
+.dev-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+  font-size: 13px;
+}
+.dev-controls button {
+  padding: 9px 14px;
+  border: 1px solid #cbd7cd;
+  border-radius: 8px;
+  background: white;
+  color: #2e7650;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dev-log {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid #dce5db;
+  border-radius: 16px;
+  background: white;
+}
+.dev-log h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.dev-log p {
+  margin: 0;
+  color: #7a8980;
+  font-size: 13px;
+}
+.dev-log ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: #3f4f45;
+  font-size: 13px;
+}

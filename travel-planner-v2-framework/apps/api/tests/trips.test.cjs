@@ -78,6 +78,58 @@ function memory() {
   };
   return repo;
 }
+test('确认高德方案使用推荐规则校验，允许短于手动排程估算的路段', async () => {
+  const repo = memory();
+  const catalog = new CuratedBeijingCatalog();
+  const current = trip();
+  const [first, second] = await catalog.getCityPlaces(BEIJING_CITY_ID);
+  const date = '2026-11-20';
+  Object.assign(current.planningInput, {
+    startDate: date,
+    endDate: date,
+    selectedPlaceIds: [first.id, second.id],
+  });
+  repo.seed(current);
+  const days = [
+    {
+      date,
+      items: [
+        {
+          placeId: first.id,
+          position: 0,
+          startTime: '09:00',
+          durationMinutes: first.suggestedDurationMinutes,
+          travelMinutesFromPrevious: 0,
+          travelTimeSource: 'none',
+          reason: '',
+        },
+        {
+          placeId: second.id,
+          position: 1,
+          startTime: '13:16',
+          durationMinutes: second.suggestedDurationMinutes,
+          travelMinutesFromPrevious: 1,
+          travelTimeSource: 'provider',
+          reason: '',
+        },
+      ],
+    },
+  ];
+  const service = new TripsService(repo, catalog, {
+    getOwnedProposal: async () => ({
+      inputSnapshot: current.planningInput,
+      days,
+      unassignedPlaceIds: [],
+    }),
+  });
+  const saved = await service.applyProposal('owner', ID, 1, 'proposal');
+  assert.equal(saved.status, 'planned');
+  assert.deepEqual(saved.days, days);
+  await assert.rejects(
+    service.updateSchedule('owner', ID, saved.revision, days),
+    (error) => error.code === 'INVALID_SCHEDULE',
+  );
+});
 test('拒绝伪造 owner、未知字段、错误日期、重复景点和过大分页', () => {
   assert.throws(() => createInput({ title: '北京', cityId: BEIJING_CITY_ID, ownerId: 'other' }));
   for (const input of [
@@ -95,6 +147,70 @@ test('拒绝伪造 owner、未知字段、错误日期、重复景点和过大�
   );
   assert.throws(() => selectionsInput({ expectedRevision: 1, placeIds: [placeId, placeId] }));
   assert.throws(() => pagination('1', '101'));
+});
+
+test('跨天移动保留其他日期的已确认路线，同时拒绝重复景点和修改其他日期的高德耗时', async () => {
+  const repo = memory();
+  const catalog = new CuratedBeijingCatalog();
+  const [first, second, third] = await catalog.getCityPlaces(BEIJING_CITY_ID);
+  const current = trip();
+  const [monday, tuesday, wednesday] = ['2026-11-23', '2026-11-24', '2026-11-25'];
+  Object.assign(current.planningInput, {
+    startDate: monday,
+    endDate: wednesday,
+    selectedPlaceIds: [first.id, second.id, third.id],
+  });
+  function firstStop(place) {
+    return {
+      placeId: place.id,
+      position: 0,
+      startTime: '09:00',
+      durationMinutes: place.suggestedDurationMinutes,
+      travelMinutesFromPrevious: 0,
+      travelTimeSource: 'none',
+      reason: '',
+    };
+  }
+  const unchanged = {
+    date: monday,
+    items: [
+      firstStop(first),
+      {
+        ...firstStop(second),
+        position: 1,
+        startTime: '13:16',
+        travelMinutesFromPrevious: 1,
+        travelTimeSource: 'provider',
+      },
+    ],
+  };
+  current.status = 'planned';
+  current.days = [
+    unchanged,
+    { date: tuesday, items: [firstStop(third)] },
+    { date: wednesday, items: [] },
+  ];
+  repo.seed(current);
+  const service = new TripsService(repo, catalog, {});
+  const moved = [
+    unchanged,
+    { date: tuesday, items: [] },
+    { date: wednesday, items: [firstStop(third)] },
+  ];
+  const duplicate = [unchanged, current.days[1], moved[2]];
+  await assert.rejects(
+    service.updateSchedule('owner', ID, 1, duplicate),
+    (error) => error.code === 'INVALID_SCHEDULE',
+  );
+  const invented = structuredClone(moved);
+  invented[0].items[1].travelMinutesFromPrevious = 2;
+  await assert.rejects(
+    service.updateSchedule('owner', ID, 1, invented),
+    (error) => error.code === 'INVALID_SCHEDULE',
+  );
+  const saved = await service.updateSchedule('owner', ID, 1, moved);
+  assert.deepEqual(saved.days, moved);
+  assert.equal(saved.revision, 2);
 });
 test('草稿保存日期偏好与选择，可重新读取且保持 draft', async () => {
   const repo = memory(),
@@ -248,8 +364,8 @@ test('HTTP 接入鉴权、校验、创建、保存、读取、分页和错误格
     }
     assert.equal((await request('/trips', 'GET', undefined, '')).status, 401);
     assert.equal((await request('/trips', 'GET', undefined, 'unknown-token')).status, 401);
-    assert.equal((await request('/b/places', 'GET', undefined, '')).status, 401);
-    assert.equal((await request('/b/places', 'GET', undefined, 'owner-token')).status, 400);
+    assert.equal((await request('/places', 'GET', undefined, '')).status, 401);
+    assert.equal((await request('/places', 'GET', undefined, 'owner-token')).status, 400);
     const created = await request('/trips', 'POST', { title: '北京草稿', cityId: BEIJING_CITY_ID });
     assert.equal(created.status, 201);
     assert.equal(created.body.revision, 1);

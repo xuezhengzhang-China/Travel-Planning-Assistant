@@ -13,6 +13,7 @@
     "db:migrate:status": "node scripts/migration-status.cjs",
     "db:migration:new": "node-pg-migrate create -m migrations --envPath ../../.env",
     "db:seed:b": "node scripts/seed-b.cjs --development",
+    "db:seed:beijing": "node scripts/seed-beijing.cjs --development",
     "test:integration:b": "node scripts/test-integration-b.cjs"
   },
   "dependencies": {

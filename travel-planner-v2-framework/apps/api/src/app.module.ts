@@ -1,14 +1,16 @@
-import { RouterModule } from '@nestjs/core';
+import { Module } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
 import { BModule } from './b/b.module';
 import { B_AUTHENTICATOR } from './b/identity';
-import { AuthService } from './auth/auth.service';
-import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
+import { FootprintsModule } from './footprints/footprints.module';
 import { HealthModule } from './health/health.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { JournalsModule } from './journals/journals.module';
+import { MediaModule } from './media/media.module';
 import { TripsModule } from './trips/trips.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -34,7 +36,9 @@ import { TripsModule } from './trips/trips.module';
         },
       ],
     }),
-    RouterModule.register([{ path: 'b', module: BModule }]),
+    FootprintsModule,
+    JournalsModule,
+    MediaModule,
   ],
 })
 export class AppModule {}

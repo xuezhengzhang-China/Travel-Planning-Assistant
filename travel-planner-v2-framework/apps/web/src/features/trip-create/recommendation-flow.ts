@@ -1,6 +1,5 @@
 import { scheduleGroups } from '@travel/shared/recommendation-engine';
 import type { PlanningInput, Trip, RecommendationPlace } from '@travel/shared';
-import { listPlaces, beijing } from '../../data/beijing';
 import type { PlanningDraft } from '../../data/planner';
 import type { TripCreateResult } from './NewTripPage';
 import {
@@ -44,7 +43,7 @@ export function createRecommendationFlow(
     }
   }
   async function generate(draft: PlanningDraft) {
-    await save({ title: current?.title ?? '我的北京之旅', draft });
+    await save({ title: current?.title ?? '我的旅行', draft });
     return api.generateProposal({
       ...toDraftPlanningInput(draft),
       startDate: draft.startDate,
@@ -65,7 +64,7 @@ export function createRecommendationFlow(
       endDate: draft.endDate,
       selectedPlaceIds: draft.selectedPlaceIds,
     };
-    const plan = scheduleGroups(options.places ?? listPlaces(beijing.id), input, result.trip.days);
+    const plan = scheduleGroups(options.places ?? [], input, result.trip.days);
     if (plan.unassignedPlaceIds.length) throw new Error('当前安排超出容量，请调整后再保存');
     // 已 planned 只允许修改同一输入的每日安排；变更规划条件需先按契约明确重置。
     if (current?.status === 'planned') {

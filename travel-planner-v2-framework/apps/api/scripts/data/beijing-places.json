@@ -1,0 +1,150 @@
+{
+  "destinations": [
+    {
+      "id": "11000000-0000-4000-8000-000000000002",
+      "name": "北京市",
+      "level": "province",
+      "parentId": null,
+      "adcode": "110000",
+      "amapCitycode": null,
+      "timeZone": "Asia/Shanghai"
+    },
+    {
+      "id": "11000000-0000-4000-8000-000000000001",
+      "name": "北京市",
+      "level": "city",
+      "parentId": "11000000-0000-4000-8000-000000000002",
+      "adcode": "110100",
+      "amapCitycode": "010",
+      "timeZone": "Asia/Shanghai"
+    }
+  ],
+  "places": [
+    {
+      "id": "11000000-0000-4000-8001-000000000001",
+      "name": "故宫博物院",
+      "longitude": 116.397029,
+      "latitude": 39.917839,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000002",
+      "name": "天坛公园",
+      "longitude": 116.410829,
+      "latitude": 39.881913,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000003",
+      "name": "颐和园",
+      "longitude": 116.275179,
+      "latitude": 39.999617,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000004",
+      "name": "圆明园遗址公园",
+      "longitude": 116.300875,
+      "latitude": 40.006502,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000005",
+      "name": "八达岭长城",
+      "longitude": 116.016802,
+      "latitude": 40.356188,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000006",
+      "name": "慕田峪长城",
+      "longitude": 116.565052,
+      "latitude": 40.431668,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000007",
+      "name": "景山公园",
+      "longitude": 116.396551,
+      "latitude": 39.925875,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000008",
+      "name": "北海公园",
+      "longitude": 116.391802,
+      "latitude": 39.928775,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000009",
+      "name": "中山公园",
+      "longitude": 116.394407,
+      "latitude": 39.910707,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000010",
+      "name": "地坛公园",
+      "longitude": 116.414443,
+      "latitude": 39.953777,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000011",
+      "name": "北京动物园",
+      "longitude": 116.336701,
+      "latitude": 39.942105,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000012",
+      "name": "北京天文馆",
+      "longitude": 116.336833,
+      "latitude": 39.937306,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000013",
+      "name": "首都博物馆",
+      "longitude": 116.342067,
+      "latitude": 39.906412,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000014",
+      "name": "北京奥林匹克公园",
+      "longitude": 116.393096,
+      "latitude": 40.009926,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000015",
+      "name": "香山公园",
+      "longitude": 116.188746,
+      "latitude": 39.990107,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000016",
+      "name": "玉渊潭公园",
+      "longitude": 116.319932,
+      "latitude": 39.91662,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000017",
+      "name": "陶然亭公园",
+      "longitude": 116.381921,
+      "latitude": 39.874496,
+      "coordinateSystem": "GCJ-02"
+    },
+    {
+      "id": "11000000-0000-4000-8001-000000000018",
+      "name": "居庸关长城",
+      "longitude": 116.073088,
+      "latitude": 40.291161,
+      "coordinateSystem": "GCJ-02"
+    }
+  ]
+}

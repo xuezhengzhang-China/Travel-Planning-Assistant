@@ -1,0 +1,239 @@
+.trip-detail-tools {
+  position: relative;
+  z-index: 2;
+  grid-area: tools;
+  min-width: 0;
+  border-left: 1px solid #355449;
+  background: var(--trip-rail);
+}
+
+.trip-tools-rail {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 9px 6px;
+}
+
+.trip-detail .trip-tools-rail button {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  min-height: 53px;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  padding: 5px 4px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #f0e5cf;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.trip-tools-rail svg {
+  width: 21px;
+  height: 21px;
+}
+
+.trip-detail .trip-tools-rail button:hover,
+.trip-detail .trip-tools-rail button[aria-expanded='true'] {
+  border-color: #638075;
+  background: #38554a;
+  color: #fff7e7;
+}
+
+.trip-tools-panel {
+  position: absolute;
+  inset: 10px calc(100% + 9px) auto auto;
+  width: min(322px, calc(100cqw - 90px));
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid var(--trip-line);
+  border-radius: 10px;
+  background: var(--trip-surface);
+  box-shadow: 0 8px 22px #243e2d20;
+}
+
+.trip-detail .trip-tools-heading {
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.trip-tools-heading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.trip-detail .trip-tools-panel button {
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.trip-detail .trip-tools-heading button,
+.trip-detail .trip-packing-item button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 1px;
+  border-color: transparent;
+}
+
+.trip-tools-form {
+  display: grid;
+  gap: 9px;
+}
+
+.trip-tools-form > button {
+  justify-self: start;
+}
+
+.trip-tools-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trip-tools-form :is(input:not([type='checkbox']), textarea) {
+  min-width: 0;
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--trip-line);
+  border-radius: 6px;
+  background: #fcfdfb;
+  color: var(--trip-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.trip-tools-form textarea {
+  resize: vertical;
+}
+
+.trip-tools-panel :is(input, textarea, a):focus-visible {
+  outline: 2px solid #6c987d;
+  outline-offset: 2px;
+}
+
+.trip-tool-note,
+.trip-tool-total,
+.trip-tools-feedback {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.trip-tool-note {
+  color: var(--trip-muted);
+}
+
+.trip-tool-total,
+.trip-tools-feedback {
+  font-weight: 650;
+}
+
+.trip-tools-feedback {
+  margin-top: 9px;
+  color: var(--trip-action);
+}
+
+.trip-tool-list {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-detail .trip-tool-leg,
+.trip-tool-link {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 6px 10px;
+  align-items: baseline;
+  border: 1px solid var(--trip-line);
+  border-radius: 6px;
+  text-align: left;
+}
+
+.trip-detail .trip-tool-leg {
+  flex-wrap: wrap;
+}
+
+.trip-tool-leg small {
+  color: var(--trip-muted);
+  font-size: 12px;
+}
+
+.trip-tool-link {
+  padding: 7px 9px;
+  color: var(--trip-action);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.trip-tool-link:hover,
+.trip-detail .trip-tool-leg:hover {
+  background: var(--trip-selection);
+}
+
+.trip-packing-add,
+.trip-packing-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trip-packing-add button {
+  flex: 0 0 auto;
+}
+
+.trip-packing-item {
+  justify-content: space-between;
+}
+
+.trip-packing-item label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.trip-packing-item input {
+  flex: 0 0 auto;
+  accent-color: var(--trip-action);
+}
+
+.trip-packing-item input:checked + span {
+  color: var(--trip-muted);
+  text-decoration: line-through;
+}
+
+@container suixin (max-width: 740px) {
+  .trip-detail-layout:has(.trip-tools-panel) .trip-map-info:not(.trip-place-card) {
+    display: none;
+  }
+
+  .trip-tools-rail {
+    padding: 7px 3px;
+  }
+
+  .trip-detail .trip-tools-rail button {
+    min-height: 46px;
+    font-size: 11px;
+  }
+
+  .trip-tools-rail svg {
+    width: 18px;
+    height: 18px;
+  }
+}

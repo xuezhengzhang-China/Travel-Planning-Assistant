@@ -6,10 +6,20 @@ const { getMigrationStatus } = require('../scripts/migration-status.cjs');
 
 const directory = resolve(__dirname, '../migrations');
 const name = '202610240001_initial_schema';
+const footprintMigrations = [
+  '202611030001_footprint_entries',
+  '202611030002_footprint_location_details',
+  '202611030003_footprint_media_cleanup',
+];
 const names = readdirSync(directory)
   .filter((file) => /\.(js|cjs|ts|sql)$/.test(file))
   .map((file) => file.replace(/\.[^.]+$/, ''))
   .sort();
+
+// 足迹相关迁移必须在迁移目录中存在，否则地图与足迹接口会在真实库上失效。
+for (const migration of footprintMigrations) {
+  assert.ok(names.includes(migration), `missing migration ${migration}`);
+}
 
 test('uninitialized database shows pending migrations using only a read query', async () => {
   const queries = [];
@@ -25,7 +35,7 @@ test('uninitialized database shows pending migrations using only a read query', 
   );
   assert.deepEqual(
     rows,
-    names.map((name) => ({ name, status: 'pending' })),
+    names.map((migration) => ({ name: migration, status: 'pending' })),
   );
   assert.equal(queries.length, 1);
   assert.ok(queries.every((text) => text.startsWith('SELECT ')));

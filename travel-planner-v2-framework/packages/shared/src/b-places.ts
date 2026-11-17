@@ -46,6 +46,20 @@ export interface RoutePreview {
   durationMinutes: number;
   source: 'provider' | 'estimate';
   warnings: TravelWarning[];
+  paths?: [number, number][][];
+  transitSteps?: TransitStep[];
+}
+export interface TransitStep {
+  mode: 'walking' | 'bus' | 'railway' | 'taxi';
+  name: string;
+  departureStop?: string;
+  arrivalStop?: string;
+  entrance?: string;
+  exit?: string;
+  serviceNotice?: string;
+  stopCount?: number;
+  distanceMeters?: number;
+  durationMinutes?: number;
 }
 export interface ReverseLocation {
   placeName: string;

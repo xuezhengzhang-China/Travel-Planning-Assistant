@@ -49,3 +49,20 @@ export type {
   RecommendationPlan,
   Proposal,
 } from './recommendations.js';
+
+export type {
+  CoordinateSystem,
+  CreateFootprintInput,
+  FootprintEntry,
+  FootprintListPage,
+  FootprintMapCity,
+  FootprintMapData,
+  FootprintMapLocation,
+  FootprintMapProvince,
+  FootprintMedia,
+  FootprintMediaKind,
+  FootprintPlaceSearchResult,
+  MediaAsset,
+} from './footprints.js';
+
+export type { CreateJournalInput, Journal, JournalListPage } from './journals.js';

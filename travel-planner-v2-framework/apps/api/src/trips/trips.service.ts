@@ -1,10 +1,12 @@
+import { isDeepStrictEqual } from 'node:util';
 import { validateSchedule } from '@travel/shared/recommendation-engine';
-import { ProposalReader } from '../recommendations/proposal.repository';
+import { ProposalReader } from './proposal-reader';
 import type { PlanningInput, ScheduleDay } from '@travel/shared' with {
   'resolution-mode': 'import',
 };
 import { Injectable } from '@nestjs/common';
 import { ApiError } from '../common/api-error';
+import { validateSchedule as validateProposalSchedule } from '../recommendations/rule-planner';
 import { TripCatalog } from './trip-catalog';
 import { TripRepository } from './trip.repository';
 import type {
@@ -75,7 +77,7 @@ export class TripsService {
         throw new ApiError('UNASSIGNED_PLACES', '仍有未安排景点，请增加天数或减少景点', 422, {
           placeIds: proposal.unassignedPlaceIds,
         });
-      await this.checkSchedule(current, proposal.days);
+      await this.checkSchedule(current, proposal.days, 'proposal');
       // 目录校验可能耗时，在实际写入前再次核对方案有效期。
       await this.proposals.getOwnedProposal(proposalId, ownerId);
       return { ...current, status: 'planned', days: structuredClone(proposal.days) };
@@ -85,18 +87,49 @@ export class TripsService {
     return this.repository.mutate(ownerId, id, expectedRevision, async (current) => {
       if (current.status !== 'planned')
         throw new ApiError('INVALID_SCHEDULE', '请先确认推荐方案', 422);
-      if (days.some((day) => day.items.some((item) => item.travelTimeSource === 'provider')))
+      const scheduleChanged = !isDeepStrictEqual(current.days, days);
+      const editedDays = scheduleChanged
+        ? days.map((day, index) =>
+            isDeepStrictEqual(day, current.days[index]) ? { date: day.date, items: [] } : day,
+          )
+        : days;
+      if (editedDays.some((day) => day.items.some((item) => item.travelTimeSource === 'provider')))
         throw new ApiError('INVALID_SCHEDULE', '当前未接路线服务，不能标记为实时交通', 422);
-      await this.checkSchedule(current, days);
+      const expected = new Set(current.planningInput.selectedPlaceIds);
+      for (const day of days) {
+        for (const item of day.items) {
+          if (!expected.delete(item.placeId))
+            throw new ApiError('INVALID_SCHEDULE', '安排需覆盖所有已选景点且不能重复', 422);
+        }
+      }
+      if (expected.size)
+        throw new ApiError('INVALID_SCHEDULE', '安排需覆盖所有已选景点且不能重复', 422);
+
+      await this.checkSchedule(
+        {
+          ...current,
+          planningInput: {
+            ...current.planningInput,
+            selectedPlaceIds: editedDays.flatMap((day) => day.items.map(({ placeId }) => placeId)),
+          },
+        },
+        editedDays,
+      );
       return { ...current, days: structuredClone(days) };
     });
   }
-  private async checkSchedule(current: Trip, days: ScheduleDay[]) {
+  private async checkSchedule(
+    current: Trip,
+    days: ScheduleDay[],
+    source: 'proposal' | 'manual' = 'manual',
+  ) {
     if (!current.planningInput.startDate || !current.planningInput.endDate)
       throw new ApiError('INVALID_SCHEDULE', '缺少完整日期', 422);
     const places = await this.catalog.getCityPlaces(current.planningInput.cityId);
     try {
-      validateSchedule(places, current.planningInput as PlanningInput, days);
+      const input = current.planningInput as PlanningInput;
+      if (source === 'proposal') validateProposalSchedule(input, places, days);
+      else validateSchedule(places, input, days);
     } catch {
       throw new ApiError(
         'INVALID_SCHEDULE',

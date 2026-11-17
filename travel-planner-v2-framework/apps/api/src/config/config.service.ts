@@ -9,6 +9,7 @@ export interface AppConfig {
   corsOrigins: string[];
   databaseConnectionTimeoutMs: number;
   databaseQueryTimeoutMs: number;
+  mediaStorageDir: string;
   authTokenSecret: string;
   amapWebServiceKey: string;
 }
@@ -66,6 +67,9 @@ export function readConfig(env: NodeJS.ProcessEnv): AppConfig {
       env.DB_QUERY_TIMEOUT_MS ?? '10000',
       'DB_QUERY_TIMEOUT_MS',
       60000,
+    ),
+    mediaStorageDir: resolve(
+      env.MEDIA_STORAGE_DIR?.trim() || resolve(__dirname, '../../../../apps/api/.data/media'),
     ),
     authTokenSecret,
     amapWebServiceKey: env.AMAP_WEB_SERVICE_KEY?.trim() ?? '',
