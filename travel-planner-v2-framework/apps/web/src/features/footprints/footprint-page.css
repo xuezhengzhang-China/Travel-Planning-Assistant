@@ -1,4 +1,7 @@
-/* 足迹页自身的补充样式；地图组件样式在 footprint-map.css 里，互不重叠。 */
+/*
+ * 足迹页自身的补充样式。
+ * 地图样式分别在 atlas-map.css（V1 的 .atlas-*，本页在用）与 footprint-map.css（D 的组件）。
+ */
 
 .footprint-page-summary {
   margin: 4px 0 12px;
@@ -13,43 +16,15 @@
   line-height: 1.7;
 }
 
+.footprint-page-note strong {
+  color: #6e8069;
+}
+
 .footprint-page-note code {
   padding: 1px 5px;
   border-radius: 5px;
   background: #f1f4ee;
   font-size: 10px;
-}
-
-.footprint-province-list {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.footprint-province-list button {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid #e5ebdf;
-  border-radius: 15px;
-  background: #fff;
-  color: #35472f;
-  text-align: left;
-}
-
-.footprint-province-list strong {
-  font-size: 14px;
-}
-
-.footprint-province-list span {
-  color: #9aa397;
-  font-size: 10px;
-  white-space: nowrap;
 }
 
 .footprint-breadcrumb {

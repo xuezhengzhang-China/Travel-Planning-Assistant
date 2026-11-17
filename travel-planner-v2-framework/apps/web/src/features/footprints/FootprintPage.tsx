@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Coordinates, FootprintMapData, FootprintMapProvince } from '@travel/shared';
+import type { FootprintMapData } from '@travel/shared';
 import { ApiError, type ApiClient } from '../../lib/api-client';
-import FootprintMap from './FootprintMap';
+import AtlasMap, { NATIONAL_ADCODE } from './AtlasMap';
 import './footprint-page.css';
 
 function mapErrorMessage(error: unknown): string {
@@ -13,43 +13,39 @@ function mapErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : '足迹数据加载失败，请重试。';
 }
 
+interface SelectedProvince {
+  adcode: string;
+  name: string;
+}
+
 export interface FootprintPageProps {
   client: ApiClient;
 }
 
 /**
- * 旅行足迹页。
+ * 旅行足迹页：行政区地图（DataV 自绘，**不需要高德 Key**）。
  *
- * 后端 `GET /api/footprints/map` 是**两级**返回：
- * - 不传 `provinceAdcode`：给 `provinces`（省份汇总），`cities` 与 `locations` 都为空；
- * - 传 `provinceAdcode`：给该省的 `cities` 与 `locations`，`provinces` 为空。
+ * 数据只拉一次：`GET /api/footprints/map?includeLocations=true`（全国点位）。
+ * 之所以不按省份分别请求：没有高德 Key 时足迹的 `provinceAdcode` 是 null，
+ * 服务端按 `provinceAdcode` 过滤会返回空。所以省级视图的筛选改由 `AtlasMap`
+ * 按「坐标落在哪个行政区多边形里」在前端完成。
  *
- * 所以页面按「全国省份列表 → 单省城市 + 地图」做下钻，而不是一次拉全部。
- * 地图渲染交给 `FootprintMap`（缺 Key、加载失败、空态都由它自己处理）。
- *
- * 「记录到访」表单尚未接入，地图拾取的坐标只回显、不写库。
+ * 代价：服务端已有的 `provinces` / `cities` 聚合暂时不用（那套依赖 adcode）。
+ * 配好高德 Key 之后可以切回服务端聚合，届时删掉 `AtlasMap` 里的前端归属即可。
  */
 export default function FootprintPage({ client }: FootprintPageProps) {
   const [data, setData] = useState<FootprintMapData | null>(null);
-  const [province, setProvince] = useState<FootprintMapProvince | null>(null);
+  const [province, setProvince] = useState<SelectedProvince | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [picked, setPicked] = useState<Coordinates | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError(null);
-    // 地图拾取的是当前省份下的坐标，换省后清空，避免误以为属于新省份。
-    setSelected(null);
-    setPicked(null);
-    const query = province
-      ? `/footprints/map?provinceAdcode=${province.provinceAdcode}&includeLocations=true`
-      : '/footprints/map?includeLocations=true';
     client
-      .request<FootprintMapData>(query)
+      .request<FootprintMapData>('/footprints/map?includeLocations=true')
       .then((result) => {
         if (active) setData(result);
       })
@@ -62,10 +58,11 @@ export default function FootprintPage({ client }: FootprintPageProps) {
     return () => {
       active = false;
     };
-  }, [client, province, refreshToken]);
+  }, [client, refreshToken]);
 
   const reload = useCallback(() => setRefreshToken((value) => value + 1), []);
-  const summary = data?.summary;
+  const locations = data?.locations ?? [];
+  const checkIns = data?.summary.checkInCount ?? 0;
 
   return (
     <section className="sub-page">
@@ -86,67 +83,34 @@ export default function FootprintPage({ client }: FootprintPageProps) {
         </p>
       )}
 
-      {!province && (
-        <>
-          <p className="footprint-page-summary">
-            {summary
-              ? `${summary.provinceCount} 个省份 · ${summary.cityCount} 个城市 · ${summary.checkInCount} 次打卡`
-              : '正在读取足迹汇总…'}
-          </p>
-          {!loading && (data?.provinces.length ?? 0) === 0 && (
-            <p className="footprint-page-note">还没有足迹记录，先记录一条到访吧。</p>
-          )}
-          <ul className="footprint-province-list">
-            {(data?.provinces ?? []).map((item) => (
-              <li key={item.provinceAdcode}>
-                <button type="button" onClick={() => setProvince(item)}>
-                  <strong>{item.provinceName}</strong>
-                  <span>
-                    {item.cityCount} 个城市 · {item.locationCount} 个位置 · {item.checkInCount}{' '}
-                    次打卡
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="footprint-page-note">
-            点选省份后才会显示该省的城市与地图位置（后端省级视图才返回 cities 与 locations）。
-          </p>
-        </>
+      {province && (
+        <div className="footprint-breadcrumb">
+          <button type="button" onClick={() => setProvince(null)}>
+            ← 全国
+          </button>
+          <strong>{province.name}</strong>
+        </div>
       )}
 
-      {province && (
-        <>
-          <div className="footprint-breadcrumb">
-            <button type="button" onClick={() => setProvince(null)}>
-              ← 全部省份
-            </button>
-            <strong>{province.provinceName}</strong>
-          </div>
+      <p className="footprint-page-summary">
+        {loading ? '正在读取足迹…' : `共 ${checkIns} 次打卡 · ${locations.length} 个位置`}
+      </p>
 
-          <FootprintMap
-            markers={data?.locations ?? []}
-            litCities={data?.cities ?? []}
-            selectedVisitedPlaceId={selected}
-            loading={loading}
-            errorMessage={error}
-            onSelectVisitedPlace={setSelected}
-            onPickLocation={(coordinates) => setPicked(coordinates)}
-            height={360}
-          />
+      <AtlasMap
+        adcode={province?.adcode ?? NATIONAL_ADCODE}
+        locations={locations}
+        onSelectRegion={province ? undefined : (adcode, name) => setProvince({ adcode, name })}
+      />
 
-          {picked && (
-            <p className="footprint-page-note">
-              已拾取坐标：{picked.longitude.toFixed(5)}, {picked.latitude.toFixed(5)}
-              （「记录到访」表单将在下一步接入）。
-            </p>
-          )}
-        </>
+      {!loading && locations.length === 0 && (
+        <p className="footprint-page-note">
+          还没有足迹记录，所以地图上没有点位。接上「记录到访」表单后就能直接在地图上添加。
+        </p>
       )}
 
       <p className="footprint-page-note">
-        数据来自 <code>GET /api/footprints/map</code>。未配置浏览器地图 Key
-        时只显示列表、不显示底图； 足迹的省市归属需要服务端配置高德 Web 服务 Key。
+        地图数据来自 DataV.GeoAtlas，按坐标在前端判断所属行政区，因此
+        <strong>不需要高德 Key 也能点亮省份</strong>。地址文字与 POI 搜索仍依赖服务端地图 Key。
       </p>
       <p className="profile-version">WANDER · TRAVEL PLANNER</p>
     </section>
