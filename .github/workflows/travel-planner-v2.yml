@@ -1,0 +1,50 @@
+name: Suixinxing checks
+on:
+  push:
+    paths:
+      [
+        "travel-planner-v2-framework/**",
+        ".github/workflows/travel-planner-v2.yml",
+      ]
+  pull_request:
+    paths:
+      [
+        "travel-planner-v2-framework/**",
+        ".github/workflows/travel-planner-v2.yml",
+      ]
+  workflow_dispatch:
+jobs:
+  quality-and-migrations:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: travel-planner-v2-framework
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: travel_planner
+          POSTGRES_USER: travel_planner
+          POSTGRES_PASSWORD: ci-password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U travel_planner -d travel_planner"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://travel_planner:ci-password@localhost:5432/travel_planner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: travel-planner-v2-framework/package-lock.json
+      - run: npm ci
+      - run: npm run db:migrate
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run test --workspaces --if-present
+      - run: node apps/api/scripts/verify-trip-persistence.cjs
+      - run: node apps/api/scripts/verify-catalog-migration.cjs

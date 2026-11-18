@@ -1,0 +1,161 @@
+/* 出发提醒与行李清单（TripPreparation）的样式。 */
+
+.trip-preparation {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #e9ecdf;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.trip-preparation h3 {
+  margin: 0 0 12px;
+  color: #304b39;
+  font-size: 15px;
+}
+
+.prep-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.prep-check input {
+  accent-color: var(--green);
+}
+
+.prep-block {
+  margin-top: 12px;
+}
+
+.prep-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.prep-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.prep-row input[type='time'] {
+  padding: 6px 8px;
+  border: 1px solid #dce4d3;
+  border-radius: 10px;
+  color: #263b30;
+  font-size: 12px;
+}
+
+.prep-caption {
+  margin: 0 0 8px;
+  color: #91a18d;
+  font-size: 11px;
+}
+
+.prep-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prep-list li {
+  border-bottom: 1px solid #f1f4ee;
+  padding-bottom: 6px;
+}
+
+.prep-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.prep-list label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.prep-list input {
+  margin-top: 3px;
+  accent-color: var(--green);
+}
+
+.prep-list span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prep-list strong {
+  color: #304b39;
+  font-size: 12px;
+}
+
+.prep-list small {
+  color: #91a18d;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.prep-list li.done strong {
+  color: #9aa397;
+  text-decoration: line-through;
+}
+
+.prep-export {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid #dce4d3;
+  border-radius: 10px;
+  background: #fff;
+  color: #56685a;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.prep-message {
+  margin: 10px 0 0;
+  color: #9b3b32;
+  font-size: 11px;
+}
+
+/* 只读查看模式下的行程标题 */
+.trip-view-title {
+  margin: 0;
+  color: #294333;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+/* 向导第一步：城市搜索 + 定位 */
+.city-field input[type='search'] {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 12px;
+}
+
+.locate-button {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-size: 11px;
+  cursor: pointer;
+}

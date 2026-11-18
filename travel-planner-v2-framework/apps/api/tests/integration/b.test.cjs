@@ -44,7 +44,7 @@ test('real PostgreSQL: migrations, idempotent seed, directory SQL, HTTP persiste
       assert.ok((await admin.query("SELECT to_regclass('users') AS name")).rows[0].name);
       assert.equal((await admin.query("SELECT to_regclass('places') AS name")).rows[0].name, null);
       await runner(migrationOptions);
-      assert.equal((await admin.query('SELECT count(*) FROM pgmigrations')).rows[0].count, '3');
+      assert.equal((await admin.query('SELECT count(*) FROM pgmigrations')).rows[0].count, '7');
       await runner(migrationOptions);
     });
     await t.test('seed twice without duplicates and keep user creation separate', async () => {

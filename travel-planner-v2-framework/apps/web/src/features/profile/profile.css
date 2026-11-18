@@ -1,0 +1,179 @@
+/*
+ * 「我的」页的补充样式。
+ *
+ * V1 的 `.settings-card button` 会把卡片内所有按钮排成整行菜单（高 48px、带下边框），
+ * 而「修改昵称」表单里的「取消 / 保存」是两个并排的小按钮，因此在下面按更高优先级覆盖。
+ */
+
+.profile-edit {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.profile-alert,
+.profile-notice {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.profile-alert {
+  background: #fdeceb;
+  color: #9b3b32;
+}
+
+.profile-notice {
+  background: #eaf3e6;
+  color: #3f6b39;
+}
+
+.profile-form label {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  color: #56685a;
+  font-size: 11px;
+}
+
+.profile-form input {
+  padding: 11px 14px;
+  border: 1px solid #dce4d3;
+  border-radius: 12px;
+  background: #fff;
+  color: #263b30;
+  font-size: 13px;
+}
+
+.profile-form input:disabled {
+  background: #f4f6f1;
+  color: #9aa397;
+}
+
+.profile-hint {
+  margin: 8px 0 0;
+  color: #9aa397;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.profile-hint code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #f1f4ee;
+  font-size: 10px;
+}
+
+.profile-form .profile-actions {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 14px;
+}
+
+.profile-form .profile-actions button {
+  display: inline-flex;
+  width: auto;
+  height: 40px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dce4d3;
+  border-radius: 12px;
+  background: #fff;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.profile-form .profile-actions button[type='submit'] {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+
+.profile-form .profile-actions button:disabled {
+  opacity: 0.6;
+}
+
+/* 偏好设置：字体字号 / 主题颜色 */
+.pref-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 4px;
+  border-bottom: 1px solid #eef2ea;
+  color: #56685a;
+  font-size: 12px;
+}
+
+.pref-row:last-child {
+  border-bottom: 0;
+}
+
+.pref-icon {
+  width: 20px;
+  text-align: center;
+  color: #91a18d;
+}
+
+.pref-label {
+  flex: 1;
+}
+
+.pref-row select {
+  padding: 6px 10px;
+  border: 1px solid #dce4d3;
+  border-radius: 10px;
+  background: #fff;
+  color: #263b30;
+  font-size: 12px;
+}
+
+.theme-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-swatch {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.theme-swatch.active {
+  border-color: #263b30;
+}
+
+/* 主题颜色：覆盖外壳的 --green 等强调色变量 */
+:root[data-theme='blue'] .app-shell {
+  --green: #4a7ba6;
+  --green-dark: #2f4d66;
+  --green-light: #e8f0f5;
+}
+
+:root[data-theme='orange'] .app-shell {
+  --green: #c88a4a;
+  --green-dark: #7a5230;
+  --green-light: #f5ecdf;
+}
+
+:root[data-theme='pink'] .app-shell {
+  --green: #b56a8c;
+  --green-dark: #6f3f56;
+  --green-light: #f5e6ec;
+}
+
+/* 字号：小/大档缩放外壳基础字号（按钮与输入框用 font:inherit 会跟随） */
+:root[data-font='small'] .app-shell {
+  font-size: 14px;
+}
+
+:root[data-font='large'] .app-shell {
+  font-size: 17px;
+}

@@ -1,0 +1,210 @@
+/* 旅行助手首页（HomePage）与城市名片（CityPostcard）的样式。 */
+
+.home-page {
+  min-height: calc(100vh - 160px);
+  padding: 20px 22px 32px;
+}
+
+.city-section,
+.city-places {
+  margin-top: 26px;
+}
+
+/* 城市卡片网格 */
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.city-card-button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.city-card-button:focus-visible {
+  outline: 2px solid var(--green);
+  border-radius: 20px;
+}
+
+/* 城市名片 */
+.city-postcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 150px;
+  padding: 18px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.city-postcard-compact {
+  width: 72px;
+  height: 72px;
+  border-radius: 13px;
+  padding: 8px;
+  flex-shrink: 0;
+}
+
+.city-postcard-symbol {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.city-postcard-compact .city-postcard-symbol {
+  font-size: 24px;
+  text-align: center;
+}
+
+.city-postcard-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #39483e;
+}
+
+.city-postcard-tagline {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #53665a;
+}
+
+.city-postcard-detail {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #65756a;
+}
+
+/* 城市景点列表 */
+.place-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.place-item {
+  padding: 12px 14px;
+  border: 1px solid #e9ecdf;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.place-item strong {
+  display: block;
+  color: #304b39;
+  font-size: 14px;
+}
+
+.place-item small {
+  display: block;
+  margin-top: 2px;
+  color: #91a18d;
+  font-size: 11px;
+}
+
+.place-themes {
+  display: inline-block;
+  margin-top: 6px;
+  color: #70836f;
+  font-size: 11px;
+}
+
+.place-item p {
+  margin: 4px 0 0;
+  color: #8a978b;
+  font-size: 11px;
+}
+
+/* 定位结果与旅行灵感对话框 */
+.located-city {
+  margin: 12px 0 0;
+  color: #304b39;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.located-map {
+  margin-top: 22px;
+}
+
+.chat-panel {
+  margin-top: 12px;
+  border: 1px solid #e9ecdf;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.chat-messages {
+  padding: 12px;
+  min-height: 80px;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-hint {
+  margin: 0;
+  color: #9aa397;
+  font-size: 11px;
+}
+
+.chat-message {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-width: 85%;
+}
+
+.chat-message.is-user {
+  align-self: flex-end;
+  background: var(--green);
+  color: #fff;
+}
+
+.chat-message.is-assistant {
+  align-self: flex-start;
+  background: #f0f2e7;
+  color: #304b39;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid #f1f4ee;
+}
+
+.chat-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #e5ebdf;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.chat-input-row button {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}

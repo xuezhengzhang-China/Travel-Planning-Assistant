@@ -1,5 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { Buffer } = require('node:buffer');
+const { resolve } = require('node:path');
 const { readConfig } = require('../dist/config/config.service.js');
 
 const database = { DATABASE_URL: 'postgresql://test:test@127.0.0.1:5432/test' };
@@ -13,6 +15,27 @@ test('configuration has explicit defaults and trims CORS origins', () => {
   assert.deepEqual(config.corsOrigins, ['http://localhost:5173', 'https://example.com']);
   assert.equal(config.databaseConnectionTimeoutMs, 2000);
   assert.equal(config.databaseQueryTimeoutMs, 10000);
+  assert.equal(config.mediaStorageDir, resolve(__dirname, '../.data/media'));
+  assert.equal(config.amapWebServiceKey, '');
+  assert.ok(Buffer.byteLength(config.authTokenSecret, 'utf8') >= 32);
+});
+
+test('media storage directory can be configured and blank values use the private default', () => {
+  assert.equal(
+    readConfig({ ...database, MEDIA_STORAGE_DIR: 'private-media' }).mediaStorageDir,
+    resolve(process.cwd(), 'private-media'),
+  );
+  assert.equal(
+    readConfig({ ...database, MEDIA_STORAGE_DIR: '   ' }).mediaStorageDir,
+    resolve(__dirname, '../.data/media'),
+  );
+});
+
+test('AMap Web Service key is read from the server-only configuration', () => {
+  assert.equal(
+    readConfig({ ...database, AMAP_WEB_SERVICE_KEY: '  server-key  ' }).amapWebServiceKey,
+    'server-key',
+  );
 });
 
 test('missing or invalid database URL is rejected without echoing credentials', () => {
