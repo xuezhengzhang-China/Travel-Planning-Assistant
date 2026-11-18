@@ -1,0 +1,1021 @@
+{
+  "version": "tdd-core.v1",
+  "authoredOn": "2026-11-17",
+  "status": "authored-not-executed",
+  "total": 100,
+  "countingRule": "One logical ID counts once; internal assertions and parameter combinations do not inflate N. Blocked/skipped/not-run cases remain in the denominator.",
+  "groups": {
+    "V": 20,
+    "C": 12,
+    "P": 22,
+    "S": 12,
+    "R": 10,
+    "G": 6,
+    "M": 10,
+    "H": 8
+  },
+  "scope": "B core behavior only; no A/C/D joint certification or real external-provider certification",
+  "initialObservedPassRate": null,
+  "cases": [
+    {
+      "id": "V01",
+      "title": "合法输入规范化主题且保留选择顺序",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V02",
+      "title": "同日行程包含首尾并返回一个日期",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V03",
+      "title": "闰日及跨月跨年日历递增正确",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V04",
+      "title": "不存在及非标准格式的日期被拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V05",
+      "title": "倒置日期范围被拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V06",
+      "title": "日期范围30天接受31天拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V07",
+      "title": "1900和2100边界接受范围外拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V08",
+      "title": "UUID大小写规范化与非法格式拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V09",
+      "title": "一个景点接受空选择拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V10",
+      "title": "120个不同景点接受121个拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V11",
+      "title": "重复及规范化后重复景点被拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V12",
+      "title": "主题枚举去重排序且未知主题拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V13",
+      "title": "主题数组类型与20项上限正确",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V14",
+      "title": "三种节奏接受未知节奏拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V15",
+      "title": "三交通方式接受未知交通拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V16",
+      "title": "客户端ownerId及任意prompt未知字段被拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V17",
+      "title": "仅接受GCJ-02坐标系",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V18",
+      "title": "经纬度极值接受越界非有限数和字符串拒绝",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V19",
+      "title": "分页默认值合法上界和非法数值",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "V20",
+      "title": "多值查询与错误类型拒绝且输入对象不可变",
+      "stage": "T1",
+      "layer": "unit",
+      "method": "boundary-values; equivalence-classes; table-driven",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/validation.cases.cjs",
+      "planSection": "3.1"
+    },
+    {
+      "id": "C01",
+      "title": "真实目录按省市层级筛选",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C02",
+      "title": "城市按父省筛选且不匹配父级返回空",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C03",
+      "title": "目的地关键词和空结果分页结构",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C04",
+      "title": "未知城市和省份不能用作景点查询城市",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C05",
+      "title": "景点查询只返回选定城市",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C06",
+      "title": "景点中文关键词与类别组合过滤",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C07",
+      "title": "主题匹配排序同分ID稳定且不排除未命中景点",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C08",
+      "title": "类别过滤与主题排序先于分页",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C09",
+      "title": "空页仍保留筛选后的真实总数",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C10",
+      "title": "详情字段完整有效未知UUID返回404",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C11",
+      "title": "SQL注入字符串按字面量处理且目录未变",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "C12",
+      "title": "批量查询保留选择顺序并拒绝未知跨城景点",
+      "stage": "T2",
+      "layer": "postgres",
+      "method": "real-SQL; directory-contract; filtering-before-pagination",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/catalog.cases.cjs",
+      "planSection": "3.2"
+    },
+    {
+      "id": "P01",
+      "title": "两天三景点基准日程完整合法",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P02",
+      "title": "relaxed日上限为两个景点",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P03",
+      "title": "standard日上限为三个景点",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P04",
+      "title": "intensive日上限为四个景点",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P05",
+      "title": "三节奏首站开始时间符合契约",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P06",
+      "title": "所有站点结束时间均在当日预算内",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P07",
+      "title": "站间交通分钟实际计入日程",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P08",
+      "title": "三节奏的休息分钟计入第二站开始时间",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P09",
+      "title": "游玩交通休息恰好用尽预算仍可安排",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P10",
+      "title": "时间预算多一分钟不可强行塞入",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P11",
+      "title": "首站交通为零且不冒充已核实出发段",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P12",
+      "title": "固定种子组合不重复不捏造不丢失景点",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P13",
+      "title": "已安排和未安排集合互斥且并集等于选择",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P14",
+      "title": "未安排景点返回ID与明确警告",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P15",
+      "title": "过长景点不会阻塞后面的可安排项",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P16",
+      "title": "所有日期含空日保留且每日位置从零连续",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P17",
+      "title": "未核实开放时间时明确返回警告",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P18",
+      "title": "相同依赖下结果确定且不修改输入数据",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P19",
+      "title": "缺失路线但有日期可改日并给出警告",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P20",
+      "title": "必要路线未知时503而不是假称确定排不下",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P21",
+      "title": "120景点30天密集节奏全部覆盖且预算有效",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "P22",
+      "title": "日程验证拒绝重叠遗漏重复非法时间位置和伪造ID",
+      "stage": "T3",
+      "layer": "unit",
+      "method": "pure-function; boundary-values; seeded-properties",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/planner.cases.cjs",
+      "planSection": "3.3"
+    },
+    {
+      "id": "S01",
+      "title": "初始库向前升级且已应用迁移不重复执行",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S02",
+      "title": "种子幂等不创建用户且保留人工景点",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S03",
+      "title": "重新生成独立方案ID且保存规范化输入快照",
+      "stage": "T4",
+      "layer": "mixed",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S04",
+      "title": "固定生成时间30分钟有效期和毫秒到期边界",
+      "stage": "T4",
+      "layer": "mixed",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S05",
+      "title": "所有者读取到完整原方案",
+      "stage": "T4",
+      "layer": "mixed",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S06",
+      "title": "未知与他人方案均404且不暴露内容",
+      "stage": "T4",
+      "layer": "mixed",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S07",
+      "title": "修改生成响应或读取副本不影响保存方案",
+      "stage": "T4",
+      "layer": "mixed",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S08",
+      "title": "真实应用连接池重启后仍读同一保存方案",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S09",
+      "title": "无效输入和缺失必要路线均不向真实库写方案",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S10",
+      "title": "真实插入异常通用500且没有部分方案",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S11",
+      "title": "种子失败整体回滚且外键和所有者级联生效",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "S12",
+      "title": "生成推荐只保存Proposal不写正式Trip",
+      "stage": "T4",
+      "layer": "postgres",
+      "method": "ownership; fixed-clock; persistence; transaction-faults",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/proposals.cases.cjs",
+      "planSection": "3.4"
+    },
+    {
+      "id": "R01",
+      "title": "步行请求路径坐标和cost参数正确",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R02",
+      "title": "驾车请求路径和耗时解析正确",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R03",
+      "title": "公交使用citycode并可从两点逆地理分别取得",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R04",
+      "title": "路线秒数向上取整为正整数分钟",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R05",
+      "title": "空路径和无效耗时永不转换成成功路线",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R06",
+      "title": "HTTP业务状态和损坏JSON均导致受控失败",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R07",
+      "title": "地图超时取消及总生成截止有效且不保存",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R08",
+      "title": "无Key近距离步行采用明确警告的合理估算",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R09",
+      "title": "无Key驾车公交和远距离步行均不伪造路线",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "R10",
+      "title": "有向路线复用且调用预算耗尽不保存不可靠方案",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G01",
+      "title": "逆地理采用供应商返回的有效地点描述",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G02",
+      "title": "登记区县映射平台城市及城市级adcode",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G03",
+      "title": "未登记区县不按前缀猜城市",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G04",
+      "title": "city为空数组但地址有效仍可完成解析",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G05",
+      "title": "缺Key无名称及业务错误不能伪造地点",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "G06",
+      "title": "GPS转换发送源坐标并校验实际返回坐标",
+      "stage": "T5",
+      "layer": "http-fixture",
+      "method": "actual-adapter; local-HTTP; fault-injection",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/geo.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M01",
+      "title": "关闭模型不调用网络且规则方案仍完整",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M02",
+      "title": "模型启用缺配置或不安全地址启动前拒绝",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M03",
+      "title": "实际模型请求含严格Schema与完整选择数量",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M04",
+      "title": "模型完整原景点排列可被采用为候选",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M05",
+      "title": "漏项重复编造景点与额外字段被拒绝",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M06",
+      "title": "非法JSON空内容拒绝和截断被拒绝",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M07",
+      "title": "HTTP网络和超时均回退且不泄漏供应商信息",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M08",
+      "title": "模型候选必须用实际路线重新计算预算",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M09",
+      "title": "只有真实改善才采用且输入快照保留原顺序",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "M10",
+      "title": "候选路线失败或非法建议回退时基线方案仍可保存",
+      "stage": "T6",
+      "layer": "http-fixture",
+      "method": "structured-output; fault-injection; candidate-replanning",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/model.cases.cjs",
+      "planSection": "3.5"
+    },
+    {
+      "id": "H01",
+      "title": "目的地HTTP筛选分页和校验错误符合契约",
+      "stage": "T7",
+      "layer": "postgres",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H02",
+      "title": "景点HTTP组合筛选主题排序和空页总数",
+      "stage": "T7",
+      "layer": "postgres",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target", "dedicated-postgresql-test-db"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H03",
+      "title": "景点详情HTTP完整资源与400和404",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H04",
+      "title": "路线HTTP来源警告和200及400及503正确",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H05",
+      "title": "逆地理HTTP明确城市空值和异常契约",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H06",
+      "title": "推荐HTTP生成完整方案且拒绝伪造所有者",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H07",
+      "title": "生产B身份默认拒绝匿名伪造和自报身份",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    },
+    {
+      "id": "H08",
+      "title": "HTTP错误有code和message且未知SQL异常不泄漏",
+      "stage": "T7",
+      "layer": "http",
+      "method": "actual-NestJS; HTTP-contract; identity-matrix",
+      "requires": ["compiled-target"],
+      "file": "tests/tdd/http.cases.cjs",
+      "planSection": "3.6"
+    }
+  ]
+}
