@@ -157,7 +157,7 @@ function TripEditor({
       provinces={provinces}
       onCityChange={onCityChange}
       reverseGeocode={api.reverseGeocode}
-      initialView={initial.trip ? 'trip' : 'wizard'}
+      initialView="wizard"
       initialSchedule={
         resource &&
         initial.trip &&
@@ -577,14 +577,6 @@ export default function TripWorkspace({
                       aria-label={`查看行程${trip.title}`}
                     >
                       查看
-                    </button>
-                    <button
-                      disabled={opening || !places || !!deletion}
-                      className="workspace-edit"
-                      onClick={() => void open(trip.id)}
-                      aria-label={`继续编辑${trip.title}`}
-                    >
-                      继续编辑 →
                     </button>
                   </div>
                 </article>

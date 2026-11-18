@@ -10,6 +10,7 @@ import TripOuting from './TripOuting';
 import TripPlaceCard from './TripPlaceCard';
 import TripTools from './TripTools';
 import TripTransitSteps from './TripTransitSteps';
+import TripPreparation from './TripPreparation';
 import { bookingLabels, readBookings, type BookingStatus } from './trip-booking';
 import { destinationDate, readVisited } from './trip-day';
 import type { TripDraftApi } from './trip-draft-client';
@@ -1021,6 +1022,16 @@ export default function TripDetail({
             setData({ trip: updated, places });
             notifyHost(onSaved, updated);
           }}
+        />
+      )}
+      {data?.trip.status === 'planned' && (
+        <TripPreparation
+          key={data.trip.id}
+          destination={city?.name ?? ''}
+          startDate={data.trip.planningInput.startDate ?? ''}
+          endDate={data.trip.planningInput.endDate ?? ''}
+          themes={data.trip.planningInput.themes}
+          transport={data.trip.planningInput.transportMode}
         />
       )}
     </main>

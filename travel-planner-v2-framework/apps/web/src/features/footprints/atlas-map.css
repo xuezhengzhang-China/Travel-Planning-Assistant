@@ -197,8 +197,29 @@
   width: 100%;
   background: #f5f7ef;
   border-radius: 14px;
-  touch-action: pan-y;
+  touch-action: none;
   user-select: none;
+  cursor: grab;
+}
+.atlas-svg:active {
+  cursor: grabbing;
+}
+.atlas-zoom-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.atlas-zoom-toolbar button {
+  padding: 6px 12px;
+  border: 1px solid #d7decc;
+  border-radius: 10px;
+  background: #fff;
+  color: #526548;
+  font-size: 13px;
+  cursor: pointer;
+}
+.atlas-zoom-toolbar button:hover {
+  background: #eef3df;
 }
 .atlas-region {
   fill: #e5e8df;
