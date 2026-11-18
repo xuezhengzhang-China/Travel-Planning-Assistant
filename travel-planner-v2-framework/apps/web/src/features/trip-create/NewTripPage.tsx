@@ -1,7 +1,7 @@
 import { rankPlaces, generatePlan, scheduleGroups } from '@travel/shared/recommendation-engine';
 import type { Destination, PlanningInput, Proposal, ScheduleDay } from '@travel/shared';
 import { toDraftPlanningInput } from './trip-draft-client';
-import { tripErrorMessage } from './trip-errors';
+import { planningErrorMessage, tripErrorMessage } from './trip-errors';
 import { useEffect, useRef, useState } from 'react';
 import { beijing, listPlaces, type Attraction } from '../../data/beijing';
 import {
@@ -313,7 +313,7 @@ export default function NewTripPage({
       });
       setView('trip');
     } catch (error) {
-      setError(tripErrorMessage(error));
+      setError(planningErrorMessage(error, draft.transport));
     } finally {
       setGenerating(false);
     }

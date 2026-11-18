@@ -261,9 +261,7 @@ export class FootprintsService {
 
         const keptMedia = removeMedia ? [] : oldMedia.filter((media) => !removedIds.has(media.id));
         if (keptMedia.length + files.length > MAX_FOOTPRINT_MEDIA) {
-          throw new BadRequestException(
-            `A footprint can have at most ${MAX_FOOTPRINT_MEDIA} media files`,
-          );
+          throw new BadRequestException(`一条足迹最多 ${MAX_FOOTPRINT_MEDIA} 个附件，请减少后重试`);
         }
 
         const media: MediaRow[] = [...keptMedia];

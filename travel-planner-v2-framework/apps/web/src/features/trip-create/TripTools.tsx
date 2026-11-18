@@ -1,5 +1,5 @@
-import { useId, useRef, useState, type FormEvent } from 'react';
-import type { BPlaces, TransportMode, Trip } from '@travel/shared';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
+import type { BPlaces, TransportMode, Trip, TripStateDocument } from '@travel/shared';
 import TripTransitSteps from './TripTransitSteps';
 import './trip-tools.css';
 
@@ -59,29 +59,6 @@ interface SharedDay {
   stops: { startTime: string; place?: { name: string } }[];
 }
 
-function readNotes(key: string): TripNotes {
-  const empty = { stay: { name: '', address: '' }, packing: [] };
-  try {
-    const value = JSON.parse(localStorage.getItem(key) ?? 'null') as Partial<TripNotes> | null;
-    return {
-      stay: {
-        name: typeof value?.stay?.name === 'string' ? value.stay.name : '',
-        address: typeof value?.stay?.address === 'string' ? value.stay.address : '',
-      },
-      packing: Array.isArray(value?.packing)
-        ? value.packing.filter(
-            (item) =>
-              typeof item?.id === 'string' &&
-              typeof item.label === 'string' &&
-              typeof item.packed === 'boolean',
-          )
-        : [],
-    };
-  } catch {
-    return empty;
-  }
-}
-
 function guideUrl(keyword: string) {
   return `https://www.xiaohongshu.com/search_result?${new URLSearchParams({ keyword })}`;
 }
@@ -98,6 +75,8 @@ export default function TripTools({
   onSelectLeg,
   onEdit,
   editDisabled,
+  getState,
+  saveState,
 }: {
   trip: Trip;
   cityName?: string;
@@ -110,16 +89,38 @@ export default function TripTools({
   onSelectLeg: (id: string) => void;
   onEdit: () => void;
   editDisabled: boolean;
+  getState: () => Promise<TripStateDocument>;
+  saveState: (patch: Partial<TripStateDocument>) => Promise<TripStateDocument>;
 }) {
   const panelId = useId();
   const buttons = useRef(new Map<ToolId, HTMLButtonElement>());
   const shareField = useRef<HTMLTextAreaElement>(null);
-  const key = `suixin:trip-tools:${trip.ownerId}:${trip.id}`;
-  const [notes, setNotes] = useState(() => readNotes(key));
+  const [notes, setNotes] = useState<TripNotes>(() => ({
+    stay: { name: '', address: '' },
+    packing: [],
+  }));
   const [stay, setStay] = useState(notes.stay);
   const [packingInput, setPackingInput] = useState('');
   const [active, setActive] = useState<ToolId | null>(null);
   const [feedback, setFeedback] = useState('');
+
+  // 住宿与行李清单存在服务端 trip_state，换设备也能接着用。
+  useEffect(() => {
+    let active = true;
+    getState()
+      .then((state) => {
+        if (!active) return;
+        const loaded = { stay: state.stay, packing: state.packing };
+        setNotes(loaded);
+        setStay(loaded.stay);
+      })
+      .catch(() => {
+        if (active) setFeedback('住宿与行李清单读取失败，改动可能不会保存。');
+      });
+    return () => {
+      active = false;
+    };
+  }, [getState]);
 
   function closePanel() {
     if (active) buttons.current.get(active)?.focus();
@@ -127,16 +128,13 @@ export default function TripTools({
     setFeedback('');
   }
   function saveNotes(update: (current: TripNotes) => TripNotes, message = '') {
-    try {
-      const next = update(readNotes(key));
-      localStorage.setItem(key, JSON.stringify(next));
-      setNotes(next);
-      setFeedback(message);
-      return true;
-    } catch {
-      setFeedback('浏览器暂时无法保存，请重试。');
-      return false;
-    }
+    const next = update(notes);
+    setNotes(next);
+    setFeedback(message);
+    void saveState({ stay: next.stay, packing: next.packing }).catch(() => {
+      setFeedback('保存失败，请检查网络后重试。');
+    });
+    return true;
   }
   function saveStay(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

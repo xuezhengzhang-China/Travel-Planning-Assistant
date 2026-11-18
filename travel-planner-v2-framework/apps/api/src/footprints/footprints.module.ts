@@ -11,5 +11,6 @@ import { FootprintsService } from './footprints.service';
   imports: [ConfigModule, DatabaseModule, AuthModule],
   controllers: [FootprintsController],
   providers: [AmapLocationService, MediaStorageService, FootprintsService],
+  exports: [FootprintsService],
 })
 export class FootprintsModule {}

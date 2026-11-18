@@ -62,17 +62,14 @@ test('journal create input trims text and validates mediaIds', () => {
     validateJournalCreate({ footprintId, body: '带图', mediaIds: [mediaA, mediaB] }).mediaIds,
     [mediaA, mediaB],
   );
-  assert.throws(
-    () => validateJournalCreate({ footprintId, body: '   ' }),
-    /body must not be empty/,
-  );
+  assert.throws(() => validateJournalCreate({ footprintId, body: '   ' }), /正文不能为空/);
   assert.throws(
     () => validateJournalCreate({ footprintId, body: 'x', extra: true }),
-    /Unexpected journal field/,
+    /包含未支持的手账字段/,
   );
   assert.throws(
     () => validateJournalCreate({ footprintId: 'not-a-uuid', body: 'x' }),
-    /footprintId must be a valid UUID/,
+    /footprintId 必须是合法的 UUID/,
   );
   assert.throws(
     () =>
@@ -81,15 +78,15 @@ test('journal create input trims text and validates mediaIds', () => {
         title: 'x'.repeat(MAX_JOURNAL_TITLE_LENGTH + 1),
         body: 'x',
       }),
-    /title must be/,
+    /标题最多/,
   );
   assert.throws(
     () => validateJournalCreate({ footprintId, body: 'x', mediaIds: 'oops' }),
-    /mediaIds must be an array/,
+    /mediaIds 必须是数组/,
   );
   assert.throws(
     () => validateJournalCreate({ footprintId, body: 'x', mediaIds: ['not-a-uuid'] }),
-    /mediaIds must contain valid UUIDs/,
+    /mediaIds 必须是合法的 UUID/,
   );
   assert.throws(
     () =>
@@ -101,11 +98,11 @@ test('journal create input trims text and validates mediaIds', () => {
           (_, index) => `a1111111-1111-4111-8111-${String(index).padStart(12, '0')}`,
         ),
       }),
-    /at most 9/,
+    /最多 9 张图片/,
   );
   assert.throws(
     () => validateJournalCreate({ footprintId, body: 'x', mediaIds: [mediaA, mediaA] }),
-    /must not contain duplicates/,
+    /不能重复/,
   );
 });
 
@@ -120,12 +117,9 @@ test('journal update requires at least one field and keeps null title semantics'
     title: '新标题',
     body: '正文',
   });
-  assert.throws(() => validateJournalUpdate({}), /Provide at least one of title, body or mediaIds/);
-  assert.throws(
-    () => validateJournalUpdate({ body: 'x', footprintId }),
-    /Unexpected journal field/,
-  );
-  assert.throws(() => validateJournalUpdate({ body: '   ' }), /body must not be empty/);
+  assert.throws(() => validateJournalUpdate({}), /至少提供标题、正文或图片中的一项/);
+  assert.throws(() => validateJournalUpdate({ body: 'x', footprintId }), /包含未支持的手账字段/);
+  assert.throws(() => validateJournalUpdate({ body: '   ' }), /正文不能为空/);
 });
 
 test('journal create checks footprint ownership before inserting', async () => {

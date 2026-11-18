@@ -2,12 +2,11 @@ import type {
   BPlaces,
   Proposal,
   PlanningInput,
-  PlaceRecommendationInput,
-  RankedPlace,
   ScheduleDay,
   Place,
   Destination,
   PageResult,
+  TripStateDocument,
 } from '@travel/shared';
 import type {
   CreateTripRequest,
@@ -41,13 +40,11 @@ export interface TripDraftApi {
     signal: AbortSignal,
   ): Promise<BPlaces.RoutePreview>;
   remove(id: string, expectedRevision: number): Promise<void>;
-  recommendPlaces(
-    input: PlaceRecommendationInput,
-  ): Promise<{ items: RankedPlace[]; source: 'rule' }>;
   generateProposal(input: PlanningInput): Promise<Proposal>;
-  getProposal(id: string): Promise<Proposal>;
   applyProposal(id: string, expectedRevision: number, proposalId: string): Promise<Trip>;
   updateSchedule(id: string, expectedRevision: number, days: ScheduleDay[]): Promise<Trip>;
+  getState(id: string): Promise<TripStateDocument>;
+  saveState(id: string, patch: Partial<TripStateDocument>): Promise<TripStateDocument>;
 
   create(input: CreateTripRequest): Promise<Trip>;
   get(id: string): Promise<Trip>;
@@ -163,13 +160,13 @@ export function createTripDraftApi(options: {
         if (items.length >= result.total || !result.items.length) return items;
       }
     },
-    recommendPlaces: (input) => request('/recommendations/places', 'POST', input),
     generateProposal: (input) => request('/recommendations/itinerary', 'POST', input),
-    getProposal: (id) => request('/recommendations/' + encodeURIComponent(id)),
     applyProposal: (id, expectedRevision, proposalId) =>
       request(resource(id) + '/apply-proposal', 'POST', { expectedRevision, proposalId }),
     updateSchedule: (id, expectedRevision, days) =>
       request(resource(id) + '/schedule', 'PUT', { expectedRevision, days }),
+    getState: (id) => request(resource(id) + '/state'),
+    saveState: (id, patch) => request(resource(id) + '/state', 'PUT', patch),
     create: (input) => request('/trips', 'POST', input),
     get: (id) => request(resource(id)),
     list: (page = 1, pageSize = 20) => request(`/trips?page=${page}&pageSize=${pageSize}`),

@@ -11,8 +11,8 @@ import TripPlaceCard from './TripPlaceCard';
 import TripTools from './TripTools';
 import TripTransitSteps from './TripTransitSteps';
 import TripPreparation from './TripPreparation';
-import { bookingLabels, readBookings, type BookingStatus } from './trip-booking';
-import { destinationDate, readVisited } from './trip-day';
+import { bookingLabels, type BookingStatus } from './trip-booking';
+import { destinationDate } from './trip-day';
 import type { TripDraftApi } from './trip-draft-client';
 import { tripErrorMessage } from './trip-errors';
 import { previewScheduleChanges, scheduleWindow } from './trip-schedule-preview';
@@ -56,6 +56,8 @@ function TripSchedule({
   onEdit,
   editDisabled,
   onSaveSchedule,
+  getState,
+  saveState,
 }: {
   trip: Trip;
   places: Place[];
@@ -66,12 +68,13 @@ function TripSchedule({
   onEdit: () => void;
   editDisabled: boolean;
   onSaveSchedule: (days: ScheduleDay[]) => Promise<void>;
+  getState: TripDraftApi['getState'];
+  saveState: TripDraftApi['saveState'];
 }) {
   const [date, setDate] = useState<string | null>(null);
   const [outing, setOuting] = useState(false);
   const [outingError, setOutingError] = useState('');
-  const visitedKey = `suixin:trip-visited:${trip.ownerId}:${trip.id}`;
-  const [visited, setVisited] = useState(() => readVisited(visitedKey));
+  const [visited, setVisited] = useState<Set<string>>(() => new Set());
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedLeg, setSelectedLeg] = useState<string | null>(null);
   const [draft, setDraft] = useState<LocalDay[] | null>(null);
@@ -79,8 +82,26 @@ function TripSchedule({
   const [saveError, setSaveError] = useState('');
   const [saved, setSaved] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const bookingStorageKey = `suixin:trip-bookings:${trip.ownerId}:${trip.id}`;
-  const [bookings, setBookings] = useState(() => readBookings(bookingStorageKey));
+  const [bookings, setBookings] = useState<Record<string, BookingStatus>>({});
+
+  // 勾选“去过”和预约状态都存在服务端 trip_state，换设备也能看到；
+  // 读取失败时降级为空并在界面上提示，不再静默丢数据。
+  useEffect(() => {
+    let active = true;
+    getState(trip.id)
+      .then((state) => {
+        if (!active) return;
+        setVisited(new Set(state.visited));
+        setBookings(state.bookings);
+      })
+      .catch(() => {
+        if (active) setOutingError('行程状态读取失败，勾选可能不会保存，请刷新重试。');
+      });
+    return () => {
+      active = false;
+    };
+  }, [getState, trip.id]);
+
   const agenda = useRef<HTMLElement>(null);
   const mapPane = useRef<HTMLElement>(null);
   const changePreview = useRef<HTMLElement>(null);
@@ -283,17 +304,15 @@ function TripSchedule({
   }
 
   function changeVisited(date: string, placeId: string, complete: boolean) {
-    const next = readVisited(visitedKey);
     const key = `${date}:${placeId}`;
+    const next = new Set(visited);
     if (complete) next.add(key);
     else next.delete(key);
-    try {
-      localStorage.setItem(visitedKey, JSON.stringify([...next]));
-      setVisited(next);
-      setOutingError('');
-    } catch {
-      setOutingError('浏览器暂时无法保存游览进度。');
-    }
+    setVisited(next);
+    setOutingError('');
+    void saveState(trip.id, { visited: [...next] }).catch(() => {
+      setOutingError('游览进度保存失败，请检查网络后重试。');
+    });
   }
   const focusStop = useCallback((id: string, trigger?: HTMLButtonElement) => {
     if (trigger) stopTrigger.current = trigger;
@@ -386,11 +405,13 @@ function TripSchedule({
   }
 
   function changeBooking(key: string, status: BookingStatus | '') {
-    const next = readBookings(bookingStorageKey);
+    const next = { ...bookings };
     if (status) next[key] = status;
     else delete next[key];
-    localStorage.setItem(bookingStorageKey, JSON.stringify(next));
     setBookings(next);
+    void saveState(trip.id, { bookings: next }).catch(() => {
+      setSaveError('预约状态保存失败，请检查网络后重试。');
+    });
   }
 
   const previewError =
@@ -929,6 +950,8 @@ function TripSchedule({
         onSelectLeg={focusLeg}
         onEdit={onEdit}
         editDisabled={editDisabled}
+        getState={() => getState(trip.id)}
+        saveState={(patch) => saveState(trip.id, patch)}
       />
     </div>
   );
@@ -1016,6 +1039,8 @@ export default function TripDetail({
           timeZone={city?.timeZone}
           onEdit={onEdit}
           editDisabled={editDisabled}
+          getState={api.getState}
+          saveState={api.saveState}
           onSaveSchedule={async (days) => {
             const { trip: current, places } = data;
             const updated = await api.updateSchedule(current.id, current.revision, days);

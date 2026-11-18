@@ -16,6 +16,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/auth.types';
 import { JsonBodyPipe, rejectUnknownFields } from '../common/json-body.pipe';
 import { TripsService } from './trips.service';
+import { TripStateService } from './trip-state.service';
 import {
   createInput,
   patchInput,
@@ -28,7 +29,23 @@ import {
 @Controller('trips')
 @UseGuards(AuthGuard)
 export class TripsController {
-  constructor(private readonly trips: TripsService) {}
+  constructor(
+    private readonly trips: TripsService,
+    private readonly state: TripStateService,
+  ) {}
+  @Get(':id/state')
+  getState(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
+    return this.state.get(user.userId, uuid(id, 'id'));
+  }
+  @Put(':id/state')
+  @HttpCode(200)
+  saveState(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body(new JsonBodyPipe()) body: Record<string, unknown>,
+  ) {
+    return this.state.save(user.userId, uuid(id, 'id'), body);
+  }
   @Delete(':id')
   @HttpCode(204)
   remove(

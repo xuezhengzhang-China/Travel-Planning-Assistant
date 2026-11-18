@@ -18,7 +18,14 @@ export const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 export const MAX_UPLOAD_BYTES = MAX_VIDEO_BYTES;
 export const MAX_TEXT_LENGTH = 10000;
-export const MAX_FOOTPRINT_MEDIA = 9;
+/** 一条足迹最多 100 个附件（与前端 MAX_FOOTPRINT_FILES 保持一致）。 */
+export const MAX_FOOTPRINT_MEDIA = 100;
+/**
+ * 单次请求的附件总大小上限。
+ * 附件是内存缓冲，100 个文件若每个都接近单文件上限会把进程内存打爆；
+ * 300 MiB 足以放下 100 张压缩后的照片，同时挡住异常的批量大视频。
+ */
+export const MAX_FOOTPRINT_TOTAL_BYTES = 300 * 1024 * 1024;
 
 export interface ValidatedFootprintInput extends Omit<CreateFootprintInput, 'text'> {
   text: string | null;
@@ -61,7 +68,7 @@ export function validateFootprintInput(
     'poiId',
   ]);
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
-    throw new BadRequestException('Unexpected footprint field');
+    throw new BadRequestException('包含未支持的足迹字段');
   }
   if (
     (typeof body.longitude !== 'string' && typeof body.longitude !== 'number') ||
@@ -69,7 +76,7 @@ export function validateFootprintInput(
     (typeof body.latitude !== 'string' && typeof body.latitude !== 'number') ||
     (typeof body.latitude === 'string' && !body.latitude.trim())
   ) {
-    throw new BadRequestException('longitude and latitude are required');
+    throw new BadRequestException('必须同时提供经度和纬度');
   }
   const longitude = Number(body.longitude);
   const latitude = Number(body.latitude);
@@ -79,28 +86,30 @@ export function validateFootprintInput(
   const text = typeof body.text === 'string' ? body.text.trim() : '';
 
   if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
-    throw new BadRequestException('longitude must be a valid coordinate');
+    throw new BadRequestException('经度必须是 -180 到 180 之间的数字');
   }
   if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) {
-    throw new BadRequestException('latitude must be a valid coordinate');
+    throw new BadRequestException('纬度必须是 -90 到 90 之间的数字');
   }
   if (coordinateSystem !== 'GCJ-02' && coordinateSystem !== 'WGS-84') {
-    throw new BadRequestException('coordinateSystem must be GCJ-02 or WGS-84');
+    throw new BadRequestException('坐标系必须是 GCJ-02 或 WGS-84');
   }
   if (typeof recordedOn !== 'string' || !isValidDate(recordedOn)) {
-    throw new BadRequestException('recordedOn must be a valid YYYY-MM-DD date');
+    throw new BadRequestException('日期必须是 YYYY-MM-DD 格式的有效日期');
   }
   if (poiId && (poiId.length > 80 || !/^[a-zA-Z0-9_-]+$/.test(poiId))) {
-    throw new BadRequestException('poiId is invalid');
+    throw new BadRequestException('地点标识（poiId）格式不正确');
   }
   if (recordedOn > currentShanghaiDate(now)) {
-    throw new BadRequestException('recordedOn cannot be in the future');
+    throw new BadRequestException(
+      `记录日期不能晚于今天（${currentShanghaiDate(now)}），当前填写的是 ${recordedOn}`,
+    );
   }
   if (text.length > MAX_TEXT_LENGTH) {
-    throw new BadRequestException(`text must be at most ${MAX_TEXT_LENGTH} characters`);
+    throw new BadRequestException(`文字最多 ${MAX_TEXT_LENGTH} 字，当前 ${text.length} 字`);
   }
   if (!text && !hasFile) {
-    throw new BadRequestException('Add text or attach a photo or video');
+    throw new BadRequestException('请填写文字，或附带一张照片/视频');
   }
 
   return {
@@ -130,7 +139,7 @@ export function validateFootprintUpdate(
     'removeMediaIds',
   ]);
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
-    throw new BadRequestException('Unexpected footprint field');
+    throw new BadRequestException('包含未支持的足迹字段');
   }
   const hasLongitude = Object.hasOwn(body, 'longitude');
   const hasLatitude = Object.hasOwn(body, 'latitude');
@@ -139,9 +148,7 @@ export function validateFootprintUpdate(
     (hasLongitude || hasLatitude || hasCoordinateSystem) &&
     !(hasLongitude && hasLatitude && hasCoordinateSystem)
   ) {
-    throw new BadRequestException(
-      'longitude, latitude, and coordinateSystem must be updated together',
-    );
+    throw new BadRequestException('经度、纬度和坐标系必须同时更新');
   }
   if (
     body.removeMedia !== undefined &&
@@ -149,7 +156,7 @@ export function validateFootprintUpdate(
     body.removeMedia !== 'true' &&
     body.removeMedia !== 'false'
   ) {
-    throw new BadRequestException('removeMedia must be a boolean');
+    throw new BadRequestException('removeMedia 必须是布尔值');
   }
   const removeMedia = body.removeMedia === true || body.removeMedia === 'true';
   if (removeMedia && hasFile) {
@@ -157,10 +164,10 @@ export function validateFootprintUpdate(
   }
   const removeMediaIds = parseUuidList(body.removeMediaIds);
   if (body.poiId !== undefined && body.poiId !== null && typeof body.poiId !== 'string') {
-    throw new BadRequestException('poiId must be a string or null');
+    throw new BadRequestException('poiId 必须是字符串或 null');
   }
   if (body.text !== undefined && body.text !== null && typeof body.text !== 'string') {
-    throw new BadRequestException('text must be a string or null');
+    throw new BadRequestException('text 必须是字符串或 null');
   }
 
   const merged: Record<string, unknown> = {
@@ -202,20 +209,31 @@ export function validateUpload(file: UploadedMedia): ValidatedUpload {
   const { buffer } = file;
   const detectedMimeType = detectMimeType(buffer);
   if (!detectedMimeType) {
-    throw new UnsupportedMediaTypeException(
-      'Only JPEG, PNG, WebP, MP4, and WebM files are supported',
-    );
+    throw new UnsupportedMediaTypeException('只支持 JPEG、PNG、WebP、MP4、WebM 格式');
   }
   if (file.mimetype !== detectedMimeType) {
-    throw new UnsupportedMediaTypeException('Uploaded file type does not match its contents');
+    throw new UnsupportedMediaTypeException('文件内容与声明的类型不一致');
   }
   const isVideo = detectedMimeType.startsWith('video/');
   if (file.size > (isVideo ? MAX_VIDEO_BYTES : MAX_PHOTO_BYTES)) {
-    throw new PayloadTooLargeException(
-      isVideo ? 'Videos must be 100 MiB or smaller' : 'Photos must be 10 MiB or smaller',
-    );
+    throw new PayloadTooLargeException(isVideo ? '视频不能超过 100 MiB' : '照片不能超过 10 MiB');
   }
   return { kind: isVideo ? 'video' : 'photo', mimeType: detectedMimeType };
+}
+
+/**
+ * 附件是内存缓冲，数量上限提高后必须同时限制单次请求的总大小，
+ * 否则 100 个接近 100 MiB 的视频会直接把进程内存打爆。
+ */
+export function assertUploadTotalSize(files: UploadedMedia[]): void {
+  const total = files.reduce((sum, file) => sum + file.size, 0);
+  if (total > MAX_FOOTPRINT_TOTAL_BYTES) {
+    const limitMb = Math.round(MAX_FOOTPRINT_TOTAL_BYTES / (1024 * 1024));
+    const actualMb = Math.round(total / (1024 * 1024));
+    throw new PayloadTooLargeException(
+      `附件总大小不能超过 ${limitMb} MB，当前约 ${actualMb} MB，请分批上传`,
+    );
+  }
 }
 
 function isValidDate(value: string): boolean {
@@ -256,13 +274,13 @@ function parseUuidList(value: unknown): string[] {
   const result: string[] = [];
   for (const item of raw) {
     if (typeof item !== 'string') {
-      throw new BadRequestException('removeMediaIds must be a string or array of strings');
+      throw new BadRequestException('removeMediaIds 必须是字符串或字符串数组');
     }
     for (const part of item.split(',')) {
       const trimmed = part.trim();
       if (!trimmed) continue;
       if (!UUID_PATTERN.test(trimmed)) {
-        throw new BadRequestException('removeMediaIds must be valid UUIDs');
+        throw new BadRequestException('removeMediaIds 必须是合法的 UUID');
       }
       result.push(trimmed);
     }
