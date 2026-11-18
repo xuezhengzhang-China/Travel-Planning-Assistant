@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Destination, PageResult, Place } from '@travel/shared';
 import { ApiError, type ApiClient } from '../../lib/api-client';
 import { wgs84ToGcj02 } from '../../lib/coords';
+import AtlasMap from '../footprints/AtlasMap';
 import CityPostcard from './CityPostcard';
 import './home.css';
 
@@ -61,6 +62,10 @@ export default function HomePage({ client }: HomePageProps) {
   const [error, setError] = useState<string | null>(null);
   const [locationMsg, setLocationMsg] = useState('');
   const [locatedCity, setLocatedCity] = useState<string | null>(null);
+  const [locatedProvinceAdcode, setLocatedProvinceAdcode] = useState<string | null>(null);
+  const [locatedPin, setLocatedPin] = useState<{ longitude: number; latitude: number } | null>(
+    null,
+  );
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
 
@@ -92,6 +97,10 @@ export default function HomePage({ client }: HomePageProps) {
             const matched = cities.find((c) => c.id === result.cityId);
             const name = matched?.name ?? result.placeName;
             setLocatedCity(name);
+            setLocatedProvinceAdcode(
+              result.cityAdcode ? `${result.cityAdcode.slice(0, 2)}0000` : null,
+            );
+            setLocatedPin({ longitude: gcj.longitude, latitude: gcj.latitude });
             setLocationMsg(`已定位到：${name}。`);
             if (matched) openCity(matched);
             else setLocationMsg(`已定位到：${name}（该城市暂不在目录中）。`);
@@ -179,6 +188,36 @@ export default function HomePage({ client }: HomePageProps) {
         )}
         {locationMsg && <p className="field-hint">{locationMsg}</p>}
       </div>
+
+      {locatedProvinceAdcode && locatedPin && (
+        <section className="located-map">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">YOU ARE HERE</p>
+              <h2>当前所在：{locatedCity ?? '当前位置'}</h2>
+            </div>
+          </div>
+          <AtlasMap
+            adcode={locatedProvinceAdcode}
+            locations={[
+              {
+                locationId: 'current-location',
+                poiId: null,
+                placeName: '当前位置',
+                longitude: locatedPin.longitude,
+                latitude: locatedPin.latitude,
+                coordinateSystem: 'GCJ-02',
+                provinceAdcode: null,
+                provinceName: null,
+                cityAdcode: null,
+                cityName: null,
+                checkInCount: 1,
+              },
+            ]}
+            showLabels
+          />
+        </section>
+      )}
 
       {error && (
         <p role="alert" className="profile-alert">

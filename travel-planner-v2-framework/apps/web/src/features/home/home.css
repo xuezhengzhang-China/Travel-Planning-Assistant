@@ -132,6 +132,10 @@
   font-weight: 600;
 }
 
+.located-map {
+  margin-top: 22px;
+}
+
 .chat-panel {
   margin-top: 12px;
   border: 1px solid #e9ecdf;
