@@ -38,13 +38,17 @@ export class GeoService {
     mode: TransportMode,
     cityCode?: string,
     signal?: AbortSignal,
+    includePaths = false,
   ): Promise<RoutePreview> {
     coordinates(from);
     coordinates(to);
     if (signal?.aborted) unavailable('推荐计算超时');
     try {
+      const details = includePaths
+        ? await this.amap.routeDetails(from, to, mode, cityCode, signal, true)
+        : { durationMinutes: await this.amap.route(from, to, mode, cityCode, signal) };
       return {
-        durationMinutes: await this.amap.route(from, to, mode, cityCode, signal),
+        ...details,
         source: 'provider',
         warnings: [],
       };

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BConfig } from '../../b/config';
 import { unavailable } from '../../b/errors';
 import type { Coordinates, TransportMode } from '../../b/types';
+import type { BPlaces } from '@travel/shared' with { 'resolution-mode': 'import' };
 
 export const B_FETCH = Symbol('B_FETCH');
 export type Fetcher = typeof fetch;
@@ -14,6 +15,90 @@ function nonempty(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 const point = (p: Coordinates) => `${p.longitude.toFixed(6)},${p.latitude.toFixed(6)}`;
+
+function records(value: unknown) {
+  return Array.isArray(value) ? value.map(record) : [];
+}
+
+function routePaths(choice: Record<string, unknown>, mode: TransportMode) {
+  const steps =
+    mode === 'transit'
+      ? records(choice.segments).flatMap((segment) => [
+          ...records(record(segment.walking).steps),
+          records(record(segment.bus).buslines)[0] ?? {},
+          record(segment.railway),
+          record(segment.taxi),
+        ])
+      : records(choice.steps);
+  return steps.flatMap(({ polyline }) => {
+    const line = typeof polyline === 'string' ? polyline : record(polyline).polyline;
+    if (typeof line !== 'string' || !line.trim()) return [];
+    const points = line
+      .trim()
+      .split(/\s*;\s*/)
+      .map((pair) => {
+        const [longitude, latitude, extra] = pair.split(',');
+        const lng = Number(longitude);
+        const lat = Number(latitude);
+        if (
+          !longitude?.trim() ||
+          !latitude?.trim() ||
+          extra !== undefined ||
+          !Number.isFinite(lng) ||
+          !Number.isFinite(lat) ||
+          Math.abs(lng) > 180 ||
+          Math.abs(lat) > 90
+        )
+          return null;
+        return [lng, lat] as [number, number];
+      });
+    return points.length >= 2 && points.every((coordinate) => coordinate !== null) ? [points] : [];
+  });
+}
+
+function nonnegativeNumber(value: unknown): number | undefined {
+  if ((typeof value !== 'string' && typeof value !== 'number') || String(value).trim() === '')
+    return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+}
+
+function transitSteps(choice: Record<string, unknown>): BPlaces.TransitStep[] {
+  return records(choice.segments).flatMap((segment) => {
+    const steps: BPlaces.TransitStep[] = [];
+    for (const mode of ['walking', 'bus', 'railway', 'taxi'] as const) {
+      const raw = record(segment[mode]);
+      const detail = mode === 'bus' ? (records(raw.buslines)[0] ?? {}) : raw;
+      if (!Object.keys(detail).length) continue;
+      const name = nonempty(detail.name);
+      const departureStop = nonempty(record(detail.departure_stop).name);
+      const arrivalStop = nonempty(record(detail.arrival_stop).name);
+      const entrance = nonempty(record(record(detail.departure_stop).entrance).name);
+      const exit = nonempty(record(record(detail.arrival_stop).exit).name);
+      const serviceNotice = nonempty(detail.bus_time_tips);
+      const distanceMeters = nonnegativeNumber(detail.distance);
+      const seconds = nonnegativeNumber(
+        record(detail.cost).duration ?? detail.duration ?? detail.drivetime,
+      );
+      const stopCount = nonnegativeNumber(detail.via_num);
+      if (mode === 'walking' && !distanceMeters && !seconds) continue;
+      if (mode === 'bus' && !name) continue;
+      steps.push({
+        mode,
+        name: name ?? { walking: '步行', bus: '公交', railway: '火车', taxi: '出租车' }[mode],
+        ...(departureStop ? { departureStop } : {}),
+        ...(arrivalStop ? { arrivalStop } : {}),
+        ...(entrance ? { entrance } : {}),
+        ...(exit ? { exit } : {}),
+        ...(serviceNotice ? { serviceNotice } : {}),
+        ...(Number.isInteger(stopCount) ? { stopCount } : {}),
+        ...(distanceMeters !== undefined ? { distanceMeters } : {}),
+        ...(seconds !== undefined ? { durationMinutes: Math.ceil(seconds / 60) } : {}),
+      });
+    }
+    return steps;
+  });
+}
 
 @Injectable()
 export class AmapClient {
@@ -51,6 +136,17 @@ export class AmapClient {
     cityCode?: string,
     signal?: AbortSignal,
   ): Promise<number> {
+    return (await this.routeDetails(from, to, mode, cityCode, signal)).durationMinutes;
+  }
+
+  async routeDetails(
+    from: Coordinates,
+    to: Coordinates,
+    mode: TransportMode,
+    cityCode?: string,
+    signal?: AbortSignal,
+    includePaths = false,
+  ) {
     const paths = {
       walking: '/v5/direction/walking',
       driving: '/v5/direction/driving',
@@ -68,7 +164,7 @@ export class AmapClient {
       {
         origin: point(from),
         destination: point(to),
-        show_fields: 'cost',
+        show_fields: includePaths ? 'cost,polyline' : 'cost',
         ...(mode === 'transit' ? { city1: city1!, city2: city2! } : {}),
       },
       signal,
@@ -82,7 +178,11 @@ export class AmapClient {
     const seconds = Number(raw);
     if (!Number.isFinite(seconds) || seconds <= 0 || seconds > 7 * 86400)
       unavailable('地图服务未返回有效路线耗时');
-    return Math.ceil(seconds / 60);
+    return {
+      durationMinutes: Math.ceil(seconds / 60),
+      ...(includePaths ? { paths: routePaths(first, mode) } : {}),
+      ...(includePaths && mode === 'transit' ? { transitSteps: transitSteps(first) } : {}),
+    };
   }
   async reverse(p: Coordinates, signal?: AbortSignal) {
     const data = await this.request(

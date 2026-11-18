@@ -19,6 +19,7 @@ test('宿主入口与URL可往返，非法地址不会打开任意资源', () =>
   for (const entry of [
     { view: 'list' },
     { view: 'new' },
+    { view: 'detail', tripId: '11000000-0000-4000-8002-000000000001' },
     { view: 'edit', tripId: '11000000-0000-4000-8002-000000000001' },
   ]) {
     assert.deepEqual(tripEntryFromPath(tripEntryPath(entry)), entry);

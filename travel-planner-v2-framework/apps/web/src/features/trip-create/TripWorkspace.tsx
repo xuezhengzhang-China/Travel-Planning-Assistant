@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PublicUser, Trip, TripList, Place, Destination } from '@travel/shared';
+import type { BPlaces, PublicUser, Trip, TripList, Place, Destination } from '@travel/shared';
 import { dateRange } from '../../data/planner';
 import { normalizeThemes } from '../../data/planner-storage';
 import type { PlannerState } from '../../data/planner-storage';
 import NewTripPage, { type TripDraftStorage } from './NewTripPage';
+import TripDetail from './TripDetail';
 import { createRecommendationFlow } from './recommendation-flow';
 import { createTripDraftApi, fromServerTrip, type TripDraftApi } from './trip-draft-client';
 import { tripErrorMessage } from './trip-errors';
@@ -250,6 +251,8 @@ export default function TripWorkspace({
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [editor, setEditor] = useState<{ resource: Trip | null; readOnly?: boolean } | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const routeCache = useRef({ tripId: '', results: new Map<string, BPlaces.RoutePreview>() });
   const [loading, setLoading] = useState(false);
   const [opening, setOpening] = useState(false);
   const [error, setError] = useState('');
@@ -286,12 +289,20 @@ export default function TripWorkspace({
     setDeletion(null);
     if (externalEntryKey === 'list') {
       setEditor(null);
+      setDetailId(null);
       setRefresh((v) => v + 1);
+      setOpening(false);
+      return;
+    }
+    if (externalEntryKey.startsWith('detail:')) {
+      setEditor(null);
+      setDetailId(externalEntryKey.slice('detail:'.length));
       setOpening(false);
       return;
     }
     setOpening(true);
     setEditor(null);
+    setDetailId(null);
     const tripId = externalEntryKey.startsWith('edit:') ? externalEntryKey.slice(5) : null;
     Promise.all([api.getPlaces(city.id), tripId ? api.get(tripId) : Promise.resolve(null)])
       .then(([catalog, resource]) => {
@@ -346,12 +357,21 @@ export default function TripWorkspace({
   const back = useCallback(() => {
     requestId.current++;
     setEditor(null);
+    setDetailId(null);
     setError('');
     setOpening(false);
     setRefresh((value) => value + 1);
     requestedEntry.current = 'list';
     notifyHost(onNavigate, { view: 'list' });
   }, [onNavigate]);
+  function openDetails(id: string) {
+    requestId.current++;
+    setEditor(null);
+    setDetailId(id);
+    setError('');
+    requestedEntry.current = `detail:${id}`;
+    notifyHost(onNavigate, { view: 'detail', tripId: id });
+  }
   async function open(id: string, readOnly = false) {
     const request = ++requestId.current;
     setOpening(true);
@@ -426,6 +446,23 @@ export default function TripWorkspace({
             返回行程列表
           </button>
         </main>
+      </section>
+    );
+  if (detailId)
+    return (
+      <section className={`suixin-trips${embedded ? ' is-embedded' : ''}`}>
+        <TripDetail
+          key={detailId}
+          id={detailId}
+          api={api}
+          cities={cities}
+          routeCache={routeCache}
+          onBack={back}
+          onEdit={() => void open(detailId)}
+          editDisabled={!city || !places}
+          editError={error}
+          onSaved={onSaved}
+        />
       </section>
     );
   if (editor && places && city)
@@ -535,8 +572,8 @@ export default function TripWorkspace({
                       删除
                     </button>
                     <button
-                      disabled={opening || !places || !!deletion}
-                      onClick={() => void open(trip.id, true)}
+                      disabled={opening || !!deletion}
+                      onClick={() => openDetails(trip.id)}
                       aria-label={`查看行程${trip.title}`}
                     >
                       查看

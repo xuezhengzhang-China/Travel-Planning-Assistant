@@ -23,6 +23,7 @@
     "db:migrate": "npm run db:migrate --workspace=@travel/api",
     "db:migrate:status": "npm run db:migrate:status --workspace=@travel/api",
     "db:seed:b": "npm run db:seed:b --workspace=@travel/api",
+    "db:seed:beijing": "npm run db:seed:beijing --workspace=@travel/api",
     "test:integration:b": "npm run build --workspace=@travel/api && npm run test:integration:b --workspace=@travel/api",
     "db:tunnel:b": "ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:55432:127.0.0.1:55432 -p 22 ubuntu@120.53.94.209",
     "services:tunnel:b": "ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:55432:127.0.0.1:55432 -L 127.0.0.1:11434:127.0.0.1:11434 -p 22 ubuntu@120.53.94.209",

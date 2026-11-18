@@ -43,6 +43,47 @@ test('public transit preview derives both cities and avoids silently guessing ci
   assert.equal(calls[2].searchParams.get('city1'), '0571');
   assert.equal(calls[2].searchParams.get('city2'), '0571');
 });
+test('route preview preserves provider paths as separate validated segments', async () => {
+  const { client, calls } = clientWith({
+    status: '1',
+    route: {
+      transits: [
+        {
+          cost: { duration: '61' },
+          segments: [
+            {
+              walking: {
+                steps: [
+                  { polyline: { polyline: '116.39,39.91;116.4,39.92' } },
+                  { polyline: ';116.42,39.93' },
+                ],
+              },
+              bus: { buslines: [{ polyline: { polyline: '116.42,39.94;116.43,39.95' } }] },
+            },
+          ],
+        },
+      ],
+    },
+  });
+  const route = await new GeoService(client, {}).route(from, to, 'transit', '010', undefined, true);
+  assert.equal(calls[0].searchParams.get('show_fields'), 'cost,polyline');
+  assert.deepEqual(route, {
+    durationMinutes: 2,
+    source: 'provider',
+    warnings: [],
+    transitSteps: [],
+    paths: [
+      [
+        [116.39, 39.91],
+        [116.4, 39.92],
+      ],
+      [
+        [116.42, 39.94],
+        [116.43, 39.95],
+      ],
+    ],
+  });
+});
 test('business errors, missing/invalid duration, empty paths and malformed JSON never become zero-minute routes', async () => {
   for (const payload of [
     null,
@@ -77,6 +118,79 @@ test('business errors, missing/invalid duration, empty paths and malformed JSON 
       (e) => e.getStatus() === 503,
     );
   }
+});
+
+test('transit preview keeps the selected bus line and its stations in the same order as walking and transfers', async () => {
+  const { client } = clientWith({
+    status: '1',
+    route: {
+      transits: [
+        {
+          cost: { duration: '1200' },
+          segments: [
+            {
+              walking: { distance: '310', cost: { duration: '240' } },
+              bus: {
+                buslines: [
+                  {
+                    name: '地铁5号线(宋家庄--天通苑北)',
+                    departure_stop: { name: '天坛东门', entrance: { name: 'C东南口' } },
+                    arrival_stop: { name: '雍和宫', exit: { name: 'A西北口' } },
+                    bus_time_tips: '测试运营提示',
+                    via_num: '6',
+                    distance: '7500',
+                    cost: { duration: '660' },
+                  },
+                  { name: '另一条备选线路', departure_stop: { name: '其他站' } },
+                ],
+              },
+            },
+            {
+              walking: { distance: '200', duration: '180' },
+              bus: {
+                buslines: [
+                  {
+                    name: '公交示例线路',
+                    departure_stop: { name: '换乘站' },
+                    arrival_stop: { name: '终点站' },
+                    via_num: '0',
+                  },
+                ],
+              },
+            },
+            { walking: { distance: '100' }, bus: { buslines: [] } },
+            { walking: [], bus: { buslines: [{ name: [], via_num: '-1' }] } },
+          ],
+        },
+      ],
+    },
+  });
+  const result = await client.routeDetails(from, to, 'transit', '010', undefined, true);
+  assert.deepEqual(result.transitSteps, [
+    { mode: 'walking', name: '步行', distanceMeters: 310, durationMinutes: 4 },
+    {
+      mode: 'bus',
+      name: '地铁5号线(宋家庄--天通苑北)',
+      departureStop: '天坛东门',
+      arrivalStop: '雍和宫',
+      entrance: 'C东南口',
+      exit: 'A西北口',
+      serviceNotice: '测试运营提示',
+      stopCount: 6,
+      distanceMeters: 7500,
+      durationMinutes: 11,
+    },
+    { mode: 'walking', name: '步行', distanceMeters: 200, durationMinutes: 3 },
+    {
+      mode: 'bus',
+      name: '公交示例线路',
+      departureStop: '换乘站',
+      arrivalStop: '终点站',
+      stopCount: 0,
+    },
+    { mode: 'walking', name: '步行', distanceMeters: 100 },
+  ]);
+  assert.equal(result.durationMinutes, 20);
 });
 test('no-key short walking estimates are explicit; driving, transit and far walking fail closed', async () => {
   const { places } = serviceFixture();

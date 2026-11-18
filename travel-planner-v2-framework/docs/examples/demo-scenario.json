@@ -1,5 +1,5 @@
 {
-  "description": "合成开发样例，不是实时景点资料、真实账号或已运行接口",
+  "description": "杭州景点资料经核对。用户、行程、到访记录和接口响应为合成开发样例。",
   "fixedNow": "2026-10-26T01:10:00.000Z",
   "actors": {
     "primary": { "userId": "10000000-0000-4000-8000-000000000001" },
@@ -27,53 +27,53 @@
     {
       "id": "30000000-0000-4000-8000-000000000001",
       "cityId": "20000000-0000-4000-8000-000000000002",
-      "name": "西湖（演示）",
+      "name": "西湖·花港观鱼",
       "categories": ["nature", "landmark"],
-      "address": "杭州市，具体入口待核实",
+      "address": "杭州市西湖区西山路5-1号（花港观鱼西门一侧）",
       "coordinates": {
-        "longitude": 120.148,
-        "latitude": 30.245,
+        "longitude": 120.139095,
+        "latitude": 30.230233,
         "coordinateSystem": "GCJ-02"
       },
       "suggestedDurationMinutes": 90,
-      "description": "用于测试自然主题与地图标记的演示地点。",
-      "openingHoursText": null,
+      "description": "西湖十景之一，位于苏堤南段西侧。路线以靠近西门的花港观鱼 POI 为准。",
+      "openingHoursText": "公园通常全天开放，临时管控以景区公告为准。",
       "source": "fixture",
-      "updatedAt": "2026-10-26T00:00:00.000Z"
+      "updatedAt": "2026-11-16T00:00:00.000Z"
     },
     {
       "id": "30000000-0000-4000-8000-000000000002",
       "cityId": "20000000-0000-4000-8000-000000000002",
-      "name": "灵隐景区（演示）",
+      "name": "灵隐飞来峰景区",
       "categories": ["history", "nature"],
-      "address": "杭州市，具体入口待核实",
+      "address": "杭州市西湖区灵隐路法云弄1号（生境广场查验通道附近）",
       "coordinates": {
-        "longitude": 120.102,
-        "latitude": 30.242,
+        "longitude": 120.106255,
+        "latitude": 30.241053,
         "coordinateSystem": "GCJ-02"
       },
       "suggestedDurationMinutes": 120,
-      "description": "用于测试历史文化偏好和交通估算的演示地点。",
-      "openingHoursText": null,
+      "description": "景区包含飞来峰造像和灵隐寺。路线以入口查验通道附近的生境广场为到达点。",
+      "openingHoursText": "07:30–17:30，17:00停止入园。实名分时预约，通常至少提前一天。",
       "source": "fixture",
-      "updatedAt": "2026-10-26T00:00:00.000Z"
+      "updatedAt": "2026-11-16T00:00:00.000Z"
     },
     {
       "id": "30000000-0000-4000-8000-000000000003",
       "cityId": "20000000-0000-4000-8000-000000000002",
-      "name": "良渚博物院（演示）",
+      "name": "良渚博物院",
       "categories": ["history", "art"],
-      "address": "杭州市，具体入口待核实",
+      "address": "杭州市余杭区良渚街道美丽洲路1号（游客中心）",
       "coordinates": {
-        "longitude": 120.028,
-        "latitude": 30.381,
+        "longitude": 120.027721,
+        "latitude": 30.377134,
         "coordinateSystem": "GCJ-02"
       },
       "suggestedDurationMinutes": 120,
-      "description": "用于测试第二天安排和开放信息未核实提示的演示地点。",
-      "openingHoursText": null,
+      "description": "展示良渚文化和良渚古城遗址考古成果，路线以游客中心为到达点。",
+      "openingHoursText": "周二至周日09:00–17:00，16:30停止入场。周一例行闭馆，节假日以馆方公告为准。",
       "source": "fixture",
-      "updatedAt": "2026-10-26T00:00:00.000Z"
+      "updatedAt": "2026-11-16T00:00:00.000Z"
     }
   ],
   "requests": {
@@ -217,7 +217,7 @@
         },
         {
           "code": "OPENING_HOURS_UNVERIFIED",
-          "message": "演示地点开放信息未核实，请出行前确认。"
+          "message": "排程未校验开放时间、闭馆日和预约要求，请出行前确认。"
         }
       ],
       "source": "rule"
@@ -287,10 +287,10 @@
       {
         "id": "60000000-0000-4000-8000-000000000001",
         "placeId": "30000000-0000-4000-8000-000000000001",
-        "placeName": "西湖（演示）",
+        "placeName": "西湖·花港观鱼",
         "coordinates": {
-          "longitude": 120.148,
-          "latitude": 30.245,
+          "longitude": 120.139095,
+          "latitude": 30.230233,
           "coordinateSystem": "GCJ-02"
         },
         "cityId": "20000000-0000-4000-8000-000000000002",
@@ -302,10 +302,10 @@
       {
         "id": "60000000-0000-4000-8000-000000000002",
         "placeId": "30000000-0000-4000-8000-000000000002",
-        "placeName": "灵隐景区（演示）",
+        "placeName": "灵隐飞来峰景区",
         "coordinates": {
-          "longitude": 120.102,
-          "latitude": 30.242,
+          "longitude": 120.106255,
+          "latitude": 30.241053,
           "coordinateSystem": "GCJ-02"
         },
         "cityId": "20000000-0000-4000-8000-000000000002",
@@ -336,10 +336,10 @@
         {
           "id": "60000000-0000-4000-8000-000000000001",
           "placeId": "30000000-0000-4000-8000-000000000001",
-          "placeName": "西湖（演示）",
+          "placeName": "西湖·花港观鱼",
           "coordinates": {
-            "longitude": 120.148,
-            "latitude": 30.245,
+            "longitude": 120.139095,
+            "latitude": 30.230233,
             "coordinateSystem": "GCJ-02"
           },
           "cityId": "20000000-0000-4000-8000-000000000002",
@@ -351,10 +351,10 @@
         {
           "id": "60000000-0000-4000-8000-000000000002",
           "placeId": "30000000-0000-4000-8000-000000000002",
-          "placeName": "灵隐景区（演示）",
+          "placeName": "灵隐飞来峰景区",
           "coordinates": {
-            "longitude": 120.102,
-            "latitude": 30.242,
+            "longitude": 120.106255,
+            "latitude": 30.241053,
             "coordinateSystem": "GCJ-02"
           },
           "cityId": "20000000-0000-4000-8000-000000000002",

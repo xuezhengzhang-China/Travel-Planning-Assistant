@@ -1,4 +1,5 @@
 import type {
+  BPlaces,
   Proposal,
   PlanningInput,
   PlaceRecommendationInput,
@@ -30,6 +31,15 @@ export interface TripDraftApi {
     warnings: unknown[];
   }>;
   getPlaces(cityId: string): Promise<Place[]>;
+  previewRoute?(
+    input: {
+      from: BPlaces.Coordinates;
+      to: BPlaces.Coordinates;
+      transportMode: BPlaces.TransportMode;
+      cityId: string;
+    },
+    signal: AbortSignal,
+  ): Promise<BPlaces.RoutePreview>;
   remove(id: string, expectedRevision: number): Promise<void>;
   recommendPlaces(
     input: PlaceRecommendationInput,
@@ -89,7 +99,12 @@ export function createTripDraftApi(options: {
   const fetcher = options.fetcher ?? fetch;
   const base = (options.baseUrl ?? '/api').replace(/\/$/, '');
   const resource = (id: string) => `/trips/${encodeURIComponent(id)}`;
-  async function request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
+  async function request<T>(
+    path: string,
+    method = 'GET',
+    body?: unknown,
+    signal?: AbortSignal,
+  ): Promise<T> {
     const token = await options.getAccessToken();
     if (!token) throw new TripApiError(401, 'UNAUTHENTICATED', '请先登录后保存行程');
     const response = await fetcher(`${base}${path}`, {
@@ -99,6 +114,7 @@ export function createTripDraftApi(options: {
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal,
     });
     const payload: unknown = await response.json().catch(() => null);
     if (!response.ok) {
@@ -133,6 +149,8 @@ export function createTripDraftApi(options: {
       request('/locations/reverse', 'POST', {
         coordinates: { longitude, latitude, coordinateSystem: 'GCJ-02' },
       }),
+    previewRoute: (input, signal) =>
+      request('/routes/preview', 'POST', { ...input, includePaths: true }, signal),
     remove: (id, expectedRevision) =>
       request<void>(`${resource(id)}?expectedRevision=${expectedRevision}`, 'DELETE'),
     getPlaces: async (cityId) => {
