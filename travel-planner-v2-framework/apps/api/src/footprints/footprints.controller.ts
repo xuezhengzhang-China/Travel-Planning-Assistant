@@ -25,6 +25,7 @@ import { FootprintsService } from './footprints.service';
 import {
   MAX_FOOTPRINT_MEDIA,
   MAX_UPLOAD_BYTES,
+  assertUploadTotalSize,
   validateFootprintInput,
   validateFootprintUpdate,
   validateUpload,
@@ -65,6 +66,7 @@ export class FootprintsController {
     @UploadedFiles() files: UploadedMedia[],
   ): Promise<FootprintEntry> {
     const input = validateFootprintInput(body, files.length > 0);
+    assertUploadTotalSize(files);
     const uploads = files.map((file) => validateUpload(file));
     return this.footprints.create(user.userId, input, files, uploads);
   }
@@ -133,6 +135,7 @@ export class FootprintsController {
   ) {
     const existing = await this.footprints.getById(user.userId, entryId);
     const update = validateFootprintUpdate(body, files.length > 0, existing);
+    assertUploadTotalSize(files);
     const uploads = files.map((file) => validateUpload(file));
     return this.footprints.update(user.userId, entryId, update, files, uploads);
   }

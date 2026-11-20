@@ -37,7 +37,7 @@ function hhmm(value: number) {
 
 export function validateSchedule(
   input: PlanningInput,
-  places: Place[],
+  places: Pick<Place, 'id' | 'cityId'>[],
   days: ScheduleDay[],
   unassigned: string[] = [],
 ) {

@@ -24,13 +24,19 @@ interface AmapMarker {
   on(event: 'click', handler: (event: AmapClickEvent) => void): void;
 }
 
+interface AmapPolyline {
+  setMap(map: AmapMap | null): void;
+  on(event: 'click', handler: () => void): void;
+}
+
 interface AmapMap {
   on(event: 'click', handler: (event: AmapClickEvent) => void): void;
   off(event: 'click', handler: (event: AmapClickEvent) => void): void;
   setCenter(center: [number, number]): void;
   setZoom(zoom: number): void;
+  setZoomAndCenter(zoom: number, center: [number, number], immediately?: boolean): void;
   setFitView(
-    overlays: AmapMarker[],
+    overlays: (AmapMarker | AmapPolyline)[],
     immediately?: boolean,
     avoid?: number[],
     maxZoom?: number,
@@ -41,6 +47,7 @@ interface AmapMap {
 interface AmapNamespace {
   Map: new (container: HTMLElement, options: Record<string, unknown>) => AmapMap;
   Marker: new (options: Record<string, unknown>) => AmapMarker;
+  Polyline: new (options: Record<string, unknown>) => AmapPolyline;
 }
 
 declare global {

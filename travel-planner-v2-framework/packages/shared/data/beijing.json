@@ -17,7 +17,47 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "以明清皇宫为馆舍的博物馆。沿中轴北行可看太和殿等外朝建筑，再穿过内廷到御花园。想细看宫廷生活与收藏，可以给珍宝馆或钟表馆留出单独时间。",
+        "highlights": ["午门与外朝三大殿", "乾清宫与御花园", "珍宝馆或钟表馆"],
+        "hours": [
+          {
+            "label": "旺季 · 4月1日–10月31日",
+            "time": "08:30–17:00，16:00停止入馆。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:00",
+                "closedWeekday": 1
+              }
+            ]
+          },
+          {
+            "label": "淡季 · 11月1日–次年3月31日",
+            "time": "08:30–16:30，15:30停止入馆。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "16:30",
+                "lastEntry": "15:30",
+                "closedWeekday": 1
+              }
+            ]
+          }
+        ],
+        "tips": "周一闭馆，法定节假日除外。请提前通过官方渠道购票，由午门进入。珍宝馆、钟表馆的末次入馆时间另见官方导览。",
+        "sourceUrl": "https://www.dpm.org.cn/Visit.html",
+        "booking": {
+          "policy": "须实名预约",
+          "note": "个人参观须提前实名预约。通过故宫官方票务渠道选择参观日期。",
+          "url": "https://www.dpm.org.cn/subject_booking/",
+          "reservationRequired": true
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000002",
@@ -31,7 +71,72 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "明清皇帝举行祭天、祈谷礼仪的场所。祈年殿以圆形攒尖顶为标志，丹陛桥连接祈谷坛与圜丘坛。从南门入园可依次看圜丘、皇穹宇和祈年殿，途中也能经过古柏林。",
+        "highlights": ["祈年殿", "皇穹宇与回音壁", "圜丘与丹陛桥"],
+        "hours": [
+          {
+            "label": "公园大门 · 旺季",
+            "time": "4月1日–10月31日 06:00–22:00，21:00停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "22:00",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "公园大门 · 淡季",
+            "time": "11月1日–次年3月31日 06:30–22:00，21:00停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "22:00",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "祈年殿等园内景点 · 旺季",
+            "time": "08:00–18:00（17:30停止进入）。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "lastEntry": "17:30",
+                "closedWeekday": 1,
+                "area": "祈年殿等园内景点"
+              }
+            ]
+          },
+          {
+            "label": "祈年殿等园内景点 · 淡季",
+            "time": "08:00–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "closedWeekday": 1,
+                "area": "祈年殿等园内景点"
+              }
+            ]
+          }
+        ],
+        "tips": "园内景点周一关闭，法定节假日除外。计划参观祈年殿、回音壁和圜丘时，请核对联票或景点票。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_tzgg/202104/t20210425_2368661.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。看祈年殿、回音壁和圜丘时，先核对景点票或联票。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000003",
@@ -45,7 +150,72 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "以昆明湖、万寿山为骨架的清代皇家园林。长廊适合沿湖步行，佛香阁一带多台阶，从高处可俯瞰湖面。若想去十七孔桥，可在出发前选好一侧湖岸与出园门。",
+        "highlights": ["昆明湖与长廊", "万寿山佛香阁", "十七孔桥"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–10月31日",
+            "time": "06:00–20:00，19:00停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "20:00",
+                "lastEntry": "19:00"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月1日–次年3月31日",
+            "time": "06:30–19:00，18:00停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "19:00",
+                "lastEntry": "18:00"
+              }
+            ]
+          },
+          {
+            "label": "佛香阁、德和园、文昌院、苏州街 · 旺季",
+            "time": "08:00–18:00（17:30停止进入）。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "lastEntry": "17:30",
+                "closedWeekday": 1,
+                "area": "佛香阁、德和园、文昌院、苏州街"
+              }
+            ]
+          },
+          {
+            "label": "佛香阁、德和园、文昌院、苏州街 · 淡季",
+            "time": "08:30–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "closedWeekday": 1,
+                "area": "佛香阁、德和园、文昌院、苏州街"
+              }
+            ]
+          }
+        ],
+        "tips": "上述园中园周一关闭，法定节假日除外。部分院落需另购票，园区末次入园时间晚于园中园。",
+        "sourceUrl": "https://english.beijing.gov.cn/specials/parktours/guidevisitors/summerpalace/index.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。佛香阁等园中园有独立票种。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000004",
@@ -59,7 +229,69 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "遗址公园包括圆明园、长春园和绮春园。西洋楼遗址的大水法是常见的参观点，水系、土山和遗址也能帮助理解三园原来的布局。园区范围较大，建议按最想看的区域选择入口。",
+        "highlights": ["西洋楼遗址与大水法", "绮春园水系", "圆明园盛时全景模型展"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–10月31日",
+            "time": "06:00–21:00，19:00结束售票和入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:00",
+                "lastEntry": "19:00"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月1日–次年3月31日",
+            "time": "06:30–19:30，17:30结束售票和入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "19:30",
+                "lastEntry": "17:30"
+              }
+            ]
+          },
+          {
+            "label": "西洋楼遗址区 · 旺季",
+            "time": "07:00–21:00，19:00停止进入。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "07:00",
+                "closes": "21:00",
+                "lastEntry": "19:00",
+                "area": "西洋楼遗址区"
+              }
+            ]
+          },
+          {
+            "label": "西洋楼遗址区 · 淡季",
+            "time": "07:00–19:30，17:30停止进入。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "07:00",
+                "closes": "19:30",
+                "lastEntry": "17:30"
+              }
+            ]
+          }
+        ],
+        "tips": "全景模型展有独立时段。若主看西洋楼遗址，购票前查看包含该区域的票种。",
+        "sourceUrl": "https://english.beijing.gov.cn/specials/strollthroughbeijing/imperialgardens/202611/t20261110_4940017.html",
+        "booking": {
+          "policy": "可现场购票",
+          "note": "常规参观可在现场购票。园区大门和西洋楼遗址区票种不同，也可选择联票。",
+          "url": "https://english.beijing.gov.cn/specials/strollthroughbeijing/imperialgardens/202611/t20261110_4940017.html"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000005",
@@ -73,7 +305,44 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": true
+      "excursion": true,
+      "visitInfo": {
+        "overview": "位于延庆军都山关沟北口，是较早对公众开放的明长城段。关城向南北延伸，沿线敌台可观察城墙和山脊的关系。南北线的步行坡度、长度和索道位置不同，适合按体力选线。",
+        "highlights": ["八达岭关城", "北线敌台与山脊", "南线步道"],
+        "hours": [
+          {
+            "label": "日场 · 4月1日–10月31日",
+            "time": "06:30开始检票，16:30停止售票和检票，17:30闭园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "17:30",
+                "lastEntry": "16:30"
+              }
+            ]
+          },
+          {
+            "label": "日场 · 11月1日–次年3月31日",
+            "time": "07:30开始检票，16:00停止售票和检票，16:30闭园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "07:30",
+                "closes": "16:30",
+                "lastEntry": "16:00"
+              }
+            ]
+          }
+        ],
+        "tips": "索道、节假日和夜游按景区当日公告执行。雨雪或大风时线路可能临时调整。",
+        "sourceUrl": "https://s.visitbeijing.com.cn/index.php/attraction/101406",
+        "booking": {
+          "policy": "实名购票",
+          "note": "通过官方“长城内外”或京通景区购票服务按日期购票。索道、夜游等另看相应票种。",
+          "url": "https://www.beijing.gov.cn/ywdt/yaowen/202607/t20260714_4762602.html"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000006",
@@ -87,7 +356,50 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": true
+      "excursion": true,
+      "visitInfo": {
+        "overview": "怀柔的明长城段沿山势起伏，正关台由相邻的多座敌台组成，两侧也能看到保存较好的城墙。景区山林较多，适合安排半天，从游客区出发时需留出接驳和登城时间。",
+        "highlights": ["正关台", "山脊敌台", "树林与长城连绵景观"],
+        "hours": [
+          {
+            "label": "旺季 · 3月16日–11月15日",
+            "time": "工作日 07:30–18:00，周末 07:30–18:30。",
+            "monthDayRanges": [[316, 1115]],
+            "access": [
+              {
+                "opens": "07:30",
+                "closes": "18:00",
+                "weekdays": [1, 2, 3, 4, 5]
+              },
+              {
+                "opens": "07:30",
+                "closes": "18:30",
+                "weekdays": [0, 6]
+              }
+            ]
+          },
+          {
+            "label": "淡季 · 11月16日–次年3月15日",
+            "time": "08:00–17:30，16:30停止售票，17:00停止检票。",
+            "monthDayRanges": [[1116, 315]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "17:30",
+                "lastEntry": "17:00"
+              }
+            ]
+          }
+        ],
+        "tips": "索道和接驳有独立时段。登城路段多坡道和台阶，预留返程时间。",
+        "sourceUrl": "https://www.mutianyugreatwall.com/cn",
+        "booking": {
+          "policy": "须实名预约",
+          "note": "景区门票实行实名预约购票。可从慕田峪长城官网的在线订票入口查看门票及交通套票。",
+          "url": "https://www.mutianyugreatwall.com/",
+          "reservationRequired": true
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000007",
@@ -101,7 +413,72 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "位于故宫神武门以北，曾是皇家苑囿。公园的主要看点集中在山脊一线，万春亭可俯望故宫屋顶和北京中轴线。山道上有多处台阶，若不登山，也可参观山下的院落和步道。",
+        "highlights": ["万春亭俯瞰故宫", "寿皇殿", "中轴线景观"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–10月31日",
+            "time": "06:00–21:00，20:30停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:00",
+                "lastEntry": "20:30"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月1日–次年3月31日",
+            "time": "06:30–20:00，19:30停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "20:00",
+                "lastEntry": "19:30"
+              }
+            ]
+          },
+          {
+            "label": "寿皇殿等园内院落 · 旺季",
+            "time": "08:00–18:00（17:30停止进入）。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "lastEntry": "17:30",
+                "closedWeekday": 1,
+                "area": "寿皇殿等园内院落"
+              }
+            ]
+          },
+          {
+            "label": "寿皇殿等园内院落 · 淡季",
+            "time": "08:30–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "closedWeekday": 1,
+                "area": "寿皇殿等园内院落"
+              }
+            ]
+          }
+        ],
+        "tips": "园内部分院落周一关闭，法定节假日除外。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_tzgg/202104/t20210425_2368661.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000008",
@@ -115,7 +492,70 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "古代皇家园林以湖面和琼华岛为中心。沿岸步行可以从不同角度看白塔，在北岸可顺路看九龙壁。若从南门到北岸，留出绕湖步行的时间，按计划选择出园门。",
+        "highlights": ["琼华岛白塔", "九龙壁", "湖岸与团城"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–10月31日",
+            "time": "06:00–21:00，20:30停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:00",
+                "lastEntry": "20:30"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月1日–次年3月31日",
+            "time": "06:30–20:00，19:30停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "20:00",
+                "lastEntry": "19:30"
+              }
+            ]
+          },
+          {
+            "label": "永安寺、团城等园内景点 · 旺季",
+            "time": "08:00–18:00（17:30停止进入）。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "lastEntry": "17:30",
+                "area": "永安寺、团城等园内景点"
+              }
+            ]
+          },
+          {
+            "label": "永安寺、团城等园内景点 · 淡季",
+            "time": "08:30–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "area": "永安寺、团城等园内景点"
+              }
+            ]
+          }
+        ],
+        "tips": "永安寺等部分院落周一关闭，法定节假日除外。个别院落可能因修缮调整，请查看园方公告。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_gyxx/202311/t20231115_3301758.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。请按是否参观园内景点选择对应票种。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000009",
@@ -129,7 +569,85 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "紧邻故宫西侧，前身是明清社稷坛。五色土社稷坛能看到皇家祭祀建筑的格局，古柏、纪念建筑和花卉展点分布在步行可达的园内，适合与中轴线附近的行程放在同一天。",
+        "highlights": ["社稷坛与五色土", "古柏与林荫道", "唐花坞或蕙芳园"],
+        "hours": [
+          {
+            "label": "大门 · 4–5月、9–10月",
+            "time": "06:00–21:00，20:30停止入园。",
+            "monthDayRanges": [
+              [401, 531],
+              [901, 1031]
+            ],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:00",
+                "lastEntry": "20:30"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 6–8月",
+            "time": "06:00–22:00，21:00停止入园。",
+            "monthDayRanges": [[601, 831]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "22:00",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11–次年3月",
+            "time": "06:30–20:00，19:30停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:30",
+                "closes": "20:00",
+                "lastEntry": "19:30"
+              }
+            ]
+          },
+          {
+            "label": "唐花坞、蕙芳园等 · 4–10月",
+            "time": "08:00–18:00（17:30停止进入）。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "lastEntry": "17:30",
+                "area": "唐花坞、蕙芳园等"
+              }
+            ]
+          },
+          {
+            "label": "唐花坞、蕙芳园等 · 11–次年3月",
+            "time": "08:30–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "area": "唐花坞、蕙芳园等"
+              }
+            ]
+          }
+        ],
+        "tips": "社稷文化展和园史展周一关闭，法定节假日除外。",
+        "sourceUrl": "https://english.beijing.gov.cn/specials/parktours/guidevisitors/zhongshanpark/",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000010",
@@ -143,7 +661,28 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "明清祭地的方泽坛位于园内，方形坛制与天坛的圆形圜丘形成对照。皇祇室与古柏标示旧坛庙的游览脉络，秋天可留时间走银杏大道，其他季节也可沿林荫道散步。",
+        "highlights": ["方泽坛", "皇祇室", "古柏与银杏大道"],
+        "hours": [
+          {
+            "label": "夏季园区",
+            "time": "06:00–21:30。"
+          },
+          {
+            "label": "冬季园区",
+            "time": "06:00–20:30。"
+          }
+        ],
+        "tips": "园林绿化局按夏、冬季公布园区时段，具体切换、坛区售票和活动管控以园方通知为准。",
+        "sourceUrl": "https://yllhj.beijing.gov.cn/ztxx/kpjd/202401/t20240104_3526024.shtml",
+        "booking": {
+          "policy": "购票要求请核对公告",
+          "note": "公园有门票。庙会等活动可能有独立售票安排。",
+          "url": "https://yllhj.beijing.gov.cn/ztxx/kpjd/202401/t20240104_3526024.shtml"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000011",
@@ -157,7 +696,68 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["family"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "位于西直门外的老牌动物园，展区沿园内步道分布。大熊猫、灵长类和其他动物场馆各有参观动线，带孩子游览时可以先确定最想看的两三个场馆，再按距离安排路线。",
+        "highlights": ["大熊猫馆", "灵长类场馆", "园内步行游览"],
+        "hours": [
+          {
+            "label": "园区 · 4月1日–10月31日",
+            "time": "07:30–19:00，18:00停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "07:30",
+                "closes": "19:00",
+                "lastEntry": "18:00"
+              }
+            ]
+          },
+          {
+            "label": "园区 · 11月1日–次年3月31日",
+            "time": "07:30–18:00，17:00停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "07:30",
+                "closes": "18:00",
+                "lastEntry": "17:00"
+              }
+            ]
+          },
+          {
+            "label": "动物场馆 · 旺季",
+            "time": "08:00–18:00。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "18:00",
+                "area": "动物场馆"
+              }
+            ]
+          },
+          {
+            "label": "动物场馆 · 淡季",
+            "time": "08:00–17:00。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "17:00",
+                "area": "动物场馆"
+              }
+            ]
+          }
+        ],
+        "tips": "动物场馆结束时间早于静园时间。大熊猫馆购票和参观安排以场馆公告为准。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_tzgg/202104/t20210425_2368661.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。大熊猫馆的票种和入馆安排请单独查看。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000012",
@@ -171,7 +771,36 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["family"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "科普场馆设有常设展厅与不同类型的剧场。展厅适合了解天体和观测基础，天象厅用球幕再现夜空。如果想看放映，先确认节目时刻，再用展厅填补场次之间的时间。",
+        "highlights": ["A、B馆常设展览", "天象厅球幕", "宇宙剧场"],
+        "hours": [
+          {
+            "label": "周一、周三至周日",
+            "time": "09:00–16:30，16:00停止入馆。",
+            "access": [
+              {
+                "opens": "09:00",
+                "closes": "16:30",
+                "lastEntry": "16:00",
+                "closedWeekday": 2
+              }
+            ]
+          },
+          {
+            "label": "闭馆日",
+            "time": "周二例行闭馆，国家法定节假日除外。"
+          }
+        ],
+        "tips": "剧场按节目和场次检票。展厅票及剧场票请按官网票务指引预订。",
+        "sourceUrl": "https://www.bjp.org.cn/cgzn/ylzn/index.shtml",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "展厅票和剧场票分开。可在官方渠道提前购票，现场购票视当日容量而定。",
+          "url": "https://www.bjp.org.cn/cgzn/pwxx/index.shtml"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000013",
@@ -185,7 +814,36 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "位于木樨地附近的首都博物馆本馆，展陈以北京的建城历史、民俗和馆藏文物为主。可先选北京历史主线，再根据当期展览安排参观楼层，给临时展和安检留出时间。",
+        "highlights": ["北京城市历史展陈", "京城民俗与馆藏精品", "当期专题展"],
+        "hours": [
+          {
+            "label": "本馆开放",
+            "time": "09:00–17:00，16:00停止入馆。",
+            "access": [
+              {
+                "opens": "09:00",
+                "closes": "17:00",
+                "lastEntry": "16:00",
+                "closedWeekday": 2
+              }
+            ]
+          },
+          {
+            "label": "闭馆日",
+            "time": "每周二例行闭馆，特殊调整以馆方公告为准。"
+          }
+        ],
+        "tips": "这里指复兴门外大街的本馆。参观请携带有效证件，并查阅当期展览及入馆安排。",
+        "sourceUrl": "https://www.capitalmuseum.org.cn/visit",
+        "booking": {
+          "policy": "本馆常规参观免预约",
+          "note": "适用于首都博物馆本馆常规参观。活动或特展另看馆方公告。",
+          "url": "https://www.capitalmuseum.org.cn/news/6f5b571224214a1fa2c5019cea051080"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000014",
@@ -199,7 +857,28 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["landmark"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "位于中轴线北段的双奥场馆群。沿中心区步行可看鸟巢与水立方的外观，再向北走到奥林匹克森林公园方向。想进场馆参观时，应单独安排购票、安检和场馆内的游览时间。",
+        "highlights": ["鸟巢与水立方外观", "奥林匹克中心区步行轴线", "北侧森林公园方向"],
+        "hours": [
+          {
+            "label": "中心区公共空间",
+            "time": "市政府公开信息列为全天开放。"
+          },
+          {
+            "label": "场馆和奥林匹克森林公园",
+            "time": "鸟巢、水立方、奥森公园等使用各自的开放与售票时段。"
+          }
+        ],
+        "tips": "赛事、演出或活动会调整部分路段和场馆开放。景点标记用于定位奥林匹克公园，游览场馆时请确认具体入口。",
+        "sourceUrl": "https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202504/t20250430_4078628.html",
+        "booking": {
+          "policy": "中心区公共空间开放",
+          "note": "中心区公共空间和鸟巢、水立方等场馆分别管理。参观场馆时查阅场馆票务。",
+          "url": "https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202504/t20250430_4078628.html"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000015",
@@ -213,7 +892,72 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "一座以山林为特色的皇家园林。香炉峰一带坡道较长，适合留出登山和下山时间。若想轻松游览，可选择山麓步道、碧云寺一带或双清别墅，并留意不同区域的开放时段。",
+        "highlights": ["香炉峰", "碧云寺", "双清别墅与山林步道"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–11月15日",
+            "time": "06:00–19:30，18:30停止入园。",
+            "monthDayRanges": [[401, 1115]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "19:30",
+                "lastEntry": "18:30"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月16日–次年3月31日",
+            "time": "06:00–19:00，18:00停止入园。",
+            "monthDayRanges": [[1116, 331]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "19:00",
+                "lastEntry": "18:00"
+              }
+            ]
+          },
+          {
+            "label": "碧云寺、香山寺等院落 · 旺季",
+            "time": "08:00–17:30（17:00停止进入）。",
+            "monthDayRanges": [[401, 1115]],
+            "access": [
+              {
+                "opens": "08:00",
+                "closes": "17:30",
+                "lastEntry": "17:00",
+                "closedWeekday": 1,
+                "area": "碧云寺、香山寺等院落"
+              }
+            ]
+          },
+          {
+            "label": "碧云寺、香山寺等院落 · 淡季",
+            "time": "08:30–17:00（16:30停止进入）。",
+            "monthDayRanges": [[1116, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:00",
+                "lastEntry": "16:30",
+                "closedWeekday": 1,
+                "area": "碧云寺、香山寺等院落"
+              }
+            ]
+          }
+        ],
+        "tips": "碧云寺、香山寺周一关闭，法定节假日除外。革命纪念地旧址的开放规则另见公告。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_tzgg/202104/t20210425_2368661.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000016",
@@ -227,7 +971,47 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "围绕东湖、西湖布置的城市水景公园，沿湖步行可看到中央电视塔和不同方向的岸线。春季常有樱花活动，其他季节适合散步观鸟。想少走回头路，可按下一站方向选择出园门。",
+        "highlights": ["樱花园", "东湖与西湖沿岸", "中央电视塔远景"],
+        "hours": [
+          {
+            "label": "1–5月、9–12月",
+            "time": "06:00–21:30，21:00停止入园。",
+            "monthDayRanges": [
+              [101, 531],
+              [901, 1231]
+            ],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:30",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "6–8月",
+            "time": "06:00–22:30，21:30停止入园。",
+            "monthDayRanges": [[601, 831]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "22:30",
+                "lastEntry": "21:30"
+              }
+            ]
+          }
+        ],
+        "tips": "樱花季、游船和临时活动可能有独立时段，以园方公告为准。",
+        "sourceUrl": "https://gygl.beijing.gov.cn/xxgk/xxgk_tzgg/202104/t20210425_2368661.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。樱花季等活动请另看当期购票公告。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000017",
@@ -241,7 +1025,57 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["nature"],
-      "excursion": false
+      "excursion": false,
+      "visitInfo": {
+        "overview": "以古亭、湖面和城南历史遗迹为主要看点。陶然亭与慈悲庵适合放在同一段步行路线里，华夏名亭园能对照不同地区的亭式。大段水岸步道也适合在游览间隙休息。",
+        "highlights": ["陶然亭与慈悲庵", "华夏名亭园", "湖岸步道"],
+        "hours": [
+          {
+            "label": "大门 · 4月1日–10月31日",
+            "time": "06:00–22:00，21:00停止入园。",
+            "monthDayRanges": [[401, 1031]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "22:00",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "大门 · 11月1日–次年3月31日",
+            "time": "06:00–21:30，21:00停止入园。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "06:00",
+                "closes": "21:30",
+                "lastEntry": "21:00"
+              }
+            ]
+          },
+          {
+            "label": "慈悲庵与高君宇烈士墓 · 淡季",
+            "time": "08:30–17:30，17:00停止进入。",
+            "monthDayRanges": [[1101, 331]],
+            "access": [
+              {
+                "opens": "08:30",
+                "closes": "17:30",
+                "lastEntry": "17:00",
+                "area": "慈悲庵与高君宇烈士墓"
+              }
+            ]
+          }
+        ],
+        "tips": "园内展区、游船按各自安排开放。2026年游船已发布冬季停航公告。",
+        "sourceUrl": "https://english.beijing.gov.cn/latest/news/202511/t20251101_4249869.html",
+        "booking": {
+          "policy": "可提前购票",
+          "note": "可在“畅游公园”官方渠道按日期购票。",
+          "url": "https://english.beijing.gov.cn/quickguideservices/purchaseparktickets/"
+        }
+      }
     },
     {
       "id": "11000000-0000-4000-8001-000000000018",
@@ -255,7 +1089,29 @@
       "verifiedAt": "2026-10-30",
       "source": "curated",
       "categories": ["history"],
-      "excursion": true
+      "excursion": true,
+      "visitInfo": {
+        "overview": "位于昌平关沟的长城关口，城墙沿谷地两侧上山。关城和云台适合先看，登城路线再按体力选择。部分台阶连续且较陡，游览时应给上下城墙分别留出时间。",
+        "highlights": ["居庸关关城", "云台石刻", "两侧登城步道"],
+        "hours": [
+          {
+            "label": "旺季",
+            "time": "08:30–17:30。"
+          },
+          {
+            "label": "淡季",
+            "time": "08:30–16:30。"
+          }
+        ],
+        "tips": "日场时间以景区公告为准。大风、雨雪或专项活动可能调整登城区域。",
+        "sourceUrl": "https://english.beijing.gov.cn/travellinginbeijing/attractions/202603/t20260320_4562519.html",
+        "booking": {
+          "policy": "可现场购票",
+          "note": "常规日场可在现场购票，无须提前预约。",
+          "url": "https://english.beijing.gov.cn/travellinginbeijing/attractions/202603/t20260320_4562519.html"
+        }
+      }
     }
-  ]
+  ],
+  "visitInfoCheckedAt": "2026-11-17"
 }

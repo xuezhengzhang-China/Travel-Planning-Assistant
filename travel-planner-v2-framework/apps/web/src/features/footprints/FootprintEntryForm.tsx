@@ -3,6 +3,17 @@ import type { FormEvent } from 'react';
 import type { FootprintEntry, FootprintMedia, FootprintPlaceSearchResult } from '@travel/shared';
 import { ApiError, type ApiClient } from '../../lib/api-client';
 import { compressImageFile, ImageCompressError } from '../../lib/compress-image';
+import { describeGeolocationError } from '../../lib/geo-error';
+
+/** 与服务端 MAX_FOOTPRINT_MEDIA 一致：一条足迹最多 100 个附件。 */
+const MAX_FOOTPRINT_FILES = 100;
+
+/** 与服务端 MAX_FOOTPRINT_TOTAL_BYTES 一致：单次上传总大小上限 300 MiB。 */
+const MAX_FOOTPRINT_TOTAL_BYTES = 300 * 1024 * 1024;
+
+function formatMb(bytes: number): string {
+  return `${Math.round(bytes / (1024 * 1024))} MB`;
+}
 
 function todayInShanghai(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -105,7 +116,7 @@ export default function FootprintEntryForm({
         setSelectedPlace(null);
         setLocationMessage('已获取当前位置（WGS-84）。');
       },
-      () => setLocationMessage('未能获取位置，请手动填写经纬度或搜索地点。'),
+      (error) => setLocationMessage(describeGeolocationError(error)),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
     );
   }, []);
@@ -156,10 +167,18 @@ export default function FootprintEntryForm({
       // 编辑时若没有重新搜索地点，保留原 poiId，避免位置（地点名）丢失。
       const poiId = selectedPlace?.poiId ?? editing?.poiId ?? null;
       if (poiId) body.set('poiId', poiId);
+      let totalBytes = 0;
       for (const item of files) {
         // 图片先压缩再上传（与手账一致）；视频原样上传。
         const uploadFile = item.type.startsWith('image/') ? await compressImageFile(item) : item;
+        totalBytes += uploadFile.size;
         body.append('files', uploadFile);
+      }
+      if (totalBytes > MAX_FOOTPRINT_TOTAL_BYTES) {
+        setMessage(
+          `附件总大小约 ${formatMb(totalBytes)}，超过上限 ${formatMb(MAX_FOOTPRINT_TOTAL_BYTES)}，请分批上传。`,
+        );
+        return;
       }
       if (editing && removedMediaIds.length > 0) {
         body.set('removeMediaIds', removedMediaIds.join(','));
@@ -188,7 +207,7 @@ export default function FootprintEntryForm({
     <section className="footprint-card" aria-labelledby="footprint-title">
       <h2 id="footprint-title">{editing ? '编辑足迹' : '记录一条足迹'}</h2>
       <p className="footprint-description">
-        每条记录都会保存日期和位置；可以写文字，也可以附最多 9 张照片或视频。
+        每条记录都会保存日期和位置；可以写文字，也可以附最多 {MAX_FOOTPRINT_FILES} 张照片或视频。
       </p>
       <form className="footprint-form" onSubmit={submit}>
         <label>
@@ -326,14 +345,25 @@ export default function FootprintEntryForm({
 
         <label>
           {(editing?.media.length ?? 0) > 0
-            ? '追加照片或视频（可选）'
-            : '照片或视频（可选，最多 9 个）'}
+            ? `追加照片或视频（可选，最多补到 ${MAX_FOOTPRINT_FILES} 个）`
+            : `照片或视频（可选，最多 ${MAX_FOOTPRINT_FILES} 个）`}
           <input
             type="file"
             multiple
             accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
             onChange={(event) => {
-              setFiles(Array.from(event.target.files ?? []));
+              const picked = Array.from(event.target.files ?? []);
+              // 与后端 FilesInterceptor('files', 9) 保持一致，避免选多了到服务端才报错。
+              const kept = (editing?.media.length ?? 0) - removedMediaIds.length;
+              const room = Math.max(0, MAX_FOOTPRINT_FILES - Math.max(0, kept));
+              const accepted = picked.slice(0, room);
+              setFiles(accepted);
+              setMessage(
+                picked.length > accepted.length
+                  ? `最多 ${MAX_FOOTPRINT_FILES} 个附件，已忽略多余的 ${picked.length - accepted.length} 个。`
+                  : '',
+              );
+              event.target.value = '';
             }}
           />
         </label>

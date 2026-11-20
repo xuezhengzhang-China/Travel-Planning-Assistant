@@ -1,0 +1,241 @@
+.trip-detail .trip-cover {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  align-items: stretch;
+  justify-content: stretch;
+  min-height: 244px;
+  gap: 24px;
+  margin: 0 0 16px;
+  padding: 18px clamp(20px, 3vw, 38px) 19px;
+  overflow: hidden;
+  border: 1px solid #253c32;
+  border-radius: 15px;
+  background: #213831;
+  color: #fff9ed;
+  box-shadow: 0 6px 18px #29251624;
+}
+
+.trip-cover-photo,
+.trip-cover::before {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.trip-cover-photo {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center 46%;
+}
+
+.trip-cover[data-city='330100'] .trip-cover-photo {
+  object-position: 67% center;
+}
+
+.trip-cover::before {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, #142923f5 0%, #142923c2 26%, #14292329 63%, transparent 86%),
+    linear-gradient(0deg, #142923bb, transparent 70%);
+  content: '';
+}
+
+.trip-cover-toolbar,
+.trip-cover-body {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.trip-cover-body {
+  align-items: flex-end;
+}
+
+.trip-cover-body > div:first-child {
+  min-width: 0;
+}
+
+.trip-detail .trip-detail-back,
+.trip-detail .trip-cover-edit {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid #fffaee59;
+  border-radius: 6px;
+  background: #172920b3;
+  color: #fff9ed;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.trip-detail-back span {
+  font-size: 22px;
+  line-height: 0.8;
+}
+
+.trip-detail .trip-cover-edit {
+  border-color: #fcf2dd;
+  background: #fcf2dd;
+  color: #24362e;
+  box-shadow: 0 2px 8px #17292040;
+}
+
+.trip-detail .trip-detail-back:hover {
+  background: #1c302a;
+}
+
+.trip-detail .trip-cover-edit:hover:not(:disabled) {
+  background: #fffaf0;
+}
+
+.trip-detail .trip-cover button:focus-visible {
+  outline: 2px solid #ffd792;
+  outline-offset: 3px;
+}
+
+.trip-detail .trip-cover h1 {
+  margin: 5px 0 7px;
+  color: inherit;
+  font-family: var(--trip-display);
+  font-size: clamp(34px, 4.6vw, 60px);
+  font-weight: 700;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.trip-detail .trip-cover-city,
+.trip-detail .trip-cover-dates {
+  margin: 0;
+  color: #fff1d9;
+  font-size: 13px;
+}
+
+.trip-detail .trip-cover-city {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+}
+
+.trip-cover-city::before {
+  display: inline-block;
+  width: 16px;
+  height: 1px;
+  background: #e6b377;
+  content: '';
+}
+
+.trip-cover-dates {
+  font-variant-numeric: tabular-nums;
+}
+
+.trip-cover-credit {
+  flex: 0 1 auto;
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: #16291dc9;
+  color: #fff1d9;
+  font-size: 10px;
+  line-height: 1.45;
+  cursor: default;
+}
+
+.trip-cover-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 17px;
+  padding: 0;
+  border: 1px solid var(--trip-line);
+  border-radius: 10px;
+  background: var(--trip-surface);
+}
+
+.trip-cover-overview div {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 12px;
+  padding: 12px clamp(12px, 2.3vw, 29px);
+}
+
+.trip-cover-overview div + div {
+  border-inline-start: 1px solid var(--trip-line);
+}
+
+.trip-cover-overview dt {
+  color: var(--trip-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.trip-cover-overview dd {
+  margin: 0;
+  color: var(--trip-action);
+  font-family: var(--trip-display);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.trip-cover-overview dd span {
+  font-family: inherit;
+  font-size: 13px;
+}
+
+@container suixin (max-width: 740px) {
+  .trip-detail .trip-cover {
+    min-height: 210px;
+    gap: 23px;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    border-radius: 11px;
+  }
+
+  .trip-cover::before {
+    background:
+      linear-gradient(0deg, #132923f0 7%, #132923c9 33%, #13292338 72%),
+      linear-gradient(90deg, #1329238c, transparent 66%);
+  }
+
+  .trip-cover-body {
+    display: grid;
+    justify-content: stretch;
+    gap: 9px;
+  }
+
+  .trip-cover-credit {
+    justify-self: start;
+    padding: 0;
+    background: transparent;
+  }
+
+  .trip-detail .trip-cover h1 {
+    font-size: clamp(30px, 8vw, 44px);
+  }
+
+  .trip-cover-overview {
+    margin-bottom: 12px;
+  }
+
+  .trip-cover-overview div {
+    display: grid;
+    gap: 4px;
+    padding: 9px 10px;
+  }
+
+  .trip-cover-overview dd {
+    font-size: 18px;
+  }
+}

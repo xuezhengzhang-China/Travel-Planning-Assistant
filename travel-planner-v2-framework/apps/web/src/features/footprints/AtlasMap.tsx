@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FootprintMapLocation } from '@travel/shared';
 import {
   ATLAS_SHADES,
@@ -16,6 +16,10 @@ export const NATIONAL_ADCODE = '100000';
 
 const LEGEND_LABELS = ['未点亮', '1–2', '3–5', '6–9', '10+'];
 const PIN_PATH = 'M0 0 C-6 -9 -13 -15 -13 -23 A13 13 0 1 1 13 -23 C13 -15 6 -9 0 0Z';
+const VIEW_W = 1000;
+const VIEW_H = 620;
+const MIN_SCALE = 1;
+const MAX_SCALE = 10;
 
 export interface AtlasMapProps {
   /** `100000` 显示全国省级行政区；传省级 adcode 显示该省下级行政区。 */
@@ -50,6 +54,9 @@ export default function AtlasMap({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryToken, setRetryToken] = useState(0);
+  const [view, setView] = useState({ x: 0, y: 0, scale: 1 });
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const dragRef = useRef<{ x: number; y: number; captured: boolean } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -102,6 +109,66 @@ export default function AtlasMap({
   }, [geo, counts]);
   const retry = useCallback(() => setRetryToken((value) => value + 1), []);
 
+  const zoomBy = useCallback((factor: number, cx = 0.5, cy = 0.5) => {
+    setView((current) => {
+      const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, current.scale * factor));
+      if (nextScale === current.scale) return current;
+      const worldW = VIEW_W / current.scale;
+      const worldH = VIEW_H / current.scale;
+      const nextW = VIEW_W / nextScale;
+      const nextH = VIEW_H / nextScale;
+      const px = current.x + cx * worldW;
+      const py = current.y + cy * worldH;
+      return { x: px - cx * nextW, y: py - cy * nextH, scale: nextScale };
+    });
+  }, []);
+
+  const resetView = useCallback(() => setView({ x: 0, y: 0, scale: 1 }), []);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const cx = (event.clientX - rect.left) / rect.width;
+      const cy = (event.clientY - rect.top) / rect.height;
+      zoomBy(event.deltaY < 0 ? 1.3 : 0.77, cx, cy);
+    };
+    svg.addEventListener('wheel', onWheel, { passive: false });
+    return () => svg.removeEventListener('wheel', onWheel);
+  }, [zoomBy, geo, loading]);
+
+  function onPointerDown(event: React.PointerEvent<SVGSVGElement>) {
+    if (view.scale <= MIN_SCALE) return;
+    dragRef.current = { x: event.clientX, y: event.clientY, captured: false };
+  }
+
+  function onPointerMove(event: React.PointerEvent<SVGSVGElement>) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect || rect.width <= 0) return;
+    const moveX = event.clientX - drag.x;
+    const moveY = event.clientY - drag.y;
+    if (!drag.captured) {
+      if (Math.abs(moveX) < 3 && Math.abs(moveY) < 3) return;
+      drag.captured = true;
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    }
+    const worldW = VIEW_W / view.scale;
+    const worldH = VIEW_H / view.scale;
+    const dx = (moveX / rect.width) * worldW;
+    const dy = (moveY / rect.height) * worldH;
+    dragRef.current = { x: event.clientX, y: event.clientY, captured: true };
+    setView((v) => ({ ...v, x: v.x - dx, y: v.y - dy }));
+  }
+
+  function onPointerEnd() {
+    dragRef.current = null;
+  }
+
   if (loading) {
     return (
       <section className="atlas-panel" aria-busy="true">
@@ -127,11 +194,27 @@ export default function AtlasMap({
 
   return (
     <section className="atlas-panel">
+      <div className="atlas-zoom-toolbar">
+        <button type="button" onClick={() => zoomBy(1.5)} aria-label="放大">
+          ＋
+        </button>
+        <button type="button" onClick={() => zoomBy(0.67)} aria-label="缩小">
+          －
+        </button>
+        <button type="button" onClick={resetView} aria-label="重置视图">
+          重置
+        </button>
+      </div>
       <svg
+        ref={svgRef}
         className="atlas-svg"
-        viewBox="0 0 1000 620"
+        viewBox={`${view.x} ${view.y} ${VIEW_W / view.scale} ${VIEW_H / view.scale}`}
         role="img"
         aria-label={adcode === NATIONAL_ADCODE ? '全国足迹分布图' : '省级足迹分布图'}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerLeave={onPointerEnd}
       >
         {geo.features.map((feature) => {
           const code = String(feature.properties.adcode);

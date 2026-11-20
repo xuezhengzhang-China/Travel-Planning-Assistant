@@ -10,10 +10,10 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { BExceptionFilter } from './errors';
+import { BExceptionFilter, invalid } from './errors';
 import { BIdentityGuard } from './identity';
 import type { BRequest } from './identity';
-import { coordinates, enumeration, MODES, object } from './validation';
+import { coordinates, enumeration, MODES, object, uuid } from './validation';
 import { PlacesService } from '../places/places.service';
 import { GeoService } from '../integrations/amap/geo.service';
 import { RecommendationsService } from '../recommendations/recommendations.service';
@@ -38,13 +38,17 @@ export class BController {
   }
   @Post('routes/preview')
   @HttpCode(200)
-  route(@Body() body: unknown) {
-    const value = object(body, ['from', 'to', 'transportMode']);
-    return this.geo.route(
-      coordinates(value.from),
-      coordinates(value.to),
-      enumeration(value.transportMode, MODES),
-    );
+  async route(@Body() body: unknown) {
+    const value = object(body, ['from', 'to', 'transportMode', 'includePaths', 'cityId']);
+    if (value.includePaths !== undefined && typeof value.includePaths !== 'boolean')
+      invalid('includePaths 必须为布尔值');
+    const from = coordinates(value.from);
+    const to = coordinates(value.to);
+    const mode = enumeration(value.transportMode, MODES);
+    const cityId = value.cityId === undefined ? undefined : uuid(value.cityId);
+    const cityCode =
+      mode === 'transit' && cityId ? await this.places.getRouteCityCode(cityId) : undefined;
+    return this.geo.route(from, to, mode, cityCode, undefined, value.includePaths === true);
   }
   @Post('locations/reverse')
   @HttpCode(200)

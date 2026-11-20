@@ -10,9 +10,11 @@ export interface Destination {
   adcode: string;
   level: 'province' | 'city';
   parentId: string | null;
+  timeZone?: string;
 }
 export interface Place extends RecommendationPlace {
   address: string;
+  description?: string;
   category: string;
   sourceUrl: string;
   verifiedAt: string;

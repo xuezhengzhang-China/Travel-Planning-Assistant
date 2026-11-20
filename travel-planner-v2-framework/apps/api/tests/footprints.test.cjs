@@ -6,7 +6,10 @@ const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const Response = globalThis.Response;
 const {
+  MAX_FOOTPRINT_MEDIA,
+  MAX_FOOTPRINT_TOTAL_BYTES,
   MAX_PHOTO_BYTES,
+  assertUploadTotalSize,
   currentShanghaiDate,
   validateFootprintInput,
   validateFootprintUpdate,
@@ -53,14 +56,17 @@ test('footprint input requires location, date, and text or media', () => {
     recordedOn: today,
     text: 'A visit',
   });
-  assert.throws(() => validateFootprintInput(validInput, false), /Add text or attach/);
+  assert.throws(
+    () => validateFootprintInput(validInput, false),
+    /请填写文字，或附带一张照片\/视频/,
+  );
   assert.throws(
     () => validateFootprintInput({ ...validInput, recordedOn: '2026-02-30', text: 'x' }, false),
-    /valid YYYY-MM-DD/,
+    /YYYY-MM-DD 格式/,
   );
   assert.throws(
     () => validateFootprintInput({ ...validInput, longitude: '181', text: 'x' }, false),
-    /longitude/,
+    /经度/,
   );
   assert.throws(
     () =>
@@ -69,7 +75,7 @@ test('footprint input requires location, date, and text or media', () => {
         false,
         new Date('2026-11-03T00:00:00.000Z'),
       ),
-    /future/,
+    /不能晚于今天/,
   );
 });
 
@@ -97,7 +103,7 @@ test('media validation checks file signatures, claimed type, and photo size', ()
         mimetype: 'image/png',
         size: 3,
       }),
-    /does not match/,
+    /文件内容与声明的类型不一致/,
   );
   assert.throws(
     () =>
@@ -106,7 +112,7 @@ test('media validation checks file signatures, claimed type, and photo size', ()
         mimetype: 'image/jpeg',
         size: MAX_PHOTO_BYTES + 3,
       }),
-    /10 MiB or smaller/,
+    /照片不能超过 10 MiB/,
   );
 });
 
@@ -552,13 +558,10 @@ test('footprint updates preserve omitted fields and validate media and coordinat
     removeMediaIds: [],
     locationChanged: false,
   });
-  assert.throws(
-    () => validateFootprintUpdate({ longitude: 120 }, false, existing),
-    /must be updated together/,
-  );
+  assert.throws(() => validateFootprintUpdate({ longitude: 120 }, false, existing), /必须同时更新/);
   assert.throws(
     () => validateFootprintUpdate({ text: null, removeMedia: true }, false, existing),
-    /Add text or attach/,
+    /请填写文字，或附带一张照片\/视频/,
   );
   assert.equal(
     validateFootprintUpdate(
@@ -792,3 +795,12 @@ function mapEntry(overrides) {
     ...overrides,
   };
 }
+
+test('attachment count and total size are capped', () => {
+  assert.equal(MAX_FOOTPRINT_MEDIA, 100);
+  assert.doesNotThrow(() => assertUploadTotalSize([{ size: 1024 }, { size: 2048 }]));
+  assert.throws(
+    () => assertUploadTotalSize([{ size: MAX_FOOTPRINT_TOTAL_BYTES + 1 }]),
+    /附件总大小不能超过/,
+  );
+});

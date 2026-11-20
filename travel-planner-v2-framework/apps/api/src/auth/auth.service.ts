@@ -90,6 +90,20 @@ export class AuthService {
     };
   }
 
+  /** 注册与登录返回同一形状，避免调用方拿到不含 token 的响应。 */
+  issueSession(user: PublicUser): {
+    accessToken: string;
+    expiresAt: string;
+    user: PublicUser;
+  } {
+    const now = Math.floor(Date.now() / 1000);
+    return {
+      accessToken: this.signToken({ sub: user.id, iat: now, exp: now + TOKEN_TTL_SECONDS }),
+      expiresAt: new Date((now + TOKEN_TTL_SECONDS) * 1000).toISOString(),
+      user,
+    };
+  }
+
   async verifyAccessToken(token: string): Promise<string | null> {
     const parts = token.split('.');
     if (parts.length !== 3) return null;

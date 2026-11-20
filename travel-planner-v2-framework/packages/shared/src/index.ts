@@ -38,6 +38,9 @@ export type {
   UpdateTripRequest,
   UpdateTripSelectionsRequest,
   TripList,
+  TripBookingStatus,
+  TripPackingItem,
+  TripStateDocument,
 } from './trips.js';
 
 export type {

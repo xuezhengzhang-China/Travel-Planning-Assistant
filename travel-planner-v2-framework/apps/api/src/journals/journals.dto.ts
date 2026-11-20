@@ -26,26 +26,28 @@ export function isUuid(value: unknown): value is string {
 function readTitle(value: unknown): string | null {
   if (value === undefined || value === null) return null;
   if (typeof value !== 'string') {
-    throw new BadRequestException('title must be a string');
+    throw new BadRequestException('标题必须是字符串');
   }
   const title = value.trim();
   if (!title) return null;
   if (title.length > MAX_JOURNAL_TITLE_LENGTH) {
-    throw new BadRequestException(`title must be ${MAX_JOURNAL_TITLE_LENGTH} characters or fewer`);
+    throw new BadRequestException(
+      `标题最多 ${MAX_JOURNAL_TITLE_LENGTH} 字，当前 ${title.length} 字`,
+    );
   }
   return title;
 }
 
 function readBody(value: unknown): string {
   if (typeof value !== 'string') {
-    throw new BadRequestException('body must be a string');
+    throw new BadRequestException('正文必须是字符串');
   }
   const body = value.trim();
   if (!body) {
-    throw new BadRequestException('body must not be empty');
+    throw new BadRequestException('正文不能为空');
   }
   if (body.length > MAX_JOURNAL_BODY_LENGTH) {
-    throw new BadRequestException(`body must be ${MAX_JOURNAL_BODY_LENGTH} characters or fewer`);
+    throw new BadRequestException(`正文最多 ${MAX_JOURNAL_BODY_LENGTH} 字，当前 ${body.length} 字`);
   }
   return body;
 }
@@ -53,17 +55,17 @@ function readBody(value: unknown): string {
 /** mediaIds 必须是 UUID 数组：最多 9 个、不重复，顺序即展示顺序。 */
 function readMediaIds(value: unknown): string[] {
   if (!Array.isArray(value)) {
-    throw new BadRequestException('mediaIds must be an array');
+    throw new BadRequestException('mediaIds 必须是数组');
   }
   if (value.length > MAX_JOURNAL_MEDIA) {
-    throw new BadRequestException(`mediaIds must contain at most ${MAX_JOURNAL_MEDIA} items`);
+    throw new BadRequestException(`最多 ${MAX_JOURNAL_MEDIA} 张图片`);
   }
   const ids = value.map((item) => {
-    if (!isUuid(item)) throw new BadRequestException('mediaIds must contain valid UUIDs');
+    if (!isUuid(item)) throw new BadRequestException('mediaIds 必须是合法的 UUID');
     return item;
   });
   if (new Set(ids).size !== ids.length) {
-    throw new BadRequestException('mediaIds must not contain duplicates');
+    throw new BadRequestException('mediaIds 不能重复');
   }
   return ids;
 }
@@ -71,10 +73,10 @@ function readMediaIds(value: unknown): string[] {
 export function validateJournalCreate(body: Record<string, unknown>): ValidatedJournalCreate {
   const allowedFields = new Set(['footprintId', 'title', 'body', 'mediaIds']);
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
-    throw new BadRequestException('Unexpected journal field');
+    throw new BadRequestException('包含未支持的手账字段');
   }
   if (!isUuid(body.footprintId)) {
-    throw new BadRequestException('footprintId must be a valid UUID');
+    throw new BadRequestException('footprintId 必须是合法的 UUID');
   }
   return {
     footprintId: body.footprintId,
@@ -87,14 +89,14 @@ export function validateJournalCreate(body: Record<string, unknown>): ValidatedJ
 export function validateJournalUpdate(body: Record<string, unknown>): ValidatedJournalUpdate {
   const allowedFields = new Set(['title', 'body', 'mediaIds']);
   if (Object.keys(body).some((field) => !allowedFields.has(field))) {
-    throw new BadRequestException('Unexpected journal field');
+    throw new BadRequestException('包含未支持的手账字段');
   }
   const update: ValidatedJournalUpdate = {};
   if ('title' in body) update.title = readTitle(body.title);
   if ('body' in body) update.body = readBody(body.body);
   if ('mediaIds' in body) update.mediaIds = readMediaIds(body.mediaIds);
   if (update.title === undefined && update.body === undefined && update.mediaIds === undefined) {
-    throw new BadRequestException('Provide at least one of title, body or mediaIds to update');
+    throw new BadRequestException('至少提供标题、正文或图片中的一项');
   }
   return update;
 }

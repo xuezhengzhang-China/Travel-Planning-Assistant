@@ -1,12 +1,12 @@
 import type {
+  BPlaces,
   Proposal,
   PlanningInput,
-  PlaceRecommendationInput,
-  RankedPlace,
   ScheduleDay,
   Place,
   Destination,
   PageResult,
+  TripStateDocument,
 } from '@travel/shared';
 import type {
   CreateTripRequest,
@@ -30,14 +30,21 @@ export interface TripDraftApi {
     warnings: unknown[];
   }>;
   getPlaces(cityId: string): Promise<Place[]>;
+  previewRoute?(
+    input: {
+      from: BPlaces.Coordinates;
+      to: BPlaces.Coordinates;
+      transportMode: BPlaces.TransportMode;
+      cityId: string;
+    },
+    signal: AbortSignal,
+  ): Promise<BPlaces.RoutePreview>;
   remove(id: string, expectedRevision: number): Promise<void>;
-  recommendPlaces(
-    input: PlaceRecommendationInput,
-  ): Promise<{ items: RankedPlace[]; source: 'rule' }>;
   generateProposal(input: PlanningInput): Promise<Proposal>;
-  getProposal(id: string): Promise<Proposal>;
   applyProposal(id: string, expectedRevision: number, proposalId: string): Promise<Trip>;
   updateSchedule(id: string, expectedRevision: number, days: ScheduleDay[]): Promise<Trip>;
+  getState(id: string): Promise<TripStateDocument>;
+  saveState(id: string, patch: Partial<TripStateDocument>): Promise<TripStateDocument>;
 
   create(input: CreateTripRequest): Promise<Trip>;
   get(id: string): Promise<Trip>;
@@ -89,7 +96,12 @@ export function createTripDraftApi(options: {
   const fetcher = options.fetcher ?? fetch;
   const base = (options.baseUrl ?? '/api').replace(/\/$/, '');
   const resource = (id: string) => `/trips/${encodeURIComponent(id)}`;
-  async function request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
+  async function request<T>(
+    path: string,
+    method = 'GET',
+    body?: unknown,
+    signal?: AbortSignal,
+  ): Promise<T> {
     const token = await options.getAccessToken();
     if (!token) throw new TripApiError(401, 'UNAUTHENTICATED', '请先登录后保存行程');
     const response = await fetcher(`${base}${path}`, {
@@ -99,6 +111,7 @@ export function createTripDraftApi(options: {
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal,
     });
     const payload: unknown = await response.json().catch(() => null);
     if (!response.ok) {
@@ -133,6 +146,8 @@ export function createTripDraftApi(options: {
       request('/locations/reverse', 'POST', {
         coordinates: { longitude, latitude, coordinateSystem: 'GCJ-02' },
       }),
+    previewRoute: (input, signal) =>
+      request('/routes/preview', 'POST', { ...input, includePaths: true }, signal),
     remove: (id, expectedRevision) =>
       request<void>(`${resource(id)}?expectedRevision=${expectedRevision}`, 'DELETE'),
     getPlaces: async (cityId) => {
@@ -145,13 +160,13 @@ export function createTripDraftApi(options: {
         if (items.length >= result.total || !result.items.length) return items;
       }
     },
-    recommendPlaces: (input) => request('/recommendations/places', 'POST', input),
     generateProposal: (input) => request('/recommendations/itinerary', 'POST', input),
-    getProposal: (id) => request('/recommendations/' + encodeURIComponent(id)),
     applyProposal: (id, expectedRevision, proposalId) =>
       request(resource(id) + '/apply-proposal', 'POST', { expectedRevision, proposalId }),
     updateSchedule: (id, expectedRevision, days) =>
       request(resource(id) + '/schedule', 'PUT', { expectedRevision, days }),
+    getState: (id) => request(resource(id) + '/state'),
+    saveState: (id, patch) => request(resource(id) + '/state', 'PUT', patch),
     create: (input) => request('/trips', 'POST', input),
     get: (id) => request(resource(id)),
     list: (page = 1, pageSize = 20) => request(`/trips?page=${page}&pageSize=${pageSize}`),

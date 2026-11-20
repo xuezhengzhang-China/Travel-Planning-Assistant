@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Destination, PageResult, Place } from '@travel/shared';
 import { ApiError, type ApiClient } from '../../lib/api-client';
 import { wgs84ToGcj02 } from '../../lib/coords';
+import { describeGeolocationError } from '../../lib/geo-error';
 import AtlasMap from '../footprints/AtlasMap';
 import CityPostcard from './CityPostcard';
 import './home.css';
@@ -110,13 +111,19 @@ export default function HomePage({ client }: HomePageProps) {
               `当前位置：${coords.longitude.toFixed(4)}, ${coords.latitude.toFixed(4)}（未能确认所在城市）。`,
             );
           }
-        } catch {
+        } catch (error) {
+          const reason =
+            error instanceof ApiError && error.status === 503
+              ? '服务器尚未配置地图服务，无法根据坐标识别城市。'
+              : error instanceof ApiError
+                ? error.message
+                : '暂时无法识别所在城市。';
           setLocationMsg(
-            `当前位置：${coords.longitude.toFixed(4)}, ${coords.latitude.toFixed(4)}。`,
+            `已取到坐标 ${coords.longitude.toFixed(4)}, ${coords.latitude.toFixed(4)}；${reason}`,
           );
         }
       },
-      () => setLocationMsg('定位失败，请允许定位权限。'),
+      (error) => setLocationMsg(describeGeolocationError(error)),
       { enableHighAccuracy: true, timeout: 10000 },
     );
   }

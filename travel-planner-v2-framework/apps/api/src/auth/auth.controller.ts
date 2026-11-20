@@ -15,7 +15,7 @@ export class AuthController {
     const displayName = requiredString(body.displayName, 'displayName', 1, 80);
     if (!email.includes('@'))
       throw new ApiError('VALIDATION_ERROR', '邮箱格式不正确', 400, { field: 'email' });
-    return { user: await this.auth.register(email, password, displayName) };
+    return this.auth.issueSession(await this.auth.register(email, password, displayName));
   }
 
   @Post('login')

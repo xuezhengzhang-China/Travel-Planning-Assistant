@@ -1,0 +1,92 @@
+.trip-detail .trip-leg-info {
+  max-width: calc(100% - 42px);
+  overflow-wrap: anywhere;
+}
+
+.trip-leg-lines {
+  display: block;
+  margin-top: 2px;
+  color: var(--trip-text);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.trip-route-card {
+  max-height: calc(var(--trip-map-height) - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.trip-transit-steps {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 7px;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.trip-transit-steps li {
+  display: grid;
+  gap: 2px;
+  padding-inline-start: 9px;
+  border-inline-start: 2px solid var(--trip-action);
+  overflow-wrap: anywhere;
+}
+
+.trip-transit-steps li[data-mode='walking'] {
+  border-inline-start: 2px dotted #a1aea4;
+}
+
+.trip-transit-steps span,
+.trip-transit-steps small {
+  color: var(--trip-muted);
+}
+
+.trip-transit-steps small:empty {
+  display: none;
+}
+
+.trip-transit-steps .trip-transit-notice {
+  color: #79421c;
+}
+
+.trip-tool-line-names {
+  margin: 4px 0;
+  color: var(--trip-text);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.trip-tool-transit {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.trip-tool-transit summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--trip-action);
+  font-weight: 600;
+}
+
+.trip-tool-route-link {
+  display: inline-block;
+  margin-block: 5px 9px;
+  color: var(--trip-action);
+  font-size: 12px;
+  font-weight: 650;
+  text-underline-offset: 3px;
+}
+
+@container suixin (max-width: 740px) {
+  .trip-detail .trip-map-stage:has(.trip-map-canvas:not([hidden])) .trip-map-info.trip-route-card {
+    position: relative;
+    inset: auto;
+    width: auto;
+    max-width: none;
+    max-height: none;
+    box-shadow: none;
+  }
+}

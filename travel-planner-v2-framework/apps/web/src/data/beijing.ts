@@ -10,6 +10,7 @@ export interface Attraction {
   name: string;
   district: string;
   address: string;
+  openingHours?: string | null;
   category: string;
   categories: import('@travel/shared').Theme[];
   excursion: boolean;
@@ -24,4 +25,9 @@ export function listCities(): City[] {
 }
 export function listPlaces(cityId: string): Attraction[] {
   return catalog.places.filter((place) => place.cityId === cityId) as Attraction[];
+}
+
+export function getBeijingVisitInfo(placeId: string) {
+  const info = catalog.places.find((place) => place.id === placeId)?.visitInfo;
+  return info && { ...info, checkedAt: catalog.visitInfoCheckedAt };
 }
