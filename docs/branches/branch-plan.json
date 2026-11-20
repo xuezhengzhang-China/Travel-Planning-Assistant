@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "date": "2026-11-21",
+  "repository": "https://github.com/zhangxuezheng-zxz/Travel-Planning-Assistant",
+  "sourceBranch": "integration-2",
+  "sourceCommit": "60e714b3b0dc4aeb509abdca58f05329feca50b9",
+  "mainBefore": "bb3b0da55d738e5120723aa3382be9e197cb29b3",
+  "mergeCommit": "964cb07",
+  "basePolicy": "All new branches start at main after the integration merge and this documentation commit. Keep the complete repository in every branch; change the assigned feature scope.",
+  "preserveOriginalBranches": true,
+  "forcePushAllowed": false,
+  "originalRemoteHeads": {
+    "integration": "1d3c21e628e2a458ab5fe365c4b7e347c16fd414",
+    "integration-2": "60e714b3b0dc4aeb509abdca58f05329feca50b9",
+    "liuyan": "f2f87a3407f5c4266de7db002f65afea7f7043f3",
+    "main": "bb3b0da55d738e5120723aa3382be9e197cb29b3",
+    "sunjiayi": "476d3efd341321efca8a4988dce78d1c095f67a4",
+    "week-8/zhaofutao": "10d0fceee2e9934844019206081c9b2c808986f1",
+    "zhangxuezheng": "f4397ef584f11b4ce7bf8ddf0224a92af0a14c6f",
+    "zhaofutao": "c6f3ae92c05d6172506f4868a3445e3638ec92fd"
+  },
+  "newBranches": [
+    {
+      "name": "feature/home-navigation",
+      "label": "首页与导航",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/web/src/features/home",
+        "travel-planner-v2-framework/apps/web/src/features/shell"
+      ]
+    },
+    {
+      "name": "feature/auth-profile",
+      "label": "账号与个人资料",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/auth",
+        "travel-planner-v2-framework/apps/api/src/users",
+        "travel-planner-v2-framework/apps/web/src/features/profile",
+        "travel-planner-v2-framework/apps/web/src/lib/profile-client.ts",
+        "travel-planner-v2-framework/packages/shared/src/auth.ts"
+      ]
+    },
+    {
+      "name": "feature/places-catalog",
+      "label": "城市与景点目录",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/places",
+        "travel-planner-v2-framework/apps/api/scripts/seed-b.cjs",
+        "travel-planner-v2-framework/apps/api/scripts/seed-beijing.cjs",
+        "travel-planner-v2-framework/apps/web/src/data/beijing.ts",
+        "travel-planner-v2-framework/packages/shared/data",
+        "travel-planner-v2-framework/packages/shared/src/places.ts"
+      ]
+    },
+    {
+      "name": "feature/smart-recommendation",
+      "label": "智能推荐与排程",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/recommendations",
+        "travel-planner-v2-framework/apps/api/src/integrations/llm",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/recommendation-flow.ts",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/trip-schedule-preview.ts",
+        "travel-planner-v2-framework/packages/shared/src/recommendations.ts"
+      ]
+    },
+    {
+      "name": "feature/routes-transport",
+      "label": "路线与交通指引",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/integrations/amap",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripMap.tsx",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripTransitSteps.tsx",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/trip-map-routes.ts",
+        "travel-planner-v2-framework/apps/web/src/lib/coords.ts"
+      ]
+    },
+    {
+      "name": "feature/trip-management",
+      "label": "行程管理",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/trips",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripDetail.tsx",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripWorkspace.tsx",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/trip-draft-client.ts",
+        "travel-planner-v2-framework/packages/shared/src/trips.ts"
+      ]
+    },
+    {
+      "name": "feature/footprints-map",
+      "label": "实际到访与足迹地图",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/footprints",
+        "travel-planner-v2-framework/apps/web/src/features/footprints",
+        "travel-planner-v2-framework/packages/shared/src/footprints.ts"
+      ]
+    },
+    {
+      "name": "feature/journals-media",
+      "label": "图文手账与媒体",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/api/src/journals",
+        "travel-planner-v2-framework/apps/api/src/media",
+        "travel-planner-v2-framework/apps/api/src/footprints/media-storage.service.ts",
+        "travel-planner-v2-framework/apps/web/src/features/footprints/JournalPage.tsx",
+        "travel-planner-v2-framework/packages/shared/src/journals.ts"
+      ]
+    },
+    {
+      "name": "feature/luggage-reminders",
+      "label": "行李清单与提醒",
+      "kind": "feature",
+      "scope": [
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripPreparation.tsx",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/trip-reminders.ts",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/trip-preparation.css",
+        "travel-planner-v2-framework/apps/web/src/features/trip-create/TripTools.tsx"
+      ]
+    },
+    {
+      "name": "test",
+      "label": "测试与验收",
+      "kind": "test",
+      "scope": [
+        "APP_Test",
+        "travel-planner-v2-framework/apps/api/tests",
+        "travel-planner-v2-framework/apps/web/tests"
+      ]
+    },
+    {
+      "name": "meeting-records",
+      "label": "会议与决策记录",
+      "kind": "documentation",
+      "scope": ["docs/meetings"]
+    }
+  ]
+}

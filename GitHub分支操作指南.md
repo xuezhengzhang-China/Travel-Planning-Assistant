@@ -1,5 +1,9 @@
 # Travel Planning Assistant 分支操作指南
 
+2026-11-21 更新：当前采用完整 `main` + 功能模块分支 + `test` + `meeting-records`。最新命令请阅读 [按功能分支的日常操作](docs/branches/日常分支操作.md)，职责与路径见 [分支结构与协作约定](docs/branches/分支结构与协作约定.md)。
+
+以下保留重建前的成员分支操作示例供历史参考，不再作为新的长期分工规则。原成员分支继续保留。仓库当前地址为 <https://github.com/zhangxuezheng-zxz/Travel-Planning-Assistant>。
+
 本文假设使用以下仓库和分支：
 
 - 仓库：`https://github.com/xuezhengzhang-China/Travel-Planning-Assistant`
@@ -324,4 +328,3 @@ git push origin zhangxuezheng
 ```text
 zhangxuezheng -> main
 ```
-
